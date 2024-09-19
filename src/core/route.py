@@ -18,13 +18,13 @@ def route(
     authentication_token_decoder: str = 'auth.decode_access_token',
     service_authorization_checker: str = 'auth.is_admin_user',
     service_header_generator: str = 'auth.generate_request_header',
-    response_model: Union[str, None] = None,
+    response_model: Optional[str] = None,
     response_list: bool = False
 ):
     if response_model:
-        response_model = import_function(response_model)
+        response_model = import_function(response_model)  # type: ignore
         if response_list:
-            response_model = List[response_model]
+            response_model = List[response_model]  # type: ignore
 
     app_any = request_method(
         path,
@@ -37,6 +37,8 @@ def route(
         @functools.wraps(f)
         async def inner(request: Request, response: Response, **kwargs):
             service_headers = {}
+
+            # Check authen
 
             scope = request.scope
             method = scope['method'].lower()
@@ -52,13 +54,13 @@ def route(
                     data=payload,
                     headers=service_headers,
                 )
-            except aiohttp.client_exceptions.ClientConnectorError:
+            except aiohttp.ClientConnectorError:
                 raise HTTPException(
                     status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                    detail='Service Unavailable'
+                    detail="Service Unavailable",
                     headers={'WWW-Authenticate': 'Bearer'},
                 )
-            except aiohttp.client_exceptions.ContentTypeError:
+            except aiohttp.ContentTypeError:
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail='Service error.',
@@ -79,9 +81,6 @@ def route(
 
 
 def import_function(method_path):
-    # if not method_path:
-    #    return
-
     module, method = method_path.rsplit('.', 1)
     module_import = import_module(module)
 
