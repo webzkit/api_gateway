@@ -1,11 +1,14 @@
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Dict, Union
 import jwt
 from passlib.context import CryptContext
-
+from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
 ALGORITHM = "RS256"
+
 PRIVATE_KEY = """
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAwpz38WQsUM+O4aZqVd8kvtUk9leeW/A3VQY2StzKt1FQ9CSU
@@ -48,13 +51,16 @@ xwIDAQAB
 """
 
 
-def create_access_token(
-    subject,
-    expires_delta: timedelta = timedelta(minutes=10)
-) -> str:
-    expire = datetime.now() + expires_delta
+def encode_access_token(
+        payload: Dict,
+        expire_minute: int = 10
+):
+    expire = datetime.now() + timedelta(minutes=expire_minute)
+    to_encode = {
+        "payload": payload,
+        "exp": expire
+    }
 
-    to_encode = {"exp": expire, "payload": subject}
     encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
@@ -67,15 +73,31 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     pwd_context.schemes()
+
     return pwd_context.hash(password)
 
 
-def create_token(subject: Any, expire_delta: timedelta = timedelta(minutes=10)) -> str:
-    return jwt.encode(
-        {
-            "exp": expire_delta + datetime.now(),
-            "sub": str(subject)
-        },
-        'ABC@abc',
-        algorithm="HS256"
-    )
+def decode_access_token(authorization: Union[str, None] = None):
+    if not authorization:
+        raise AuthTokenMissing('Auth token is missing in headers.')
+
+    token = authorization.replace('Bearer ', '')
+    try:
+        payload = jwt.decode(token, PRIVATE_KEY, algorithms=ALGORITHM)
+        return payload
+    except jwt.exceptions.ExpiredSignatureError:
+        raise AuthTokenExpired('Auth token is expired.')
+    except jwt.exceptions.DecodeError:
+        raise AuthTokenCorrupted('Auth token is corrupted.')
+
+
+def generate_request_header(token_payload):
+    return {'request-user-id': str(token_payload['id'])}
+
+
+def is_admin_user(token_payload):
+    return token_payload['user_type'] == 'admin'
+
+
+def is_default_user(token_payload):
+    return token_payload['user_type'] in ['default', 'admin']

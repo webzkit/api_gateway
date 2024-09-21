@@ -29,7 +29,7 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    USERS_SERVICE_URL: str = ""
+    USER_SERVICE_URL: str = ""
     AVATAR_SERVICE_URL: str = ""
     GATEWAY_TIMEOUT: int = 59
 

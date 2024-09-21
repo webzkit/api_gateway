@@ -1,10 +1,10 @@
 import aiohttp
 import functools
-from typing import List, Optional, Union
+from typing import List, Optional
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
 from .exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
-from .network import make_request
+from .client import make_request
 
 
 def route(
