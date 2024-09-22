@@ -1,6 +1,6 @@
 from typing import Annotated
 from core.route import route
-from fastapi import APIRouter, Body,  status, Request, Response
+from fastapi import APIRouter, Body, status, Request, Response
 from config import settings
 from schemas import LoginForm
 
