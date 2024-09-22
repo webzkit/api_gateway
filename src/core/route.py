@@ -11,7 +11,7 @@ def route(
     request_method,
     path: str,
     status_code: int,
-    payload_key: str,
+    payload_key: Optional[str],
     service_url: str,
     authentication_required: bool = False,
     post_processing_func: Optional[str] = None,
@@ -37,13 +37,55 @@ def route(
         @functools.wraps(f)
         async def inner(request: Request, response: Response, **kwargs):
             service_headers = {}
+            token_payload = {}
 
-            # Check authen
+            # Check authentication
+            if authentication_required:
+                # Authentication
+                authorization = request.headers.get("authorization")
+                token_decoder = import_function(authentication_token_decoder)
+                exc = None
+
+                try:
+                    token_payload = token_decoder(authorization)
+                except (
+                        AuthTokenMissing,
+                        AuthTokenExpired,
+                        AuthTokenCorrupted) as e:
+                    exc = str(e)
+                except Exception as e:
+                    exc = str(e)
+                finally:
+                    if exc:
+                        raise HTTPException(
+                            status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=exc,
+                            headers={'WWW-Authenticate': 'Bearer'}
+                        )
+
+                # Authorization
+                if service_authorization_checker:
+                    authorization_checker = import_function(service_authorization_checker)
+
+                    is_user_eligible = authorization_checker(token_payload)
+
+                    if not is_user_eligible:
+                        raise HTTPException(
+                            status_code=status.HTTP_403_FORBIDDEN,
+                            detail="You are allowed to access this scope",
+                            headers={'WWW-Authenticate': 'Bearer'}
+                        )
+
+                # Service headers
+                if service_header_generator:
+                    header_generator = import_function(service_header_generator)
+                    service_headers = header_generator(token_payload)
 
             scope = request.scope
             method = scope['method'].lower()
             path = scope['path']
-            payload_obj = kwargs.get(payload_key)
+
+            payload_obj = kwargs.get(str(payload_key))
             payload = payload_obj.dict() if payload_obj else {}
             url = f'{service_url}{path}'
 
@@ -52,7 +94,7 @@ def route(
                     url=url,
                     method=method,
                     data=payload,
-                    headers=service_headers,
+                    headers=service_headers,  # type: ignore
                 )
             except aiohttp.ClientConnectorError:
                 raise HTTPException(
@@ -84,4 +126,4 @@ def import_function(method_path):
     module, method = method_path.rsplit('.', 1)
     module_import = import_module(module)
 
-    return getattr(module_import, method, lambda *args, **kwargs: None)
+    return getattr(module_import, method, lambda *args, **kwargs: None)  # type: ignore

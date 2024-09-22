@@ -3,6 +3,8 @@ from typing import Any, Dict, Union
 import jwt
 from passlib.context import CryptContext
 from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
+from core.helpers.utils import get_nested_dic
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -83,20 +85,27 @@ def decode_access_token(authorization: Union[str, None] = None):
 
     token = authorization.replace('Bearer ', '')
     try:
-        payload = jwt.decode(token, PRIVATE_KEY, algorithms=ALGORITHM)
+        payload = jwt.decode(token, PUBLIC_KEY, algorithms=[ALGORITHM])
+
         return payload
+
     except jwt.exceptions.ExpiredSignatureError:
         raise AuthTokenExpired('Auth token is expired.')
+
     except jwt.exceptions.DecodeError:
         raise AuthTokenCorrupted('Auth token is corrupted.')
 
 
 def generate_request_header(token_payload):
-    return {'request-user-id': str(token_payload['id'])}
+    id = get_nested_dic(token_payload.get('payload'), ['id'])
+
+    return {'request-init-data': str(id)}
 
 
 def is_admin_user(token_payload):
-    return token_payload['user_type'] == 'admin'
+    scope = get_nested_dic(token_payload.get('payload'), ['group', 'name'])
+
+    return scope == 'Supper Admin'
 
 
 def is_default_user(token_payload):
