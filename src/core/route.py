@@ -15,8 +15,8 @@ def route(
     service_url: str,
     authentication_required: bool = False,
     post_processing_func: Optional[str] = None,
-    authentication_token_decoder: str = "auth.decode_access_token",
-    service_authorization_checker: str = "auth.is_admin_user",
+    authentication_token_decoder: str = "core.security.decode_access_token",
+    service_authorization_checker: str = "core.security.is_admin_user",
     service_header_generator: str = "auth.generate_request_header",
     response_model: Optional[str] = None,
     response_list: bool = False,
@@ -85,7 +85,7 @@ def route(
             payload_obj = kwargs.get(str(payload_key))
             payload = payload_obj.dict() if payload_obj else {}
             url = f"{service_url}{path}"
-
+            print(service_headers)
             try:
                 resp_data, status_code_from_service = await make_request(
                     url=url,

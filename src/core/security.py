@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
-from typing import Any, Dict, Union
+from typing import Dict, Union
 import jwt
+from urllib.parse import urlencode
 from passlib.context import CryptContext
 from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
 from core.helpers.utils import get_nested_dic
@@ -53,15 +54,9 @@ xwIDAQAB
 """
 
 
-def encode_access_token(
-        payload: Dict,
-        expire_minute: int = 10
-):
+def encode_access_token(payload: Dict, expire_minute: int = 10):
     expire = datetime.now() + timedelta(minutes=expire_minute)
-    to_encode = {
-        "payload": payload,
-        "exp": expire
-    }
+    to_encode = {"payload": payload, "exp": expire}
 
     encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
 
@@ -81,32 +76,31 @@ def get_password_hash(password: str) -> str:
 
 def decode_access_token(authorization: Union[str, None] = None):
     if not authorization:
-        raise AuthTokenMissing('Auth token is missing in headers.')
+        raise AuthTokenMissing("Auth token is missing in headers.")
 
-    token = authorization.replace('Bearer ', '')
+    token = authorization.replace("Bearer ", "")
     try:
         payload = jwt.decode(token, PUBLIC_KEY, algorithms=[ALGORITHM])
 
         return payload
 
     except jwt.exceptions.ExpiredSignatureError:
-        raise AuthTokenExpired('Auth token is expired.')
+        raise AuthTokenExpired("Auth token is expired.")
 
     except jwt.exceptions.DecodeError:
-        raise AuthTokenCorrupted('Auth token is corrupted.')
+        raise AuthTokenCorrupted("Auth token is corrupted.")
 
 
 def generate_request_header(token_payload):
-    id = get_nested_dic(token_payload.get('payload'), ['id'])
-
-    return {'request-init-data': str(id)}
+    # id = get_nested_dic(token_payload.get("payload"), ["id"])
+    return {"request-init-data": urlencode(token_payload.get("payload"))}
 
 
 def is_admin_user(token_payload):
-    scope = get_nested_dic(token_payload.get('payload'), ['group', 'name'])
+    scope = get_nested_dic(token_payload.get("payload"), ["group", "name"])
 
-    return scope == 'Supper Admin'
+    return scope == "Supper Admin"
 
 
 def is_default_user(token_payload):
-    return token_payload['user_type'] in ['default', 'admin']
+    return token_payload["user_type"] in ["default", "admin"]
