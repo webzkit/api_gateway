@@ -8,9 +8,9 @@ from routes.v1.api import api_router
 
 
 app = FastAPI(
-    title=settings.APP_NAME,
-    openapi_url=f"{settings.APP_API_PREFIX}/openapi.json"
+    title=settings.APP_NAME, openapi_url=f"{settings.APP_API_PREFIX}/openapi.json"
 )
+
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
@@ -26,8 +26,7 @@ if settings.BACKEND_CORS_ORIGINS:
 
 
 @app.get("/")
-def root(
-) -> Any:
+def root() -> Any:
     result: Dict[Any, Any] = {
         "message": f"Your {settings.APP_NAME} endpoint is working"
     }

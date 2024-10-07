@@ -10,14 +10,15 @@ router = APIRouter()
 
 @route(
     request_method=router.post,
-    path='/login',
+    path="/login",
     status_code=status.HTTP_200_OK,
-    payload_key='login_form',
+    payload_key="login_form",
     service_url=settings.USER_SERVICE_URL,
     authentication_required=False,
-    post_processing_func='core.post_processing.access_token_generate_handler',
-    response_model="schemas.LoginResponse"
+    post_processing_func="core.post_processing.access_token_generate_handler",
+    response_model="schemas.LoginResponse",
 )
-async def login(login_form: Annotated[LoginForm, Body()],
-                request: Request, response: Response):
+async def login(
+    login_form: Annotated[LoginForm, Body()], request: Request, response: Response
+):
     pass
