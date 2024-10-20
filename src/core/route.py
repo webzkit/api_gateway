@@ -37,6 +37,7 @@ def route(
             service_headers = {}
             token_payload = {}
 
+            print(request)
             # Check authentication
             if authentication_required:
                 # Authentication
@@ -85,7 +86,6 @@ def route(
             payload_obj = kwargs.get(str(payload_key))
             payload = payload_obj.dict() if payload_obj else {}
             url = f"{service_url}{path}"
-            print(service_headers)
             try:
                 resp_data, status_code_from_service = await make_request(
                     url=url,
