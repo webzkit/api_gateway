@@ -3,7 +3,12 @@ import functools
 from typing import List, Optional
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
-from .exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
+from .exceptions import (
+    AuthTokenMissing,
+    AuthTokenExpired,
+    AuthTokenCorrupted,
+    ServiceHttpException,
+)
 from .client import make_request
 
 
@@ -37,7 +42,6 @@ def route(
             service_headers = {}
             token_payload = {}
 
-            print(request)
             # Check authentication
             if authentication_required:
                 # Authentication
@@ -105,12 +109,18 @@ def route(
                     detail="Service error.",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
+            except ServiceHttpException as e:
+                raise HTTPException(
+                    status_code=e.error_code,
+                    detail=str(e),
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
 
-            # response.status_code = status_code_from_service
+            response.status_code = status_code_from_service
 
             if all([status_code_from_service == status_code, post_processing_func]):
                 post_processing_f = import_function(post_processing_func)
-                resp_data = post_processing_f(resp_data)  # noqa
+                resp_data = post_processing_f(resp_data)
 
             return resp_data
 
