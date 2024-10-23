@@ -9,6 +9,7 @@ from .exceptions import (
     AuthTokenCorrupted,
     ServiceHttpException,
 )
+from fastapi.encoders import jsonable_encoder
 from .client import make_request
 
 
@@ -88,8 +89,9 @@ def route(
             path = scope["path"]
 
             payload_obj = kwargs.get(str(payload_key))
-            payload = payload_obj.dict() if payload_obj else {}
+            payload = jsonable_encoder(payload_obj) if payload_obj else {}
             url = f"{service_url}{path}"
+
             try:
                 resp_data, status_code_from_service = await make_request(
                     url=url,
