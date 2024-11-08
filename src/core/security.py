@@ -93,15 +93,11 @@ def decode_access_token(authorization: Union[str, None] = None):
 
 
 def generate_request_header(token_payload):
-    print(token_payload)
-    # id = get_nested_dic(token_payload.get("payload"), ["id"])
-    return {"request-init-data": urlencode(token_payload.get("payload.data"))}
+    return {"request-init-data": urlencode(token_payload.get("payload"))}
 
 
 def is_admin_user(token_payload):
-    print(token_payload)
-    scope = get_nested_dic(token_payload.get("payload"), ["group", "name"])
-
+    scope = token_payload.get("payload")["group_name"]
     return scope == "Supper Admin"
 
 
