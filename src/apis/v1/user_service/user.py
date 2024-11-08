@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Request, Response, status
 
 from config import settings
 from core.route import route
-from routes.v1 import deps
+from apis.v1 import deps
 from schemas.user import UserCreate, UserUpdate
 
 
@@ -25,7 +25,9 @@ router = APIRouter()
     response_list=True,
 )
 async def gets(
-    request: Request, response: Response, token=Depends(deps.get_token),
+    request: Request,
+    response: Response,
+    token=Depends(deps.get_token),
     page: int = 1, items_per_page: int = 100
 ) -> Any:
     pass

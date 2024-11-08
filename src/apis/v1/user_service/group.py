@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Request, Response, status
 
 from config import settings
 from core.route import route
-from routes.v1 import deps
+from apis.v1 import deps
 from schemas.group import GroupCreate, GroupUpdate
 
 

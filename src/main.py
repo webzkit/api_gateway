@@ -1,15 +1,19 @@
-from os import path
-from fastapi import FastAPI, status, Request, Response
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from typing import Any, Dict
 
 from config import settings
-from routes.v1.api import api_router
+from apis.v1.api import api_router
+from core.setup import create_application
 
-
+"""
 app = FastAPI(
-    title=settings.APP_NAME, openapi_url=f"{settings.APP_API_PREFIX}/openapi.json"
+    title=settings.APP_NAME,
+    openapi_url=f"{settings.APP_API_PREFIX}/openapi.json"
 )
+"""
+
+app = create_application(router=api_router, settings=settings)
 
 
 # Set all CORS enabled origins
@@ -34,4 +38,5 @@ def root() -> Any:
     return result
 
 
-app.include_router(api_router, prefix=settings.APP_API_PREFIX)
+#app.include_router(api_router, prefix=settings.APP_API_PREFIX)
+
