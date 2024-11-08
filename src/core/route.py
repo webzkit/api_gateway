@@ -11,6 +11,7 @@ from .exceptions import (
 )
 from fastapi.encoders import jsonable_encoder
 from .client import make_request
+from core.helpers.utils import parse_query_str
 
 
 def route(
@@ -87,6 +88,7 @@ def route(
             scope = request.scope
             method = scope["method"].lower()
             path = scope["path"]
+            request_param = parse_query_str(str(request.query_params))
 
             payload_obj = kwargs.get(str(payload_key))
             payload = jsonable_encoder(payload_obj) if payload_obj else {}
@@ -98,6 +100,7 @@ def route(
                     method=method,
                     data=payload,
                     headers=service_headers,  # type: ignore
+                    params=request_param
                 )
             except aiohttp.ClientConnectorError:
                 raise HTTPException(

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Request, Response, status
 from config import settings
 from core.route import route
 from routes.v1 import deps
-from schemas.user import UserCreate, UserUpdate
+from schemas.group import GroupCreate, GroupUpdate
 
 
 router = APIRouter()
@@ -21,7 +21,7 @@ router = APIRouter()
     authentication_token_decoder="core.security.decode_access_token",
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
-    #response_model="schemas.UserRead",
+    response_model=None,
     response_list=True,
 )
 async def gets(
@@ -41,7 +41,7 @@ async def gets(
     authentication_token_decoder="core.security.decode_access_token",
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
-    #response_model="schemas.UserRead",
+    response_model=None,
     response_list=False,
 )
 async def get(
@@ -63,7 +63,7 @@ async def get(
     service_header_generator="core.security.generate_request_header",
 )
 async def create(
-    user: UserCreate,
+    user: GroupCreate,
     request: Request,
     response: Response,
     token=Depends(deps.get_token),
@@ -85,7 +85,7 @@ async def create(
 )
 async def update(
     id: int,
-    user: UserUpdate,
+    user: GroupUpdate,
     request: Request,
     response: Response,
     token=Depends(deps.get_token),

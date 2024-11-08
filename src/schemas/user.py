@@ -1,13 +1,19 @@
 from datetime import datetime
 from typing import Annotated, Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-from .group import RelateGroupUserSchema
 
 
 class LoginForm(BaseModel):
-    email: EmailStr
-    password: str
+    email: Annotated[EmailStr, Field(examples=["user.userson@example.com"])]
+    password: Annotated[
+        str,
+        Field(
+            pattern=r"^.{8,}|[0-9]+|[A-Z]+|[a-z]+|[^a-zA-Z0-9]+$",
+            examples=["Str1ngst!"],
+        ),
+    ]
+
 
 
 class LoginResponse(BaseModel):
@@ -16,44 +22,42 @@ class LoginResponse(BaseModel):
     token_type: str
 
 
-# Shared properties
-class UserBase(BaseModel):
-    email: Annotated[EmailStr, Field(examples=["info@zkit.com"])]
-    is_active: Optional[bool] = True
-    is_superuser: Optional[bool] = False
-    full_name: Annotated[
-        str | None,
-        Field(min_length=3, max_length=50, examples=["Full name"], default=None),
-    ]
-    user_group_id: Annotated[int, Field(examples=[1])]
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-
-
-class UserInDB(UserBase):
+class UserRead(BaseModel):
     id: int
-    group: RelateGroupUserSchema
+    name: str
+    username: str
+    email: EmailStr
+    group_id: int
+    group_name: str
 
 
-class CreateUserSchema(UserBase):
+class UserBase(BaseModel):
+    name: Annotated[str, Field(min_length=2, max_length=30, examples=["User Userson"])]
+    username: Annotated[
+        str,
+        Field(
+            min_length=2, max_length=20, pattern=r"^[a-z0-9]+$", examples=["userson"]
+        ),
+    ]
+    email: Annotated[EmailStr, Field(examples=["user.userson@example.com"])]
+
+
+class UserCreate(UserBase):
+    model_config = ConfigDict(extra="forbid")
+
     password: Annotated[
         str,
         Field(
             pattern=r"^.{8,}|[0-9]+|[A-Z]+|[a-z]+|[^a-zA-Z0-9]+$",
-            examples=["Pa$$w0rd"],
+            examples=["Str1ngst!"],
         ),
     ]
 
+class UserUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
-class UpdateUserSchema(BaseModel):
-    is_active: Optional[bool] = True
-    is_superuser: Optional[bool] = False
-    full_name: Annotated[
+    name: Annotated[
         str | None,
-        Field(min_length=3, max_length=50, examples=["Full name"], default=None),
+        Field(min_length=2, max_length=30, examples=["User Userberg"], default=None),
     ]
-    user_group_id: Annotated[int, Field(examples=[1])]
 
-
-class UserResponse(UserInDB):
-    pass

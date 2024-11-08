@@ -56,7 +56,8 @@ xwIDAQAB
 
 def encode_access_token(payload: Dict, expire_minute: int = 10):
     expire = datetime.now() + timedelta(minutes=expire_minute)
-    to_encode = {"payload": payload, "exp": expire}
+    print(payload.get("data"))
+    to_encode = {"payload": payload.get("data"), "exp": expire}
 
     encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
 
@@ -92,13 +93,11 @@ def decode_access_token(authorization: Union[str, None] = None):
 
 
 def generate_request_header(token_payload):
-    # id = get_nested_dic(token_payload.get("payload"), ["id"])
     return {"request-init-data": urlencode(token_payload.get("payload"))}
 
 
 def is_admin_user(token_payload):
-    scope = get_nested_dic(token_payload.get("payload"), ["group", "name"])
-
+    scope = token_payload.get("payload")["group_name"]
     return scope == "Supper Admin"
 
 
