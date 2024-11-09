@@ -6,13 +6,7 @@ from config import settings
 from apis.v1.api import api_router
 from core.setup import create_application
 
-"""
-app = FastAPI(
-    title=settings.APP_NAME,
-    openapi_url=f"{settings.APP_API_PREFIX}/openapi.json"
-)
-"""
-
+# Init application
 app = create_application(router=api_router, settings=settings)
 
 
@@ -36,7 +30,3 @@ def root() -> Any:
     }
 
     return result
-
-
-#app.include_router(api_router, prefix=settings.APP_API_PREFIX)
-

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Request, Response, status
 from config import settings
 from core.route import route
 from apis.v1 import deps
-from schemas.group import GroupCreate, GroupUpdate
+from schemas.user_service.group import GroupCreate, GroupUpdate
 
 
 router = APIRouter()
@@ -25,10 +25,14 @@ router = APIRouter()
     response_list=True,
 )
 async def gets(
-    request: Request, response: Response, token=Depends(deps.get_token),
-    page: int = 1, items_per_page: int = 100
+    request: Request,
+    response: Response,
+    token=Depends(deps.get_token),
+    page: int = 1,
+    items_per_page: int = 100,
 ) -> Any:
     pass
+
 
 @route(
     request_method=router.get,

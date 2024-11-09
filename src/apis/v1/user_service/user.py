@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Request, Response, status
 from config import settings
 from core.route import route
 from apis.v1 import deps
-from schemas.user import UserCreate, UserUpdate
+from schemas.user_service.user import UserCreate, UserUpdate
 
 
 router = APIRouter()
@@ -21,16 +21,18 @@ router = APIRouter()
     authentication_token_decoder="core.security.decode_access_token",
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
-    #response_model="schemas.UserRead",
+    # response_model="schemas.UserRead",
     response_list=True,
 )
 async def gets(
     request: Request,
     response: Response,
     token=Depends(deps.get_token),
-    page: int = 1, items_per_page: int = 100
+    page: int = 1,
+    items_per_page: int = 100,
 ) -> Any:
     pass
+
 
 @route(
     request_method=router.get,
@@ -43,7 +45,7 @@ async def gets(
     authentication_token_decoder="core.security.decode_access_token",
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
-    #response_model="schemas.UserRead",
+    # response_model="schemas.UserRead",
     response_list=False,
 )
 async def get(

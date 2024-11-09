@@ -6,10 +6,20 @@ from arq import create_pool
 from arq.connections import RedisSettings
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 import fastapi
+from fastapi.openapi.utils import get_openapi
 
 from core.helpers import rate_limit
-from config import EnviromentOption, settings, AppSetting, CryptSetting, RedisRateLimiterSetting, ServiceSetting
+
+from config import (
+    EnviromentOption,
+    settings,
+    AppSetting,
+    CryptSetting,
+    RedisRateLimiterSetting,
+    ServiceSetting,
+)
 from apis.v1 import deps
+
 
 # Rate limit
 async def create_redis_rate_limit_pool() -> None:
@@ -22,15 +32,10 @@ async def close_redis_rate_limit_pool() -> None:
 
 
 def lifespan_factory(
-    settings: (
-        AppSetting
-        | CryptSetting
-        | RedisRateLimiterSetting
-        | ServiceSetting
-    )
+    settings: AppSetting | CryptSetting | RedisRateLimiterSetting | ServiceSetting,
 ) -> Callable[[FastAPI], _AsyncGeneratorContextManager[Any]]:
     @asynccontextmanager
-    async def lifespan(app: FastAPI)-> AsyncGenerator: # type: ignore
+    async def lifespan(app: FastAPI) -> AsyncGenerator:  # type: ignore
         if isinstance(settings, RedisRateLimiterSetting):
             await create_redis_rate_limit_pool()
 
@@ -38,21 +43,20 @@ def lifespan_factory(
 
     return lifespan
 
+
 # Create Application
 def create_application(
     router: APIRouter,
-    settings: (
-        AppSetting
-        | CryptSetting
-        | RedisRateLimiterSetting
-        | ServiceSetting
-    ),
+    settings: AppSetting | CryptSetting | RedisRateLimiterSetting | ServiceSetting,
     **kwargs: Any
 ) -> FastAPI:
     if isinstance(settings, AppSetting):
         to_update = {
             "title": settings.APP_NAME,
             "description": "Description",
+            "docs_url": None,
+            "redoc_url": None,
+            "openapi_url": None,
         }
 
         kwargs.update(to_update)
@@ -63,16 +67,31 @@ def create_application(
     if isinstance(settings, AppSetting):
         application.include_router(router, prefix=settings.APP_API_PREFIX)
 
-
     if isinstance(settings, AppSetting):
-        docs_router = APIRouter()
+        if settings.APP_ENV != EnviromentOption.PRODUCTION.value:
+            docs_router = APIRouter()
 
-        if settings.APP_ENV != EnviromentOption.DEVELOPMENT:
-            docs_router = APIRouter(dependencies=[Depends(deps.get_token)])
+            if settings.APP_ENV != EnviromentOption.DEVELOPMENT.value:
+                docs_router = APIRouter(dependencies=[Depends(deps.get_token)])
 
-        @docs_router.get("/docs", include_in_schema=False)
+            @docs_router.get("/docs", include_in_schema=False)
             async def get_swagger_documentation() -> fastapi.responses.HTMLResponse:
                 return get_swagger_ui_html(openapi_url="/openapi.json", title="docs")
 
-    return application
+            @docs_router.get("/redoc", include_in_schema=False)
+            async def get_redoc_documentation() -> fastapi.responses.HTMLResponse:
+                return get_redoc_html(openapi_url="/openapi.json", title="docs")
 
+            @docs_router.get("/openapi.json", include_in_schema=False)
+            async def openapi() -> dict[str, Any]:
+                out: dict = get_openapi(
+                    title=application.title,
+                    version=application.version,
+                    routes=application.routes,
+                )
+
+                return out
+
+            application.include_router(docs_router)
+
+    return application
