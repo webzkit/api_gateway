@@ -2,7 +2,7 @@ from typing import Annotated
 from core.route import route
 from fastapi import APIRouter, Body, status, Request, Response
 from config import settings
-from schemas import LoginForm
+from schemas.user_service.user import LoginForm
 
 
 router = APIRouter()
@@ -16,7 +16,7 @@ router = APIRouter()
     service_url=settings.USER_SERVICE_URL,
     authentication_required=False,
     post_processing_func="core.post_processing.access_token_generate_handler",
-    response_model="schemas.LoginResponse",
+    response_model="schemas.user_service.user.LoginResponse",
 )
 async def login(
     login_form: Annotated[LoginForm, Body()], request: Request, response: Response

@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 
-from .endpoints import authenticate
-from .endpoints import user, group
+from .user_service import authenticate, user, group
 
 
 api_router = APIRouter()
