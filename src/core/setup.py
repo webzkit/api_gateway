@@ -72,7 +72,7 @@ def create_application(
             docs_router = APIRouter()
 
             if settings.APP_ENV != EnviromentOption.DEVELOPMENT.value:
-                docs_router = APIRouter(dependencies=[Depends(deps.get_token)])
+                docs_router = APIRouter(dependencies=[Depends(deps.is_supper_admin)])
 
             @docs_router.get("/docs", include_in_schema=False)
             async def get_swagger_documentation() -> fastapi.responses.HTMLResponse:

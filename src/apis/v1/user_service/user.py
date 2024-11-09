@@ -1,9 +1,8 @@
 from typing import Any
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Request, Response, status
 
 from config import settings
 from core.route import route
-from apis.v1 import deps
 from schemas.user_service.user import UserCreate, UserUpdate
 
 
@@ -27,7 +26,6 @@ router = APIRouter()
 async def gets(
     request: Request,
     response: Response,
-    token=Depends(deps.get_token),
     page: int = 1,
     items_per_page: int = 100,
 ) -> Any:
@@ -48,9 +46,7 @@ async def gets(
     # response_model="schemas.UserRead",
     response_list=False,
 )
-async def get(
-    id: int, request: Request, response: Response, token=Depends(deps.get_token)
-) -> Any:
+async def get(id: int, request: Request, response: Response) -> Any:
     pass
 
 
@@ -66,12 +62,7 @@ async def get(
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
 )
-async def create(
-    user: UserCreate,
-    request: Request,
-    response: Response,
-    token=Depends(deps.get_token),
-) -> Any:
+async def create(user: UserCreate, request: Request, response: Response) -> Any:
     pass
 
 
@@ -88,11 +79,7 @@ async def create(
     service_header_generator="core.security.generate_request_header",
 )
 async def update(
-    id: int,
-    user: UserUpdate,
-    request: Request,
-    response: Response,
-    token=Depends(deps.get_token),
+    id: int, user: UserUpdate, request: Request, response: Response
 ) -> Any:
     pass
 
@@ -109,10 +96,5 @@ async def update(
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
 )
-async def delete(
-    id: int,
-    request: Request,
-    response: Response,
-    token=Depends(deps.get_token),
-) -> Any:
+async def delete(id: int, request: Request, response: Response) -> Any:
     pass
