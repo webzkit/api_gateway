@@ -17,3 +17,8 @@ class ServiceHttpException(Exception):
 
         def __str__(self):
             return f"{self.message} (Error Code: {self.error_code})"
+
+
+class RateLimitException(Exception):
+    # TODO
+    pass

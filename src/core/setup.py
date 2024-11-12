@@ -35,11 +35,14 @@ def lifespan_factory(
     settings: AppSetting | CryptSetting | RedisRateLimiterSetting | ServiceSetting,
 ) -> Callable[[FastAPI], _AsyncGeneratorContextManager[Any]]:
     @asynccontextmanager
-    async def lifespan(app: FastAPI) -> AsyncGenerator:  # type: ignore
+    async def lifespan(app: FastAPI) -> AsyncGenerator:
         if isinstance(settings, RedisRateLimiterSetting):
             await create_redis_rate_limit_pool()
 
         yield
+
+        if isinstance(settings, RedisRateLimiterSetting):
+            await close_redis_rate_limit_pool()
 
     return lifespan
 
@@ -65,7 +68,11 @@ def create_application(
     application = FastAPI(lifespan=lifespan, **kwargs)
 
     if isinstance(settings, AppSetting):
-        application.include_router(router, prefix=settings.APP_API_PREFIX)
+        application.include_router(
+            router,
+            prefix=settings.APP_API_PREFIX,
+            dependencies=[Depends(deps.is_supper_admin)],
+        )
 
     if isinstance(settings, AppSetting):
         if settings.APP_ENV != EnviromentOption.PRODUCTION.value:

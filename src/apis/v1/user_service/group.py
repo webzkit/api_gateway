@@ -1,9 +1,10 @@
 from typing import Any
-from fastapi import APIRouter, Request, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 
 from config import settings
 from core.route import route
 from schemas.user_service.group import GroupCreate, GroupUpdate
+from apis.v1.deps import rate_limiter
 
 
 router = APIRouter()
@@ -28,6 +29,7 @@ async def gets(
     response: Response,
     page: int = 1,
     items_per_page: int = 100,
+    rate_limit=Depends(rate_limiter),
 ) -> Any:
     pass
 

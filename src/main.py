@@ -25,7 +25,7 @@ if settings.BACKEND_CORS_ORIGINS:
 
 
 @app.get("/")
-async def root(for_test=Depends(deps.is_supper_admin)) -> Any:
+async def root() -> Any:
     result: Dict[Any, Any] = {
         "message": f"Your {settings.APP_NAME} endpoint is working"
     }
