@@ -3,17 +3,15 @@ from typing import Annotated, Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
-
 class LoginForm(BaseModel):
-    email: Annotated[EmailStr, Field(examples=["user.userson@example.com"])]
+    email: Annotated[EmailStr, Field(examples=["info@zkit.com"])]
     password: Annotated[
         str,
         Field(
             pattern=r"^.{8,}|[0-9]+|[A-Z]+|[a-z]+|[^a-zA-Z0-9]+$",
-            examples=["Str1ngst!"],
+            examples=["123456"],
         ),
     ]
-
 
 
 class LoginResponse(BaseModel):

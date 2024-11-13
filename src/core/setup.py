@@ -2,8 +2,6 @@ from typing import Any, AsyncGenerator, Callable
 from fastapi import APIRouter, Depends, FastAPI
 from contextlib import _AsyncGeneratorContextManager, asynccontextmanager
 from redis import asyncio as redis
-from arq import create_pool
-from arq.connections import RedisSettings
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 import fastapi
 from fastapi.openapi.utils import get_openapi
@@ -35,14 +33,19 @@ def lifespan_factory(
     settings: AppSetting | CryptSetting | RedisRateLimiterSetting | ServiceSetting,
 ) -> Callable[[FastAPI], _AsyncGeneratorContextManager[Any]]:
     @asynccontextmanager
-    async def lifespan(app: FastAPI) -> AsyncGenerator:  # type: ignore
+    async def lifespan(app: FastAPI) -> AsyncGenerator:
         if isinstance(settings, RedisRateLimiterSetting):
             await create_redis_rate_limit_pool()
 
         yield
 
+        if isinstance(settings, RedisRateLimiterSetting):
+            await close_redis_rate_limit_pool()
+
     return lifespan
 
+async def override_dependency(q: str | None = None):
+    return {"q": q, "skip": 5, "limit": 10}
 
 # Create Application
 def create_application(
@@ -65,7 +68,11 @@ def create_application(
     application = FastAPI(lifespan=lifespan, **kwargs)
 
     if isinstance(settings, AppSetting):
-        application.include_router(router, prefix=settings.APP_API_PREFIX)
+        application.include_router(
+            router,
+            prefix=settings.APP_API_PREFIX,
+        )
+
 
     if isinstance(settings, AppSetting):
         if settings.APP_ENV != EnviromentOption.PRODUCTION.value:

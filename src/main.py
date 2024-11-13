@@ -1,11 +1,12 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends
 from starlette.middleware.cors import CORSMiddleware
 from typing import Any, Dict
 
 from config import settings
 from apis.v1.api import api_router
 from core.setup import create_application
-from apis.v1 import deps
+from apis.v1.deps import rate_limiter
+
 
 # Init application
 app = create_application(router=api_router, settings=settings)
@@ -24,8 +25,8 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 
-@app.get("/")
-async def root(for_test=Depends(deps.is_supper_admin)) -> Any:
+@app.get("/", dependencies=[Depends(rate_limiter)])
+async def root() -> Any:
     result: Dict[Any, Any] = {
         "message": f"Your {settings.APP_NAME} endpoint is working"
     }
