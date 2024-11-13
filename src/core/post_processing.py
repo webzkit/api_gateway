@@ -12,3 +12,8 @@ def access_token_generate_handler(data: Dict) -> Any:
         "refresh_token": refresh_token,
         "token_type": "bearer",
     }
+
+
+def revoke_token(data: Dict)-> Any:
+    print(data)
+    return {"detail": "Logged out successfully"}

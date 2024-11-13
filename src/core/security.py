@@ -4,7 +4,6 @@ import jwt
 from urllib.parse import urlencode
 from passlib.context import CryptContext
 from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
-from core.helpers.utils import get_nested_dic
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

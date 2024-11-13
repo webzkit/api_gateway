@@ -6,7 +6,7 @@ from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 import fastapi
 from fastapi.openapi.utils import get_openapi
 
-from core.helpers import rate_limit
+from core.helpers import rate_limit, cache
 
 from config import (
     EnviromentOption,
@@ -15,8 +15,17 @@ from config import (
     CryptSetting,
     RedisRateLimiterSetting,
     ServiceSetting,
+    RedisCacheSetting
 )
 from apis.v1 import deps
+
+# Cache
+async def create_redis_cache_pool() -> None:
+    cache.pool = redis.ConnectionPool.from_url(settings.REDIS_CACHE_URL)
+    cache.client = redis.Redis.from_pool(cache.pool)  # pyright: ignore
+
+async def close_redis_cache_pool() -> None:
+    await cache.client.aclose()  # type: ignore
 
 
 # Rate limit
@@ -37,10 +46,15 @@ def lifespan_factory(
         if isinstance(settings, RedisRateLimiterSetting):
             await create_redis_rate_limit_pool()
 
+        if isinstance(settings, RedisCacheSetting):
+            await create_redis_cache_pool()
         yield
 
         if isinstance(settings, RedisRateLimiterSetting):
             await close_redis_rate_limit_pool()
+
+        if isinstance(settings, RedisCacheSetting):
+            await close_redis_cache_pool()
 
     return lifespan
 
@@ -50,7 +64,12 @@ async def override_dependency(q: str | None = None):
 # Create Application
 def create_application(
     router: APIRouter,
-    settings: AppSetting | CryptSetting | RedisRateLimiterSetting | ServiceSetting,
+    settings:
+        AppSetting
+        | CryptSetting
+        | RedisRateLimiterSetting
+        | RedisCacheSetting
+        | ServiceSetting,
     **kwargs: Any
 ) -> FastAPI:
     if isinstance(settings, AppSetting):
