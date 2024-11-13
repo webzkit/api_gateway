@@ -40,5 +40,3 @@ class RateLimitException(CustomException):
         super().__init__(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=detail
         )  # pragma: no cover
-
-

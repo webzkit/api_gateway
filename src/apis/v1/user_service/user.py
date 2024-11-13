@@ -29,7 +29,7 @@ async def gets(
     response: Response,
     page: int = 1,
     items_per_page: int = 100,
-    rate_limit=Depends(rate_limiter)
+    rate_limit=Depends(rate_limiter),
 ) -> Any:
     pass
 
@@ -48,7 +48,9 @@ async def gets(
     # response_model="schemas.UserRead",
     response_list=False,
 )
-async def get(id: int, request: Request, response: Response, rate_limit=Depends(rate_limiter)) -> Any:
+async def get(
+    id: int, request: Request, response: Response, rate_limit=Depends(rate_limiter)
+) -> Any:
     pass
 
 

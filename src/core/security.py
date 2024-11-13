@@ -54,10 +54,8 @@ xwIDAQAB
 
 
 def encode_access_token(payload: Dict, expire_minute: int = 10):
-    expire = datetime.now() + timedelta(minutes=expire_minute)
-    print(payload.get("data"))
+    expire = datetime.now().replace(tzinfo=None) + timedelta(minutes=expire_minute)
     to_encode = {"payload": payload.get("data"), "exp": expire}
-
     encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt

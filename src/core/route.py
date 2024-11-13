@@ -24,7 +24,7 @@ def route(
     post_processing_func: Optional[str] = None,
     authentication_token_decoder: str = "core.security.decode_access_token",
     service_authorization_checker: str = "core.security.is_admin_user",
-    service_header_generator: str = "auth.generate_request_header",
+    service_header_generator: str = "core.security.generate_request_header",
     response_model: Optional[str] = None,
     response_list: bool = False,
 ):
@@ -100,7 +100,7 @@ def route(
                     method=method,
                     data=payload,
                     headers=service_headers,  # type: ignore
-                    params=request_param
+                    params=request_param,
                 )
             except aiohttp.ClientConnectorError:
                 raise HTTPException(
