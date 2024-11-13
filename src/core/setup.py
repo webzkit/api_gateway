@@ -2,8 +2,6 @@ from typing import Any, AsyncGenerator, Callable
 from fastapi import APIRouter, Depends, FastAPI
 from contextlib import _AsyncGeneratorContextManager, asynccontextmanager
 from redis import asyncio as redis
-from arq import create_pool
-from arq.connections import RedisSettings
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 import fastapi
 from fastapi.openapi.utils import get_openapi
@@ -46,6 +44,8 @@ def lifespan_factory(
 
     return lifespan
 
+async def override_dependency(q: str | None = None):
+    return {"q": q, "skip": 5, "limit": 10}
 
 # Create Application
 def create_application(
@@ -71,8 +71,8 @@ def create_application(
         application.include_router(
             router,
             prefix=settings.APP_API_PREFIX,
-            dependencies=[Depends(deps.is_supper_admin)],
         )
+
 
     if isinstance(settings, AppSetting):
         if settings.APP_ENV != EnviromentOption.PRODUCTION.value:

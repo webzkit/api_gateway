@@ -48,7 +48,7 @@ async def gets(
     response_model=None,
     response_list=False,
 )
-async def get(id: int, request: Request, response: Response) -> Any:
+async def get(id: int, request: Request, response: Response, rate_limit=Depends(rate_limiter)) -> Any:
     pass
 
 

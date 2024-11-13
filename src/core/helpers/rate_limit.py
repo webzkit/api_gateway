@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import Union
 from redis.asyncio import ConnectionPool, Redis
 
 from core.logger import logging
@@ -11,7 +12,7 @@ client: Redis | None = None
 
 
 async def is_rate_limited(
-    user_id: int | str, path: str, limit: int, period: int
+    user_id:Union[int, str] , path: str, limit: int, period: int
 ) -> bool:
     if client is None:
         logger.error("Redis client is not initialized.")
