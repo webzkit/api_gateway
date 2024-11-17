@@ -5,7 +5,6 @@ from typing import Any, Dict
 from config import settings
 from apis.v1.api import api_router
 from core.setup import create_application
-from apis.v1.deps import rate_limiter
 
 
 # Init application
@@ -25,7 +24,7 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 
-@app.get("/", dependencies=[Depends(rate_limiter)])
+@app.get("/")
 async def root() -> Any:
     result: Dict[Any, Any] = {
         "message": f"Your {settings.APP_NAME} endpoint is working"

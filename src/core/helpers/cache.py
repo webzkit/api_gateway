@@ -12,7 +12,7 @@ from redis.asyncio import ConnectionPool, Redis
 from ..exception.cache_exception import (
     CacheIdentificationInferenceError,
     InvalidRequestError,
-    MissingClientError
+    MissingClientError,
 )
 
 pool: ConnectionPool | None = None

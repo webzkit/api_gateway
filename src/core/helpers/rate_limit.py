@@ -12,13 +12,13 @@ client: Redis | None = None
 
 
 async def is_rate_limited(
-    user_id:Union[int, str] , path: str, limit: int, period: int
+    user_id: Union[int, str], path: str, limit: int, period: int
 ) -> bool:
     if client is None:
         logger.error("Redis client is not initialized.")
         raise Exception("Redis client is not initialized.")
 
-    current_timestamp = int(datetime.now(UTC).timestamp())
+    current_timestamp = int(datetime.now().timestamp())
     window_start = current_timestamp - (current_timestamp % period)
 
     sanitized_path = sanitize_path(path)

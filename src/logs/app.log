@@ -1,0 +1,70 @@
+2024-11-16 00:59:19,015 - core.helpers.backlist_token - ERROR - Redis client is not initialized.
+2024-11-17 10:58:22,088 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 11:00:15,871 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 11:02:41,444 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 11:03:10,543 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 12:05:16,992 - core.helpers.whitelist_token - ERROR - Error stored whitelist token for user 1 on: asyncio.run() cannot be called from a running event loop
+Traceback (most recent call last):
+  File "/zkit/core/helpers/whitelist_token.py", line 28, in create_token
+    asyncio.run(cacheClient.set(key, "1"))
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 186, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+2024-11-17 12:05:24,417 - core.helpers.whitelist_token - ERROR - Error stored whitelist token for user 1 on: asyncio.run() cannot be called from a running event loop
+Traceback (most recent call last):
+  File "/zkit/core/helpers/whitelist_token.py", line 28, in create_token
+    asyncio.run(cacheClient.set(key, "1"))
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 186, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+2024-11-17 12:22:51,429 - core.helpers.whitelist_token - ERROR - Error stored whitelist token for user 1 on: the JSON object must be str, bytes or bytearray, not coroutine
+Traceback (most recent call last):
+  File "/zkit/core/helpers/whitelist_token.py", line 29, in create_token
+    print(json.loads(cache_data))
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/json/__init__.py", line 339, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not coroutine
+2024-11-17 12:22:58,204 - core.helpers.whitelist_token - ERROR - Error stored whitelist token for user 1 on: the JSON object must be str, bytes or bytearray, not coroutine
+Traceback (most recent call last):
+  File "/zkit/core/helpers/whitelist_token.py", line 29, in create_token
+    print(json.loads(cache_data))
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/json/__init__.py", line 339, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not coroutine
+2024-11-17 12:22:58,331 - core.helpers.whitelist_token - ERROR - Error stored whitelist token for user 1 on: the JSON object must be str, bytes or bytearray, not coroutine
+Traceback (most recent call last):
+  File "/zkit/core/helpers/whitelist_token.py", line 29, in create_token
+    print(json.loads(cache_data))
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/json/__init__.py", line 339, in loads
+    raise TypeError(f'the JSON object must be str, bytes or bytearray, '
+TypeError: the JSON object must be str, bytes or bytearray, not coroutine
+2024-11-17 12:23:50,448 - core.helpers.whitelist_token - ERROR - Error stored whitelist token for user 1 on: 'coroutine' object has no attribute '__dict__'
+Traceback (most recent call last):
+  File "/zkit/core/helpers/whitelist_token.py", line 29, in create_token
+    print(cache_data.__dict__)
+          ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'coroutine' object has no attribute '__dict__'
+2024-11-17 12:24:35,409 - core.helpers.whitelist_token - ERROR - Error stored whitelist token for user 1 on: 'coroutine' object has no attribute 'decode'
+Traceback (most recent call last):
+  File "/zkit/core/helpers/whitelist_token.py", line 29, in create_token
+    print(cache_data.decode())
+          ^^^^^^^^^^^^^^^^^
+AttributeError: 'coroutine' object has no attribute 'decode'
+2024-11-17 12:57:25,038 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 12:57:32,602 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 12:57:34,931 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 12:58:02,734 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 12:58:06,010 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 12:58:40,867 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:00:05,768 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:02:15,037 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:02:16,143 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:02:19,512 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:02:20,493 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:02:21,364 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:02:22,177 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:02:23,302 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
+2024-11-17 13:02:23,966 - core.helpers.whitelist_token - ERROR - Redis client is not initialized.
