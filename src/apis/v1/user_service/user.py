@@ -1,5 +1,5 @@
 from typing import Any
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Request, Response, status
 
 from config import settings
 from core.route import route

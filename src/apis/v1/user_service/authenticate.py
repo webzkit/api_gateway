@@ -2,7 +2,7 @@ from typing import Annotated, Any
 
 from fastapi.responses import JSONResponse
 from core.route import route
-from fastapi import APIRouter, Body, Depends, HTTPException, status, Request, Response
+from fastapi import APIRouter, Body, HTTPException, status, Request, Response
 from config import settings
 from schemas.user_service.user import LoginForm
 from apis.v1.deps import is_supper_admin
@@ -70,18 +70,14 @@ async def logout(request: Request, response: Response) -> Any:
 
     try:
         payload = await decode_access_token(token)
-        username = payload['payload']['username']
+        username = payload["payload"]["username"]
 
         cache_key = f"whitelist_token:{username}:{str(token).replace('Bearer ', '')}"
         await revoke_whitelist_token(cache_key)
-        response = JSONResponse(
-            content={
-                "detail": "Logged out successfully"
-            }
-        )
+        response = JSONResponse(content={"detail": "Logged out successfully"})
 
         return response
-    except (AuthTokenMissing, AuthTokenMissing, AuthTokenCorrupted)as e:
+    except (AuthTokenMissing, AuthTokenMissing, AuthTokenCorrupted) as e:
         exc = str(e)
     except Exception as e:
         exc = str(e)
@@ -92,4 +88,3 @@ async def logout(request: Request, response: Response) -> Any:
                 detail=exc,
                 headers={"WWW-Authenticate": "Bearer"},
             )
-

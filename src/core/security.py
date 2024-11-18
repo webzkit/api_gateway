@@ -81,7 +81,7 @@ async def decode_access_token(authorization: Union[str, None] = None):
     try:
         payload = jwt.decode(token, PUBLIC_KEY, algorithms=[ALGORITHM])
 
-        username = payload['payload']["username"]
+        username = payload["payload"]["username"]
         cache_key = f"whitelist_token:{username}:{token}"
         if not await verify_token(cache_key):
             raise AuthTokenExpired("Auth token is expired")
