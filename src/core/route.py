@@ -3,6 +3,8 @@ import functools
 from typing import List, Optional
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
+
+from core.post_processing import access_token_generate_handler
 from .exceptions import (
     AuthTokenMissing,
     AuthTokenExpired,
@@ -52,7 +54,7 @@ def route(
                 exc = None
 
                 try:
-                    token_payload = token_decoder(authorization)
+                    token_payload = await token_decoder(authorization) # type: ignore
                 except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted) as e:
                     exc = str(e)
                 except Exception as e:
@@ -125,7 +127,7 @@ def route(
 
             if all([status_code_from_service == status_code, post_processing_func]):
                 post_processing_f = import_function(post_processing_func)
-                resp_data = post_processing_f(resp_data)
+                resp_data = await post_processing_f(resp_data) # type: ignore
 
             return resp_data
 

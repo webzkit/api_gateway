@@ -1,12 +1,16 @@
 from typing import Annotated, Any
+
+from fastapi.responses import JSONResponse
 from core.route import route
-from fastapi import APIRouter, Body, Depends, status, Request, Response
+from fastapi import APIRouter, Body, Depends, HTTPException, status, Request, Response
 from config import settings
 from schemas.user_service.user import LoginForm
 from apis.v1.deps import is_supper_admin
 from core.security import decode_access_token
 from core.exception.http_exception import UnauthorizedException
 from core.security import encode_access_token
+from core.exceptions import AuthTokenCorrupted, AuthTokenMissing
+from core.helpers.cache import revoke_whitelist_token
 
 
 router = APIRouter()
@@ -32,7 +36,7 @@ async def login(
 async def refresh(request: Request, response: Response) -> Any:
     refresh_token = request.cookies.get("refresh_token")
     try:
-        user = decode_access_token(refresh_token)
+        user = await decode_access_token(refresh_token)
         payload = {"data": user.get("payload")}
         access_token = encode_access_token(
             payload, settings.ACCESS_TOKEN_EXPIRE_MINUTES
@@ -59,16 +63,33 @@ async def refresh(request: Request, response: Response) -> Any:
         raise UnauthorizedException(str(e))
 
 
-@route(
-    request_method=router.post,
-    path="/logout",
-    status_code=status.HTTP_200_OK,
-    payload_key=None,
-    service_url=settings.USER_SERVICE_URL,
-    authentication_required=True,
-    post_processing_func="core.post_processing.revoke_token",
-    authentication_token_decoder="core.security.decode_access_token",
-    service_header_generator="core.security.generate_request_header",
-)
-async def logout(request: Request, response: Response, token=Depends(is_supper_admin)):
-    pass
+@router.post("/logout", status_code=status.HTTP_200_OK)
+async def logout(request: Request, response: Response) -> Any:
+    token = request.headers.get("authorization")
+    exc = None
+
+    try:
+        payload = await decode_access_token(token)
+        username = payload['payload']['username']
+
+        cache_key = f"whitelist_token:{username}:{str(token).replace('Bearer ', '')}"
+        await revoke_whitelist_token(cache_key)
+        response = JSONResponse(
+            content={
+                "detail": "Logged out successfully"
+            }
+        )
+
+        return response
+    except (AuthTokenMissing, AuthTokenMissing, AuthTokenCorrupted)as e:
+        exc = str(e)
+    except Exception as e:
+        exc = str(e)
+    finally:
+        if exc:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=exc,
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+

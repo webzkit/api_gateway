@@ -1,3 +1,4 @@
+import asyncio
 import functools
 import json
 import re
@@ -147,3 +148,51 @@ def cache(
         return inner
 
     return wrapper
+
+
+def create_whitelist_token(key_prefix: str, expiration: int = 3600)-> Callable:
+    def wrap(func:Callable) -> Callable:
+        @functools.wraps(func)
+        async def inner(*args) -> Any:
+            result = await func(*args)
+            result_json = jsonable_encoder(result)
+            body =  result_json.get("body")
+
+            data = jsonable_encoder(args)[0]
+            username = data['data']['username']
+
+            access_token = json.loads(body).get("access_token")
+            cache_key = f"{key_prefix}:{username}:{access_token}"
+
+
+            if client is None:
+                raise MissingClientError
+
+            await client.set(cache_key, body)
+            await client.expire(cache_key, expiration)
+
+            return result
+        return inner
+    return wrap
+
+
+async def revoke_whitelist_token(cache_key: str)-> None:
+    if client is None:
+        raise MissingClientError
+
+    cached_data = await client.get(cache_key)
+    if cached_data:
+        await client.delete(cache_key)
+
+
+async def has_whitelist_token(cache_key: str)-> bool:
+    if client is None:
+        raise MissingClientError
+
+    cache_data = await client.get(cache_key)
+    print(cache_data)
+    if not cache_data:
+        return False
+
+    return True
+

@@ -29,7 +29,7 @@ async def rate_limiter(
     user: Annotated[dict, Depends(get_option_user)]
 ) -> None:
     if isinstance(settings, AppSetting):
-        if settings.APP_ENV == EnviromentOption.PRODUCTION.value:
+        if settings.APP_ENV != EnviromentOption.PRODUCTION.value:
             path = sanitize_path(request.url.path)
             limit, period = DEFAULT_LIMIT, DEFAULT_PERIOD
             user_id = request.client.host # pyright: ignore

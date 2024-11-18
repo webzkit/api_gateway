@@ -18,8 +18,12 @@ from config import (
     RedisCacheSetting
 )
 from apis.v1 import deps
+from apis.v1.deps import is_rate_limited
 
 # Cache
+#def create_redis_cache() ->:
+
+# Cache with pool
 async def create_redis_cache_pool() -> None:
     cache.pool = redis.ConnectionPool.from_url(settings.REDIS_CACHE_URL)
     cache.client = redis.Redis.from_pool(cache.pool)  # pyright: ignore
@@ -39,7 +43,7 @@ async def close_redis_rate_limit_pool() -> None:
 
 
 def lifespan_factory(
-    settings: AppSetting | CryptSetting | RedisRateLimiterSetting | ServiceSetting,
+    settings: AppSetting | CryptSetting| RedisCacheSetting | RedisRateLimiterSetting | ServiceSetting,
 ) -> Callable[[FastAPI], _AsyncGeneratorContextManager[Any]]:
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator:
@@ -91,6 +95,7 @@ def create_application(
             router,
             prefix=settings.APP_API_PREFIX,
         )
+
 
 
     if isinstance(settings, AppSetting):
