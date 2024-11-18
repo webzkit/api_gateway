@@ -3,6 +3,8 @@ import functools
 from typing import List, Optional
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
+
+from core.post_processing import access_token_generate_handler
 from .exceptions import (
     AuthTokenMissing,
     AuthTokenExpired,
@@ -24,7 +26,7 @@ def route(
     post_processing_func: Optional[str] = None,
     authentication_token_decoder: str = "core.security.decode_access_token",
     service_authorization_checker: str = "core.security.is_admin_user",
-    service_header_generator: str = "auth.generate_request_header",
+    service_header_generator: str = "core.security.generate_request_header",
     response_model: Optional[str] = None,
     response_list: bool = False,
 ):
@@ -52,7 +54,7 @@ def route(
                 exc = None
 
                 try:
-                    token_payload = token_decoder(authorization)
+                    token_payload = await token_decoder(authorization) # type: ignore
                 except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted) as e:
                     exc = str(e)
                 except Exception as e:
@@ -100,7 +102,7 @@ def route(
                     method=method,
                     data=payload,
                     headers=service_headers,  # type: ignore
-                    params=request_param
+                    params=request_param,
                 )
             except aiohttp.ClientConnectorError:
                 raise HTTPException(
@@ -125,7 +127,7 @@ def route(
 
             if all([status_code_from_service == status_code, post_processing_func]):
                 post_processing_f = import_function(post_processing_func)
-                resp_data = post_processing_f(resp_data)
+                resp_data = await post_processing_f(resp_data) # type: ignore
 
             return resp_data
 

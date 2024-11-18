@@ -4,7 +4,7 @@ import jwt
 from urllib.parse import urlencode
 from passlib.context import CryptContext
 from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
-from core.helpers.utils import get_nested_dic
+from core.helpers.cache import has_whitelist_token
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -55,10 +55,8 @@ xwIDAQAB
 
 
 def encode_access_token(payload: Dict, expire_minute: int = 10):
-    expire = datetime.now() + timedelta(minutes=expire_minute)
-    print(payload.get("data"))
+    expire = datetime.now().replace(tzinfo=None) + timedelta(minutes=expire_minute)
     to_encode = {"payload": payload.get("data"), "exp": expire}
-
     encoded_jwt = jwt.encode(to_encode, PRIVATE_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
@@ -75,13 +73,18 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def decode_access_token(authorization: Union[str, None] = None):
+async def decode_access_token(authorization: Union[str, None] = None):
     if not authorization:
         raise AuthTokenMissing("Auth token is missing in headers.")
 
     token = authorization.replace("Bearer ", "")
     try:
         payload = jwt.decode(token, PUBLIC_KEY, algorithms=[ALGORITHM])
+
+        username = payload["payload"]["username"]
+        cache_key = f"whitelist_token:{username}:{token}"
+        if not await verify_token(cache_key):
+            raise AuthTokenExpired("Auth token is expired")
 
         return payload
 
@@ -92,7 +95,11 @@ def decode_access_token(authorization: Union[str, None] = None):
         raise AuthTokenCorrupted("Auth token is corrupted.")
 
 
-def generate_request_header(token_payload):
+async def verify_token(cache_key: str) -> bool:
+    return await has_whitelist_token(cache_key)
+
+
+def gnerate_request_header(token_payload):
     return {"request-init-data": urlencode(token_payload.get("payload"))}
 
 

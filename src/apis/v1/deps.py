@@ -24,16 +24,17 @@ async def get_option_user(request: Request) -> Any:
         return None
     return {"id": 1}
 
+
 async def rate_limiter(
-    request: Request,
-    user: Annotated[dict, Depends(get_option_user)]
+    request: Request, user: Annotated[dict, Depends(get_option_user)]
 ) -> None:
     path = sanitize_path(request.url.path)
     limit, period = DEFAULT_LIMIT, DEFAULT_PERIOD
-    user_id = request.client.host # pyright: ignore
+    user_id = request.client.host  # pyright: ignore
 
+    # TODO make scope for supper user
     if user:
-        user_id = user['id']
+        user_id = user["id"]
 
     is_limited = await is_rate_limited(
         user_id=user_id, path=path, limit=limit, period=period

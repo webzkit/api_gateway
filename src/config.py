@@ -40,6 +40,12 @@ class CryptSetting(BaseSettings):
     TOKEN_VERIFY_EXPIRE: bool = False
 
 
+class RedisCacheSetting(BaseSettings):
+    REDIS_CACHE_HOST: str = getenv("REDIS_CACHE_HOST", "redis")
+    REDIS_CACHE_PORT: int = int(getenv("REDIS_CACHE_PORT", 6379))
+    REDIS_CACHE_URL: str = f"redis://{REDIS_CACHE_HOST}:{REDIS_CACHE_PORT}"
+
+
 class RedisRateLimiterSetting(BaseSettings):
     REDIS_RATE_LIMIT_HOST: str = getenv("REDIS_RATE_LIMIT_HOST", "redis")
     REDIS_RATE_LIMIT_PORT: int = int(getenv("REDIS_RATE_LIMIT_PORT", 6379))
@@ -47,7 +53,7 @@ class RedisRateLimiterSetting(BaseSettings):
         f"redis://{REDIS_RATE_LIMIT_HOST}:{REDIS_RATE_LIMIT_PORT}"
     )
 
-    REDIS_RATE_LIMIT_LIMIT: int = int(getenv("DEFAULT_RATE_LIMIT_LIMIT", 10))
+    REDIS_RATE_LIMIT_LIMIT: int = int(getenv("DEFAULT_RATE_LIMIT_LIMIT", 100))
     REDIS_RATE_LIMIT_PERIOD: int = int(getenv("DEFAULT_RATE_LIMIT_PERIOD", 3600))
 
 
@@ -60,6 +66,7 @@ class ServiceSetting(BaseSettings):
 class Settings(
     AppSetting,
     CryptSetting,
+    RedisCacheSetting,
     RedisRateLimiterSetting,
     ServiceSetting,
 ):

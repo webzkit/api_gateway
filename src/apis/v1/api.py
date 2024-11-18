@@ -15,13 +15,9 @@ api_router.include_router(
 # removed at prod
 if isinstance(settings, AppSetting):
     if settings.APP_ENV != EnviromentOption.PRODUCTION.value:
-        api_router.dependencies=[Depends(dependency=is_supper_admin)]
+        api_router.dependencies = [Depends(dependency=is_supper_admin)]
 
 
-api_router.include_router(
-    user.router, prefix="/users", tags=["User"]
-)
+api_router.include_router(user.router, prefix="/users", tags=["User"])
 
-api_router.include_router(
-    group.router, prefix="/groups", tags=["User Group"]
-)
+api_router.include_router(group.router, prefix="/groups", tags=["User Group"])
