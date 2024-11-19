@@ -14,7 +14,9 @@ DEFAULT_LIMIT = settings.REDIS_RATE_LIMIT_LIMIT
 DEFAULT_PERIOD = settings.REDIS_RATE_LIMIT_PERIOD
 
 
-def is_supper_admin(token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Any:
+def use_author_for_dev(
+    token: HTTPAuthorizationCredentials = Depends(auth_scheme),
+) -> Any:
     return token.credentials
 
 
