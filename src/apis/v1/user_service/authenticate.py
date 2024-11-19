@@ -2,7 +2,7 @@ from typing import Annotated, Any
 
 from fastapi.responses import JSONResponse
 from core.route import route
-from fastapi import APIRouter, Body, Depends, HTTPException, status, Request, Response
+from fastapi import APIRouter, Body, HTTPException, status, Request, Response
 from config import settings
 from schemas.user_service.user import LoginForm
 from core.security import decode_access_token
@@ -11,7 +11,6 @@ from core.exceptions import AuthTokenCorrupted, AuthTokenMissing
 from core.helpers.cache import revoke_whitelist_token
 from core.post_processing import access_token_generate_handler
 from core.helpers.utils import hashkey
-from apis.v1.deps import is_supper_admin
 
 
 router = APIRouter()
@@ -50,9 +49,7 @@ async def refresh(request: Request, response: Response) -> Any:
 
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
-async def logout(
-    request: Request, response: Response, is_check=Depends(is_supper_admin)
-) -> Any:
+async def logout(request: Request, response: Response) -> Any:
     token = request.headers.get("authorization")
 
     # only use cookie

@@ -17,7 +17,7 @@ from config import (
     ServiceSetting,
     RedisCacheSetting,
 )
-from apis.v1.deps import rate_limiter, is_supper_admin
+from apis.v1.deps import rate_limiter, use_author_for_dev
 
 
 # Cache with pool
@@ -94,7 +94,7 @@ def create_application(
     application = FastAPI(lifespan=lifespan, **kwargs)
 
     if isinstance(settings, AppSetting):
-        # enabled Rate limit at Production
+        # Enabled Rate limit at Production
         if settings.APP_ENV == EnviromentOption.PRODUCTION.value:
             application.router.dependencies = [Depends(rate_limiter)]
 
@@ -105,11 +105,12 @@ def create_application(
         )
 
     if isinstance(settings, AppSetting):
+        # Disabled at Production
         if settings.APP_ENV != EnviromentOption.PRODUCTION.value:
             docs_router = APIRouter()
 
             if settings.APP_ENV != EnviromentOption.DEVELOPMENT.value:
-                docs_router = APIRouter(dependencies=[Depends(is_supper_admin)])
+                docs_router = APIRouter(dependencies=[Depends(use_author_for_dev)])
 
             @docs_router.get("/docs", include_in_schema=False)
             async def get_swagger_documentation() -> fastapi.responses.HTMLResponse:
