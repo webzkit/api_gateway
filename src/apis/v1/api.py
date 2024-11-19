@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from config import AppSetting, EnviromentOption, settings
-from apis.v1.deps import is_supper_admin
+from apis.v1.deps import use_author_for_dev
 
 from .user_service import authenticate, user, group
 
@@ -12,10 +12,10 @@ api_router.include_router(
 )
 
 # TODO
-# removed at prod
+# Removed at prod
 if isinstance(settings, AppSetting):
-    if settings.APP_ENV != EnviromentOption.PRODUCTION.value:
-        api_router.dependencies = [Depends(dependency=is_supper_admin)]
+    if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
+        api_router.dependencies = [Depends(dependency=use_author_for_dev)]
 
 
 api_router.include_router(user.router, prefix="/users", tags=["User"])
