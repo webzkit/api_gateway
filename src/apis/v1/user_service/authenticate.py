@@ -2,15 +2,16 @@ from typing import Annotated, Any
 
 from fastapi.responses import JSONResponse
 from core.route import route
-from fastapi import APIRouter, Body, HTTPException, status, Request, Response
+from fastapi import APIRouter, Body, Depends, HTTPException, status, Request, Response
 from config import settings
 from schemas.user_service.user import LoginForm
-from apis.v1.deps import is_supper_admin
 from core.security import decode_access_token
 from core.exception.http_exception import UnauthorizedException
-from core.security import encode_access_token
 from core.exceptions import AuthTokenCorrupted, AuthTokenMissing
 from core.helpers.cache import revoke_whitelist_token
+from core.post_processing import access_token_generate_handler
+from core.helpers.utils import hashkey
+from apis.v1.deps import is_supper_admin
 
 
 router = APIRouter()
@@ -36,55 +37,49 @@ async def login(
 async def refresh(request: Request, response: Response) -> Any:
     refresh_token = request.cookies.get("refresh_token")
     try:
-        user = await decode_access_token(refresh_token)
+        user = await decode_access_token(
+            authorization=refresh_token, use_for="refresh_token"
+        )
+
         payload = {"data": user.get("payload")}
-        access_token = encode_access_token(
-            payload, settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
-        refresh_token = encode_access_token(
-            payload, settings.REFRESH_TOKEN_EXPIRE_MINUTES
-        )
-        max_age = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
-        response.set_cookie(
-            key="refresh_token",
-            value=refresh_token,
-            httponly=True,
-            secure=False,
-            samesite="lax",
-            max_age=max_age,
-        )
-        return {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-        }
+
+        return await access_token_generate_handler(payload)
 
     except Exception as e:
         raise UnauthorizedException(str(e))
 
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
-async def logout(request: Request, response: Response) -> Any:
+async def logout(
+    request: Request, response: Response, is_check=Depends(is_supper_admin)
+) -> Any:
     token = request.headers.get("authorization")
-    exc = None
+
+    # only use cookie
+    # TODO
+    refresh_token = request.cookies.get("refresh_token")
 
     try:
         payload = await decode_access_token(token)
         username = payload["payload"]["username"]
 
-        cache_key = f"whitelist_token:{username}:{str(token).replace('Bearer ', '')}"
+        cache_key = f"whitelist_token:{username}:access_token:{hashkey(str(token).replace('Bearer ', ''))}"
+        refresh_cache_key = (
+            f"whitelist_token:{username}:refresh_token:{hashkey(str(refresh_token))}"
+        )
+
         await revoke_whitelist_token(cache_key)
+        await revoke_whitelist_token(refresh_cache_key)
+
         response = JSONResponse(content={"detail": "Logged out successfully"})
+
+        # Remove cookie
+        response.delete_cookie(key="refresh_token")
 
         return response
     except (AuthTokenMissing, AuthTokenMissing, AuthTokenCorrupted) as e:
-        exc = str(e)
-    except Exception as e:
-        exc = str(e)
-    finally:
-        if exc:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=exc,
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=e,
+            headers={"WWW-Authenticate": "Bearer"},
+        )

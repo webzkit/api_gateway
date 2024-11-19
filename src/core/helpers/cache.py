@@ -3,7 +3,7 @@ import functools
 import json
 import re
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Dict
 
 from fastapi import Request, Response
 from fastapi.encoders import jsonable_encoder
@@ -150,20 +150,19 @@ def cache(
     return wrapper
 
 
-def create_whitelist_token(key_prefix: str, expiration: int = 3600)-> Callable:
-    def wrap(func:Callable) -> Callable:
+def create_whitelist_token_(key_prefix: str, expiration: int = 3600) -> Callable:
+    def wrap(func: Callable) -> Callable:
         @functools.wraps(func)
         async def inner(*args) -> Any:
             result = await func(*args)
             result_json = jsonable_encoder(result)
-            body =  result_json.get("body")
+            body = result_json.get("body")
 
             data = jsonable_encoder(args)[0]
-            username = data['data']['username']
+            username = data["data"]["username"]
 
             access_token = json.loads(body).get("access_token")
             cache_key = f"{key_prefix}:{username}:{access_token}"
-
 
             if client is None:
                 raise MissingClientError
@@ -172,11 +171,26 @@ def create_whitelist_token(key_prefix: str, expiration: int = 3600)-> Callable:
             await client.expire(cache_key, expiration)
 
             return result
+
         return inner
+
     return wrap
 
 
-async def revoke_whitelist_token(cache_key: str)-> None:
+async def create_whitelist_token(
+    cache_key: str, data: Dict, expiration: int = 3600
+) -> None:
+    if client is None:
+        raise MissingClientError
+
+    serializable_data = jsonable_encoder(data)
+    serialized_data = json.dumps(serializable_data)
+
+    await client.set(cache_key, serialized_data)
+    await client.expire(cache_key, expiration)
+
+
+async def revoke_whitelist_token(cache_key: str) -> None:
     if client is None:
         raise MissingClientError
 
@@ -185,14 +199,12 @@ async def revoke_whitelist_token(cache_key: str)-> None:
         await client.delete(cache_key)
 
 
-async def has_whitelist_token(cache_key: str)-> bool:
+async def has_whitelist_token(cache_key: str) -> bool:
     if client is None:
         raise MissingClientError
 
     cache_data = await client.get(cache_key)
-    print(cache_data)
     if not cache_data:
         return False
 
     return True
-

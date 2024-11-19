@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 from passlib.context import CryptContext
 from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
 from core.helpers.cache import has_whitelist_token
+from core.helpers.utils import hashkey
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -73,7 +74,9 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-async def decode_access_token(authorization: Union[str, None] = None):
+async def decode_access_token(
+    authorization: Union[str, None] = None, use_for: str = "access_token"
+):
     if not authorization:
         raise AuthTokenMissing("Auth token is missing in headers.")
 
@@ -81,9 +84,10 @@ async def decode_access_token(authorization: Union[str, None] = None):
     try:
         payload = jwt.decode(token, PUBLIC_KEY, algorithms=[ALGORITHM])
 
+        # verify token internal
         username = payload["payload"]["username"]
-        cache_key = f"whitelist_token:{username}:{token}"
-        if not await verify_token(cache_key):
+        cache_key = f"whitelist_token:{username}:{use_for}:{hashkey(token)}"
+        if not await verify_token_internal(cache_key):
             raise AuthTokenExpired("Auth token is expired")
 
         return payload
@@ -95,7 +99,7 @@ async def decode_access_token(authorization: Union[str, None] = None):
         raise AuthTokenCorrupted("Auth token is corrupted.")
 
 
-async def verify_token(cache_key: str) -> bool:
+async def verify_token_internal(cache_key: str) -> bool:
     return await has_whitelist_token(cache_key)
 
 
