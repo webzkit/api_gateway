@@ -3,24 +3,37 @@ from fastapi.responses import JSONResponse
 from core.security import encode_access_token
 from config import settings
 from core.helpers.cache import create_whitelist_token
+from core.helpers.utils import hashkey
+
 
 expiration = settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
 
 
-@create_whitelist_token(key_prefix="whitelist_token", expiration=expiration)
 async def access_token_generate_handler(data: Dict) -> Any:
     access_token = encode_access_token(data, settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token = encode_access_token(data, settings.REFRESH_TOKEN_EXPIRE_MINUTES)
 
-    max_age = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60 * 60
+    content = {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+    }
 
-    response = JSONResponse(
-        content={
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "token_type": "bearer",
-        }
+    username = data["data"]["username"]
+    access_token_cache_key = (
+        f"whitelist_token:{username}:access_token:{hashkey(access_token)}"
     )
+    await create_whitelist_token(cache_key=access_token_cache_key, data=content)
+
+    refresh_token_cache_key = (
+        f"whitelist_token:{username}:refresh_token:{hashkey(refresh_token)}"
+    )
+    await create_whitelist_token(cache_key=refresh_token_cache_key, data=content)
+
+    response = JSONResponse(content=content)
+
+    # TODO
+    max_age = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
