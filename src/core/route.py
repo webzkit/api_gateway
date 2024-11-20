@@ -1,10 +1,11 @@
 import aiohttp
 import functools
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Union
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
 
-from core.post_processing import access_token_generate_handler
+from core.helpers.cache import use_cache
+
 from .exceptions import (
     AuthTokenMissing,
     AuthTokenExpired,
@@ -29,6 +30,9 @@ def route(
     service_header_generator: str = "core.security.generate_request_header",
     response_model: Optional[str] = None,
     response_list: bool = False,
+    cache_key_prefix: Optional[str] = None,
+    cache_resource_id_name: Any = None,
+    cache_resource_id_type: type | tuple[type, ...] = int,
 ):
     if response_model:
         response_model = import_function(response_model)  # type: ignore
@@ -54,7 +58,7 @@ def route(
                 exc = None
 
                 try:
-                    token_payload = await token_decoder(authorization) # type: ignore
+                    token_payload = await token_decoder(authorization)  # type: ignore
                 except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted) as e:
                     exc = str(e)
                 except Exception as e:
@@ -96,42 +100,75 @@ def route(
             payload = jsonable_encoder(payload_obj) if payload_obj else {}
             url = f"{service_url}{path}"
 
-            try:
-                resp_data, status_code_from_service = await make_request(
-                    url=url,
-                    method=method,
-                    data=payload,
-                    headers=service_headers,  # type: ignore
-                    params=request_param,
-                )
-            except aiohttp.ClientConnectorError:
-                raise HTTPException(
-                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                    detail="Service Unavailable",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-            except aiohttp.ContentTypeError:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail="Service error.",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
-            except ServiceHttpException as e:
-                raise HTTPException(
-                    status_code=e.error_code,
-                    detail=str(e),
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
+            resp_data, status_code_from_service = await call_to_service(
+                request,
+                url=url,
+                method=method,
+                payload=payload,
+                service_headers=service_headers,
+                request_param=request_param,
+                cache_key_prefix=cache_key_prefix,
+                cache_resource_id_name=cache_resource_id_name,
+                cache_resource_id_type=cache_resource_id_type,
+                cache_kwargs=kwargs,
+            )
 
             response.status_code = status_code_from_service
 
+            # status code is None from to cache
+            if status_code_from_service is None:
+                response.status_code = status_code
+
             if all([status_code_from_service == status_code, post_processing_func]):
                 post_processing_f = import_function(post_processing_func)
-                resp_data = await post_processing_f(resp_data) # type: ignore
+                resp_data = await post_processing_f(resp_data)  # type: ignore
 
             return resp_data
 
     return wrapper
+
+
+@use_cache()
+async def call_to_service(
+    request: Request,
+    url: str,
+    method: str,
+    payload: Dict = {},
+    service_headers: Any = {},
+    request_param: Dict = {},
+    cache_key_prefix: Optional[str] = None,
+    cache_resource_id_name: Any = None,
+    cache_resource_id_type: type | tuple[type, ...] = int,
+    cache_kwargs: Any = None,
+):
+    try:
+        resp_data, status_code_from_service = await make_request(
+            url=url,
+            method=method,
+            data=payload,
+            headers=service_headers,  # type: ignore
+            params=request_param,
+        )
+    except aiohttp.ClientConnectorError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Service Unavailable",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except aiohttp.ContentTypeError:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Service error.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except ServiceHttpException as e:
+        raise HTTPException(
+            status_code=e.error_code,
+            detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return resp_data, status_code_from_service
 
 
 def import_function(method_path):
