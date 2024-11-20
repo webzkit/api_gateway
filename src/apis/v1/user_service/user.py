@@ -4,6 +4,7 @@ from fastapi import APIRouter, Request, Response, status
 from config import settings
 from core.route import route
 from schemas.user_service.user import UserCreate, UserUpdate
+from core.helpers.cache import use_cache
 
 
 router = APIRouter()
@@ -22,6 +23,8 @@ router = APIRouter()
     service_header_generator="core.security.generate_request_header",
     # response_model="schemas.UserRead",
     response_list=True,
+    cache_key_prefix="users:results:items_per_page_{items_per_page}:page_{page}",
+    cache_resource_id_name="page",
 )
 async def gets(
     request: Request,
@@ -45,6 +48,8 @@ async def gets(
     service_header_generator="core.security.generate_request_header",
     # response_model="schemas.UserRead",
     response_list=False,
+    cache_key_prefix="users:result",
+    cache_resource_id_type=int,
 )
 async def get(id: int, request: Request, response: Response) -> Any:
     pass
@@ -77,6 +82,8 @@ async def create(user: UserCreate, request: Request, response: Response) -> Any:
     authentication_token_decoder="core.security.decode_access_token",
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
+    cache_key_prefix="users:result",
+    cache_resource_id_type=int,
 )
 async def update(
     id: int, user: UserUpdate, request: Request, response: Response
@@ -95,6 +102,8 @@ async def update(
     authentication_token_decoder="core.security.decode_access_token",
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
+    cache_key_prefix="users:result",
+    cache_resource_id_type=int,
 )
 async def delete(id: int, request: Request, response: Response) -> Any:
     pass

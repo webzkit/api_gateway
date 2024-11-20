@@ -7,6 +7,7 @@ from core.helpers.utils import hashkey
 
 
 expiration = settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+expiration_refresh_token = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
 
 
 async def access_token_generate_handler(data: Dict) -> Any:
@@ -23,12 +24,18 @@ async def access_token_generate_handler(data: Dict) -> Any:
     access_token_cache_key = (
         f"whitelist_token:{username}:access_token:{hashkey(access_token)}"
     )
-    await create_whitelist_token(cache_key=access_token_cache_key, data=content)
+    await create_whitelist_token(
+        cache_key=access_token_cache_key, data=content, expiration=expiration
+    )
 
     refresh_token_cache_key = (
         f"whitelist_token:{username}:refresh_token:{hashkey(refresh_token)}"
     )
-    await create_whitelist_token(cache_key=refresh_token_cache_key, data=content)
+    await create_whitelist_token(
+        cache_key=refresh_token_cache_key,
+        data=content,
+        expiration=expiration_refresh_token,
+    )
 
     response = JSONResponse(content=content)
 

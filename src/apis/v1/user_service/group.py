@@ -22,6 +22,8 @@ router = APIRouter()
     service_header_generator="core.security.generate_request_header",
     response_model=None,
     response_list=True,
+    cache_key_prefix="groups:results:items_per_page_{items_per_page}:page_{page}",
+    cache_resource_id_name="page",
 )
 async def gets(
     request: Request,
@@ -45,6 +47,8 @@ async def gets(
     service_header_generator="core.security.generate_request_header",
     response_model=None,
     response_list=False,
+    cache_key_prefix="groups:result",
+    cache_resource_id_type=int,
 )
 async def get(id: int, request: Request, response: Response) -> Any:
     pass
@@ -77,6 +81,8 @@ async def create(user: GroupCreate, request: Request, response: Response) -> Any
     authentication_token_decoder="core.security.decode_access_token",
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
+    cache_key_prefix="groups:result",
+    cache_resource_id_type=int,
 )
 async def update(
     id: int, user: GroupUpdate, request: Request, response: Response
@@ -95,6 +101,8 @@ async def update(
     authentication_token_decoder="core.security.decode_access_token",
     service_authorization_checker="core.security.is_admin_user",
     service_header_generator="core.security.generate_request_header",
+    cache_key_prefix="groups:result",
+    cache_resource_id_type=int,
 )
 async def delete(id: int, request: Request, response: Response) -> Any:
     pass

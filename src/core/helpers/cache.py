@@ -23,6 +23,7 @@ def _infer_resource_id(
     kwargs: dict[str, Any], resource_id_type: type | tuple[type, ...]
 ) -> int | str:
     resource_id: int | str | None = None
+
     for arg_name, arg_value in kwargs.items():
         if isinstance(arg_value, resource_id_type):
             if (resource_id_type is int) and ("id" in arg_name):
@@ -52,6 +53,7 @@ def _construct_data_dict(
     data_dict = {}
     for key in data_inside_brackets:
         data_dict[key] = kwargs[key]
+
     return data_dict
 
 
@@ -59,6 +61,7 @@ def _format_prefix(prefix: str, kwargs: dict[str, Any]) -> str:
     data_inside_brackets = _extract_data_inside_brackets(prefix)
     data_dict = _construct_data_dict(data_inside_brackets, kwargs)
     formatted_prefix = prefix.format(**data_dict)
+
     return formatted_prefix
 
 
@@ -108,6 +111,7 @@ def cache(
 
             formatted_key_prefix = _format_prefix(key_prefix, kwargs)
             cache_key = f"{formatted_key_prefix}:{resource_id}"
+
             if request.method == "GET":
                 if (
                     to_invalidate_extra is not None
@@ -150,27 +154,53 @@ def cache(
     return wrapper
 
 
-def create_whitelist_token_(key_prefix: str, expiration: int = 3600) -> Callable:
-    def wrap(func: Callable) -> Callable:
+def use_cache(expiration: int = 3600) -> Callable:
+    def wrap(func) -> Callable:
         @functools.wraps(func)
-        async def inner(*args) -> Any:
-            result = await func(*args)
-            result_json = jsonable_encoder(result)
-            body = result_json.get("body")
+        async def inner(request: Request, *args, **kwargs) -> Any:
+            key_prefix = kwargs.get("cache_key_prefix", None)
+            if key_prefix is None:
+                response_data, status_code = await func(request, *args, **kwargs)
 
-            data = jsonable_encoder(args)[0]
-            username = data["data"]["username"]
+                return response_data, status_code
+            else:
+                if client is None:
+                    raise MissingClientError
 
-            access_token = json.loads(body).get("access_token")
-            cache_key = f"{key_prefix}:{username}:{access_token}"
+                if kwargs.get("cache_resource_id_name") is not None:
+                    cache_kwargs = kwargs.get("cache_kwargs", {})
+                    resource_id = cache_kwargs[kwargs.get("cache_resource_id_name")]
+                else:
+                    resource_id = _infer_resource_id(
+                        kwargs=kwargs.get("cache_kwargs", {}),
+                        resource_id_type=kwargs.get("cache_resource_id_type", int),
+                    )
 
-            if client is None:
-                raise MissingClientError
+                formatted_key_prefix = _format_prefix(
+                    key_prefix, kwargs.get("cache_kwargs", {})
+                )
+                cache_key = f"{formatted_key_prefix}:{resource_id}"
 
-            await client.set(cache_key, body)
-            await client.expire(cache_key, expiration)
+                if request.method == "GET":
+                    cached_data = await client.get(cache_key)
+                    if cached_data:
+                        return json.loads(cached_data.decode()), None
 
-            return result
+                response_data, status_code = await func(request, *args, **kwargs)
+
+                if request.method == "GET":
+                    serializable_data = jsonable_encoder(response_data)
+                    serialized_data = json.dumps(serializable_data)
+
+                    await client.set(cache_key, serialized_data)
+                    await client.expire(cache_key, expiration)
+
+                    serialized_data = json.loads(serialized_data)
+
+                else:
+                    await client.delete(cache_key)
+
+                return response_data, status_code
 
         return inner
 
