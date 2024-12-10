@@ -44,20 +44,25 @@ class CryptSetting(BaseSettings):
 
 
 class RedisCacheSetting(BaseSettings):
-    REDIS_CACHE_HOST: str = getenv("REDIS_CACHE_HOST", "redis")
-    REDIS_CACHE_PORT: int = int(getenv("REDIS_CACHE_PORT", 6379))
+    REDIS_CACHE_HOST: str = getenv("REDIS_HOST", "redis")
+    REDIS_CACHE_PORT: int = int(getenv("REDIS_PORT", 6379))
     REDIS_CACHE_DB: int = int(getenv("REDIS_CACHE_DB", 0))
+    REDIS_CACHE_PASSWORD: str = getenv("REDIS_PASSWORD", "secret")
+
+    # <subprotocol>://<username>:<password>@<host>:<port>/<db>
     REDIS_CACHE_URL: str = (
-        f"redis://{REDIS_CACHE_HOST}:{REDIS_CACHE_PORT}/{REDIS_CACHE_DB}"
+        f"redis://:{REDIS_CACHE_PASSWORD}@{REDIS_CACHE_HOST}:{REDIS_CACHE_PORT}/{REDIS_CACHE_DB}"
     )
 
 
 class RedisRateLimiterSetting(BaseSettings):
-    REDIS_RATE_LIMIT_HOST: str = getenv("REDIS_RATE_LIMIT_HOST", "redis")
-    REDIS_RATE_LIMIT_PORT: int = int(getenv("REDIS_RATE_LIMIT_PORT", 6379))
-    REDIS_RATE_DB: int = int(getenv("REDIS_CACHE_DB", 0))
+    REDIS_RATE_LIMIT_HOST: str = getenv("REDIS_HOST", "redis")
+    REDIS_RATE_LIMIT_PORT: int = int(getenv("REDIS_PORT", 6379))
+    REDIS_RATE_DB: int = int(getenv("REDIS_RATE_DB", 0))
+    REDIS_RATE_PASSWORD: str = getenv("REDIS_PASSWORD", "secret")
+
     REDIS_RATE_LIMIT_URL: str = (
-        f"redis://{REDIS_RATE_LIMIT_HOST}:{REDIS_RATE_LIMIT_PORT}/{REDIS_RATE_DB}"
+        f"redis://:{REDIS_RATE_PASSWORD}@{REDIS_RATE_LIMIT_HOST}:{REDIS_RATE_LIMIT_PORT}/{REDIS_RATE_DB}"
     )
     REDIS_RATE_LIMIT_LIMIT: int = int(getenv("DEFAULT_RATE_LIMIT_LIMIT", 100))
     REDIS_RATE_LIMIT_PERIOD: int = int(getenv("DEFAULT_RATE_LIMIT_PERIOD", 3600))
@@ -80,3 +85,4 @@ class Settings(
 
 
 settings = Settings()
+print(settings.REDIS_CACHE_URL)

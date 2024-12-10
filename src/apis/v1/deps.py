@@ -34,7 +34,7 @@ async def rate_limiter(
     limit, period = DEFAULT_LIMIT, DEFAULT_PERIOD
     user_id = request.client.host  # pyright: ignore
 
-    # TODO make scope for supper user
+    # TODO make scope for SupperUser
     if user:
         user_id = user["id"]
 
