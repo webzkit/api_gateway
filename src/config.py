@@ -85,4 +85,3 @@ class Settings(
 
 
 settings = Settings()
-print(settings.REDIS_CACHE_URL)

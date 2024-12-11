@@ -103,7 +103,7 @@ async def verify_token_internal(cache_key: str) -> bool:
     return await has_whitelist_token(cache_key)
 
 
-def gnerate_request_header(token_payload):
+def generate_request_header(token_payload):
     return {"request-init-data": urlencode(token_payload.get("payload"))}
 
 
