@@ -26,8 +26,8 @@ def route(
     authentication_required: bool = False,
     post_processing_func: Optional[str] = None,
     authentication_token_decoder: str = "core.security.decode_access_token",
-    service_authorization_checker: str = "core.security.is_admin_user",
-    service_header_generator: str = "core.security.generate_request_header",
+    service_authorization_checker: Optional[str] = "core.security.is_admin_user",
+    service_header_generator: Optional[str] = "core.security.generate_request_header",
     response_model: Optional[str] = None,
     response_list: bool = False,
     cache_key_prefix: Optional[str] = None,
@@ -43,6 +43,7 @@ def route(
         path, status_code=status_code, response_model=response_model
     )
 
+    # TODO refactor func
     def wrapper(f):
         @app_any
         @functools.wraps(f)

@@ -10,18 +10,17 @@ from schemas.avatar_service.geographies.province import (
 
 router = APIRouter()
 
+SERVICE_URL = settings.AVATAR_SERVICE_URL
+
 
 @route(
     request_method=router.get,
     path="",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=settings.AVATAR_SERVICE_URL,
+    service_url=SERVICE_URL,
     authentication_required=True,
     post_processing_func=None,
-    authentication_token_decoder="core.security.decode_access_token",
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
     response_model=None,
     response_list=True,
     cache_key_prefix="avatar:geography:province:results:items_per_page_{items_per_page}:page_{page}",
@@ -37,16 +36,60 @@ async def gets(
 
 
 @route(
+    request_method=router.get,
+    path="/{id}",
+    status_code=status.HTTP_200_OK,
+    payload_key=None,
+    service_url=SERVICE_URL,
+    authentication_required=True,
+    post_processing_func=None,
+    response_model=None,
+    response_list=False,
+    cache_key_prefix="avatar:geography:province:result",
+    cache_resource_id_type=int,
+)
+async def get(id: int, request: Request, response: Response) -> Any:
+    pass
+
+
+@route(
     request_method=router.post,
     path="",
     status_code=status.HTTP_201_CREATED,
     payload_key="create",
-    service_url=settings.AVATAR_SERVICE_URL,
+    service_url=SERVICE_URL,
     authentication_required=True,
     post_processing_func=None,
-    authentication_token_decoder="core.security.decode_access_token",
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
 )
 async def create(create: Create, request: Request, response: Response) -> Any:
+    pass
+
+
+@route(
+    request_method=router.put,
+    path="/{id}",
+    status_code=status.HTTP_200_OK,
+    payload_key="update",
+    service_url=SERVICE_URL,
+    authentication_required=True,
+    post_processing_func=None,
+    cache_key_prefix="avatar:geography:province:result",
+    cache_resource_id_type=int,
+)
+async def update(id: int, update: Update, request: Request, response: Response) -> Any:
+    pass
+
+
+@route(
+    request_method=router.delete,
+    path="/soft/{id}",
+    status_code=status.HTTP_200_OK,
+    payload_key=None,
+    service_url=SERVICE_URL,
+    authentication_required=True,
+    post_processing_func=None,
+    cache_key_prefix="avatar:geography:province:result",
+    cache_resource_id_type=int,
+)
+async def delete(id: int, request: Request, response: Response) -> Any:
     pass
