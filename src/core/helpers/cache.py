@@ -1,4 +1,3 @@
-import asyncio
 import functools
 import json
 import re
@@ -8,6 +7,8 @@ from typing import Any, Dict
 from fastapi import Request, Response
 from fastapi.encoders import jsonable_encoder
 from redis.asyncio import ConnectionPool, Redis
+
+from config import EnviromentOption, settings
 
 from ..exception.cache_exception import (
     CacheIdentificationInferenceError,
@@ -158,6 +159,12 @@ def use_cache(expiration: int = 3600) -> Callable:
     def wrap(func) -> Callable:
         @functools.wraps(func)
         async def inner(request: Request, *args, **kwargs) -> Any:
+            # Disabed at Development
+            if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
+                response_data, status_code = await func(request, *args, **kwargs)
+
+                return response_data, status_code
+
             key_prefix = kwargs.get("cache_key_prefix", None)
             if key_prefix is None:
                 response_data, status_code = await func(request, *args, **kwargs)
