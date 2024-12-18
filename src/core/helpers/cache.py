@@ -160,10 +160,10 @@ def use_cache(expiration: int = 3600) -> Callable:
         @functools.wraps(func)
         async def inner(request: Request, *args, **kwargs) -> Any:
             # Disabed at Development
-            if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
-                response_data, status_code = await func(request, *args, **kwargs)
+            # if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
+            #    response_data, status_code = await func(request, *args, **kwargs)
 
-                return response_data, status_code
+            #    return response_data, status_code
 
             key_prefix = kwargs.get("cache_key_prefix", None)
             if key_prefix is None:

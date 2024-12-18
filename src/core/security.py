@@ -108,7 +108,7 @@ def generate_request_header(token_payload):
 
 
 def is_admin_user(token_payload):
-    scope = token_payload.get("payload")["group_name"]
+    scope = token_payload.get("payload")["group"]["name"]
     return scope == "Supper Admin"
 
 
