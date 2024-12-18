@@ -8,13 +8,15 @@ from schemas.user_service.group import GroupCreate, GroupUpdate
 
 router = APIRouter()
 
+URI_SERVICE = settings.ENGINE_SERVICE_URL
+
 
 @route(
     request_method=router.get,
     path="",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -39,7 +41,7 @@ async def gets(
     path="/{id}",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -59,7 +61,7 @@ async def get(id: int, request: Request, response: Response) -> Any:
     path="",
     status_code=status.HTTP_201_CREATED,
     payload_key="user",
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -75,7 +77,7 @@ async def create(user: GroupCreate, request: Request, response: Response) -> Any
     path="/{id}",
     status_code=status.HTTP_200_OK,
     payload_key="user",
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -95,7 +97,7 @@ async def update(
     path="/soft/{id}",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",

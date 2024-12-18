@@ -15,13 +15,15 @@ from core.helpers.utils import hashkey
 
 router = APIRouter()
 
+URI_SERVICE = settings.ENGINE_SERVICE_URL
+
 
 @route(
     request_method=router.post,
     path="/login",
     status_code=status.HTTP_200_OK,
     payload_key="login_form",
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=False,
     post_processing_func="core.post_processing.access_token_generate_handler",
     response_model="schemas.user_service.user.LoginResponse",

@@ -69,7 +69,7 @@ class RedisRateLimiterSetting(BaseSettings):
 
 
 class ServiceSetting(BaseSettings):
-    USER_SERVICE_URL: str = ""
+    ENGINE_SERVICE_URL: str = ""
     AVATAR_SERVICE_URL: str = ""
     GATEWAY_TIMEOUT: int = 59
 

@@ -4,10 +4,11 @@ from fastapi import APIRouter, Request, Response, status
 from config import settings
 from core.route import route
 from schemas.user_service.user import UserCreate, UserUpdate
-from core.helpers.cache import use_cache
 
 
 router = APIRouter()
+
+URI_SERVICE = settings.ENGINE_SERVICE_URL
 
 
 @route(
@@ -15,7 +16,7 @@ router = APIRouter()
     path="",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -40,7 +41,7 @@ async def gets(
     path="/{id}",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -60,7 +61,7 @@ async def get(id: int, request: Request, response: Response) -> Any:
     path="",
     status_code=status.HTTP_201_CREATED,
     payload_key="user",
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -76,7 +77,7 @@ async def create(user: UserCreate, request: Request, response: Response) -> Any:
     path="/{id}",
     status_code=status.HTTP_200_OK,
     payload_key="user",
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -96,7 +97,7 @@ async def update(
     path="/soft/{id}",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=settings.USER_SERVICE_URL,
+    service_url=URI_SERVICE,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
