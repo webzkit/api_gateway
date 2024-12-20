@@ -45,8 +45,8 @@ async def gets(
     post_processing_func=None,
     response_model=None,
     response_list=False,
-    cache_key_prefix="avatar:geography:ward:result",
-    cache_resource_id_type=int,
+    # cache_key_prefix="avatar:geography:ward:result",
+    # cache_resource_id_type=int,
 )
 async def get(id: int, request: Request, response: Response) -> Any:
     pass
