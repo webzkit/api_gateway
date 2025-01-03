@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 import jwt
 from urllib.parse import urlencode
 from passlib.context import CryptContext
@@ -103,8 +103,11 @@ async def verify_token_internal(cache_key: str) -> bool:
     return await has_whitelist_token(cache_key)
 
 
-def generate_request_header(token_payload):
-    return {"request-init-data": urlencode(token_payload.get("payload"))}
+def generate_request_header(token_payload, token_bearer: Optional[str] = None):
+    return {
+        "request-init-data": urlencode(token_payload.get("payload")),
+        "token-bearer": token_bearer,
+    }
 
 
 def is_admin_user(token_payload):

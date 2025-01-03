@@ -90,7 +90,7 @@ def route(
                 # Service headers
                 if service_header_generator:
                     header_generator = import_function(service_header_generator)
-                    service_headers = header_generator(token_payload)
+                    service_headers = header_generator(token_payload, authorization)
 
             scope = request.scope
             method = scope["method"].lower()
