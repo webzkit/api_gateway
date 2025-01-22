@@ -1,6 +1,6 @@
 import aiohttp
 import functools
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
 

@@ -106,7 +106,7 @@ async def verify_token_internal(cache_key: str) -> bool:
 def generate_request_header(token_payload, token_bearer: Optional[str] = None):
     return {
         "request-init-data": urlencode(token_payload.get("payload")),
-        "token-bearer": token_bearer,
+        "Authorization": token_bearer,
     }
 
 
