@@ -5,18 +5,18 @@ from pydantic import Field
 from pydantic.main import BaseModel
 
 
-class ProvinceGegraphyBase(BaseModel):
+class ProvinceGeographyBase(BaseModel):
     name: Annotated[str, Field(examples=["TP Ho Chi Minh"])]
 
 
-class ProvinceGeographyRead(ProvinceGegraphyBase):
+class ProvinceGeographyRead(ProvinceGeographyBase):
     id: int
     created_at: datetime
 
 
-class ProvinceGeographyCreate(ProvinceGegraphyBase):
+class ProvinceGeographyCreate(ProvinceGeographyBase):
     pass
 
 
-class ProvinceGeographyUpdate(ProvinceGegraphyBase):
+class ProvinceGeographyUpdate(ProvinceGeographyBase):
     pass

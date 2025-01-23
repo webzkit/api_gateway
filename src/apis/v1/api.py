@@ -6,6 +6,7 @@ from apis.v1.deps import use_author_for_dev
 from .user_service import authenticate, user, group
 
 from .avatar_service.geographies import province, district, ward
+from .avatar_service import sector
 
 api_router = APIRouter()
 api_router.include_router(
@@ -33,3 +34,5 @@ api_router.include_router(
 api_router.include_router(
     ward.router, prefix="/geographies/wards", tags=["Geography Ward"]
 )
+
+api_router.include_router(sector.router, prefix="/sectors", tags=["Avatar Sector"])

@@ -5,19 +5,19 @@ from pydantic import Field
 from pydantic.main import BaseModel
 
 
-class DistrictGegraphyBase(BaseModel):
+class DisctricGeographyBase(BaseModel):
     name: Annotated[str, Field(examples=["Quan 1"])]
     geography_province_id: Annotated[int, Field(examples=[1])]
 
 
-class DistrictGeographyRead(DistrictGegraphyBase):
+class DistrictGeographyRead(DisctricGeographyBase):
     id: int
     created_at: datetime
 
 
-class DistrictGeographyCreate(DistrictGegraphyBase):
+class DistrictGeographyCreate(DisctricGeographyBase):
     pass
 
 
-class DistrictGeographyUpdate(DistrictGegraphyBase):
+class DistrictGeographyUpdate(DisctricGeographyBase):
     pass
