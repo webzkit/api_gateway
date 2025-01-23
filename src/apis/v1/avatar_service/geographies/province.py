@@ -23,8 +23,8 @@ SERVICE_URL = settings.AVATAR_SERVICE_URL
     post_processing_func=None,
     response_model=None,
     response_list=True,
-    cache_key_prefix="avatar:geography:province:results:items_per_page_{items_per_page}:page_{page}",
-    cache_resource_id_name="page",
+    # cache_key_prefix="avatar:geography:province:results:items_per_page_{items_per_page}:page_{page}",
+    # cache_resource_id_name="page",
 )
 async def gets(
     request: Request,
