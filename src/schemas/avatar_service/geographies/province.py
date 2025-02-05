@@ -7,6 +7,8 @@ from pydantic.main import BaseModel
 
 class ProvinceGeographyBase(BaseModel):
     name: Annotated[str, Field(examples=["TP Ho Chi Minh"])]
+    region_code: Annotated[str, Field(examples=["VN-SG"])]
+    geography_country_id: Annotated[int, Field(examples=[1])]
 
 
 class ProvinceGeographyRead(ProvinceGeographyBase):

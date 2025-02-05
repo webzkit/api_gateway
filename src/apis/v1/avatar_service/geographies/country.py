@@ -3,16 +3,18 @@ from fastapi import APIRouter, Request, Response, status
 
 from config import settings
 from core.route import route
-from schemas.avatar_service.sector import (
-    SectorCreate as Create,
-    SectorUpdate as Update,
+from schemas.avatar_service.geographies.country import (
+    CountryGeographyCreate as Create,
+    CountryGeographyUpdate as Update,
 )
 
 router = APIRouter()
 
 SERVICE_URL = settings.AVATAR_SERVICE_URL
-CACHE_KEY_PREFIX = "avatar:sector:result"
-CACHES_KEY_PREFIX = "avatar:sector:results:items_per_page_{items_per_page}:page_{page}"
+CACHE_KEY_PREFIX = "avatar:geography:country:result"
+CACHES_KEY_PREFIX = (
+    "avatar:geography:country:results:items_per_page_{items_per_page}:page_{page}"
+)
 
 
 @route(

@@ -11,6 +11,10 @@ from schemas.avatar_service.geographies.district import (
 router = APIRouter()
 
 SERVICE_URL = settings.AVATAR_SERVICE_URL
+CACHE_KEY_PREFIX = "avatar:geography:district:result"
+CACHES_KEY_PREFIX = (
+    "avatar:geography:district:results:items_per_page_{items_per_page}:page_{page}"
+)
 
 
 @route(
@@ -23,7 +27,7 @@ SERVICE_URL = settings.AVATAR_SERVICE_URL
     post_processing_func=None,
     response_model=None,
     response_list=True,
-    # cache_key_prefix="avatar:geography:district:results:items_per_page_{items_per_page}:page_{page}",
+    # cache_key_prefix=CACHES_KEY_PREFIX,
     # cache_resource_id_name="page",
 )
 async def gets(
@@ -45,7 +49,7 @@ async def gets(
     post_processing_func=None,
     response_model=None,
     response_list=False,
-    cache_key_prefix="avatar:geography:district:result",
+    cache_key_prefix=CACHE_KEY_PREFIX,
     cache_resource_id_type=int,
 )
 async def get(id: int, request: Request, response: Response) -> Any:
@@ -73,7 +77,7 @@ async def create(create: Create, request: Request, response: Response) -> Any:
     service_url=SERVICE_URL,
     authentication_required=True,
     post_processing_func=None,
-    cache_key_prefix="avatar:geography:district:result",
+    cache_key_prefix=CACHE_KEY_PREFIX,
     cache_resource_id_type=int,
 )
 async def update(id: int, update: Update, request: Request, response: Response) -> Any:
@@ -88,7 +92,7 @@ async def update(id: int, update: Update, request: Request, response: Response) 
     service_url=SERVICE_URL,
     authentication_required=True,
     post_processing_func=None,
-    cache_key_prefix="avatar:geography:district:result",
+    cache_key_prefix=CACHE_KEY_PREFIX,
     cache_resource_id_type=int,
 )
 async def delete(id: int, request: Request, response: Response) -> Any:
