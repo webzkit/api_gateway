@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated, Any, List, Optional
 from pydantic import BaseModel, EmailStr, Field
 
 
@@ -13,6 +13,7 @@ class AvatarBase(BaseModel):
 
 
 class AvatarCreate(AvatarBase):
+    sectors: Annotated[List[Any], Field(default=[1])]
     pass
 
 
