@@ -1,7 +1,7 @@
 from enum import Enum
 from os import getenv
 from typing import List, Union
-from pydantic import field_validator, AnyHttpUrl
+from pydantic import Field, field_validator, AnyHttpUrl
 from pydantic_settings import BaseSettings
 
 """ Project setting """
@@ -14,11 +14,9 @@ class EnviromentOption(Enum):
 
 
 class AppSetting(BaseSettings):
-    APP_NAME: str = ""
-    APP_API_PREFIX: str = ""
-    APP_DOMAIN: str = ""
+    APP_NAME: str = Field(default="App name")
+    APP_API_PREFIX: str = Field(default="/api/v1")
     APP_ENV: Union[EnviromentOption, str] = getenv("APP_ENV", "development")
-    APP_PORT: str = ""
 
     BACKEND_CORS_ORIGINS: Union[List[AnyHttpUrl], str] = getenv(
         "BACKEND_CORS_ORIGINS", []
