@@ -7,7 +7,7 @@ import fastapi
 from fastapi.openapi.utils import get_openapi
 
 from core.helpers import rate_limit, cache
-
+from core.consul.registry_service import register_service
 from config import (
     EnviromentOption,
     settings,
@@ -64,6 +64,9 @@ def lifespan_factory(
         if isinstance(settings, RedisCacheSetting):
             await close_redis_cache_pool()
 
+        if isinstance(settings, ServiceSetting):
+            await register_service()
+
     return lifespan
 
 
@@ -77,7 +80,7 @@ def create_application(
         | RedisRateLimiterSetting
         | ServiceSetting
     ),
-    **kwargs: Any
+    **kwargs: Any,
 ) -> FastAPI:
     if isinstance(settings, AppSetting):
         to_update = {

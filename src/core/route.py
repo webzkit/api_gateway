@@ -15,6 +15,7 @@ from .exceptions import (
 from fastapi.encoders import jsonable_encoder
 from .client import make_request
 from core.helpers.utils import parse_query_str
+from core.consul.discovery_service import discover_service
 
 
 def route(
@@ -22,7 +23,7 @@ def route(
     path: str,
     status_code: int,
     payload_key: Optional[str],
-    service_url: str,
+    service_name: str,
     authentication_required: bool = False,
     post_processing_func: Optional[str] = None,
     authentication_token_decoder: str = "core.security.decode_access_token",
@@ -99,7 +100,8 @@ def route(
 
             payload_obj = kwargs.get(str(payload_key))
             payload = jsonable_encoder(payload_obj) if payload_obj else {}
-            url = f"{service_url}{path}"
+            discover_url = await discover_service(service_name)
+            url = f"{discover_url}{path}"
 
             resp_data, status_code_from_service = await call_to_service(
                 request,

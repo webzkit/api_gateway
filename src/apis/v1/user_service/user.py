@@ -8,7 +8,7 @@ from schemas.user_service.user import UserCreate, UserUpdate
 
 router = APIRouter()
 
-URI_SERVICE = settings.ENGINE_SERVICE_URL
+SERVICE_NAME = settings.ENGINE_SERVICE_NAME
 
 
 @route(
@@ -16,7 +16,7 @@ URI_SERVICE = settings.ENGINE_SERVICE_URL
     path="",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=URI_SERVICE,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -41,7 +41,7 @@ async def gets(
     path="/{id}",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=URI_SERVICE,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -49,8 +49,8 @@ async def gets(
     service_header_generator="core.security.generate_request_header",
     # response_model="schemas.UserRead",
     response_list=False,
-    cache_key_prefix="users:result",
-    cache_resource_id_type=int,
+    # cache_key_prefix="users:result",
+    # cache_resource_id_type=int,
 )
 async def get(id: int, request: Request, response: Response) -> Any:
     pass
@@ -61,7 +61,7 @@ async def get(id: int, request: Request, response: Response) -> Any:
     path="",
     status_code=status.HTTP_201_CREATED,
     payload_key="user",
-    service_url=URI_SERVICE,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -77,7 +77,7 @@ async def create(user: UserCreate, request: Request, response: Response) -> Any:
     path="/{id}",
     status_code=status.HTTP_200_OK,
     payload_key="user",
-    service_url=URI_SERVICE,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",
@@ -97,7 +97,7 @@ async def update(
     path="/soft/{id}",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=URI_SERVICE,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     authentication_token_decoder="core.security.decode_access_token",

@@ -1,3 +1,4 @@
+from fastapi import Request
 from starlette.middleware.cors import CORSMiddleware
 from typing import Any, Dict
 
@@ -5,7 +6,9 @@ from config import settings
 from apis.v1.api import api_router
 from core.setup import create_application
 from core.helpers.cache import use_cache
+from core.logger import logging
 
+logger = logging.getLogger("http")
 
 # Init application
 app = create_application(router=api_router, settings=settings)
@@ -24,6 +27,16 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 
+# Middleware store request
+@app.middleware("http")
+async def log_request(request: Request, call_next):
+    logger.info(f"Request: {request.method} {request.url}")
+    response = await call_next(request)
+    logger.info(f"Response: {response.status_code}")
+
+    return response
+
+
 @app.get("/")
 # @use_cache(key_prefix="test", expiration=1000)
 async def root() -> Any:
@@ -32,3 +45,8 @@ async def root() -> Any:
     }
 
     return result
+
+
+@app.get("/health")
+def health_status():
+    return {"status": "healthy"}

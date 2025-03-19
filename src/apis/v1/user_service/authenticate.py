@@ -15,7 +15,7 @@ from core.helpers.utils import hashkey
 
 router = APIRouter()
 
-URI_SERVICE = settings.ENGINE_SERVICE_URL
+SERVICE_NAME = settings.ENGINE_SERVICE_NAME
 
 
 @route(
@@ -23,7 +23,7 @@ URI_SERVICE = settings.ENGINE_SERVICE_URL
     path="/login",
     status_code=status.HTTP_200_OK,
     payload_key="login_form",
-    service_url=URI_SERVICE,
+    service_name=SERVICE_NAME,
     authentication_required=False,
     post_processing_func="core.post_processing.access_token_generate_handler",
     response_model="schemas.user_service.user.LoginResponse",

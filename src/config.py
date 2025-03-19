@@ -67,9 +67,16 @@ class RedisRateLimiterSetting(BaseSettings):
 
 
 class ServiceSetting(BaseSettings):
-    ENGINE_SERVICE_URL: str = ""
-    AVATAR_SERVICE_URL: str = ""
     GATEWAY_TIMEOUT: int = 59
+
+    CONSUL_HOST: str = Field(default="consul")
+    CONSUL_PORT: int = Field(default=8500)
+    CONSUL_INTERVAL: str = Field(default="10s")
+    CONSUL_TIMEOUT: str = Field(default="5s")
+    SERVICE_NAME: str = Field(default="api_gateway")
+    SERVICE_PORT: int = Field(default=8000)
+    ENGINE_SERVICE_NAME: str = Field(default="engine")
+    AVATAR_SERVICE_NAME: str = Field(default="avatar")
 
 
 class Settings(

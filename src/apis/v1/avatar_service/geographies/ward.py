@@ -10,7 +10,7 @@ from schemas.avatar_service.geographies.ward import (
 
 router = APIRouter()
 
-SERVICE_URL = settings.AVATAR_SERVICE_URL
+SERVICE_NAME = settings.AVATAR_SERVICE_NAME
 CACHE_KEY_PREFIX = "avatar:geography:ward:result"
 CACHES_KEY_PREFIX = (
     "avatar:geography:ward:results:items_per_page_{items_per_page}:page_{page}"
@@ -22,7 +22,7 @@ CACHES_KEY_PREFIX = (
     path="",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=SERVICE_URL,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     response_model=None,
@@ -44,7 +44,7 @@ async def gets(
     path="/{id}",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=SERVICE_URL,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     response_model=None,
@@ -61,7 +61,7 @@ async def get(id: int, request: Request, response: Response) -> Any:
     path="",
     status_code=status.HTTP_201_CREATED,
     payload_key="create",
-    service_url=SERVICE_URL,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
 )
@@ -74,7 +74,7 @@ async def create(create: Create, request: Request, response: Response) -> Any:
     path="/{id}",
     status_code=status.HTTP_200_OK,
     payload_key="update",
-    service_url=SERVICE_URL,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     cache_key_prefix=CACHE_KEY_PREFIX,
@@ -89,7 +89,7 @@ async def update(id: int, update: Update, request: Request, response: Response) 
     path="/soft/{id}",
     status_code=status.HTTP_200_OK,
     payload_key=None,
-    service_url=SERVICE_URL,
+    service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
     cache_key_prefix=CACHE_KEY_PREFIX,
