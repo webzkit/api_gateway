@@ -67,7 +67,7 @@ class RedisRateLimiterSetting(BaseSettings):
 
 
 class ServiceSetting(BaseSettings):
-    GATEWAY_TIMEOUT: int = 59
+    GATEWAY_TIMEOUT: int = int(getenv("HTTP_TIMEOUT_SERVICE", 60))
 
     CONSUL_HOST: str = getenv("CONSUL_HOST", "consul")
     CONSUL_PORT: int = int(getenv("CONSUL_PORT", 8500))
