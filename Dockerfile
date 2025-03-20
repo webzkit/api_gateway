@@ -14,8 +14,8 @@ ENV TZ="Asia/Ho_Chi_Minh"
 COPY ./requirements.txt /zkit/requirements.txt
 
 # install system dependencies
-RUN apt-get update
-RUN pip install --upgrade pip
+#RUN apt-get update
+#RUN pip install --upgrade pip
 
 
 # install dependencies

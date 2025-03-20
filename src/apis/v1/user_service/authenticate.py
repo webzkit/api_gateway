@@ -37,6 +37,7 @@ async def login(
 @router.post("/refresh", status_code=status.HTTP_200_OK)
 async def refresh(request: Request, response: Response) -> Any:
     refresh_token = request.cookies.get("refresh_token")
+
     try:
         user = await decode_access_token(
             authorization=refresh_token, use_for="refresh_token"

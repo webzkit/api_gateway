@@ -2,7 +2,7 @@ from enum import Enum
 from os import getenv
 from typing import List, Union
 from pydantic import Field, field_validator, AnyHttpUrl
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 """ Project setting """
 
@@ -69,14 +69,15 @@ class RedisRateLimiterSetting(BaseSettings):
 class ServiceSetting(BaseSettings):
     GATEWAY_TIMEOUT: int = 59
 
-    CONSUL_HOST: str = Field(default="consul")
-    CONSUL_PORT: int = Field(default=8500)
-    CONSUL_INTERVAL: str = Field(default="10s")
-    CONSUL_TIMEOUT: str = Field(default="5s")
-    SERVICE_NAME: str = Field(default="api_gateway")
-    SERVICE_PORT: int = Field(default=8000)
-    ENGINE_SERVICE_NAME: str = Field(default="engine")
-    AVATAR_SERVICE_NAME: str = Field(default="avatar")
+    CONSUL_HOST: str = getenv("CONSUL_HOST", "consul")
+    CONSUL_PORT: int = int(getenv("CONSUL_PORT", 8500))
+    CONSUL_INTERVAL: str = getenv("CONSUL_INTERVAL", "10s")
+    CONSUL_TIMEOUT: str = getenv("CONSUL_TIMEOUT", "5s")
+
+    SERVICE_NAME: str = getenv("APIGATEWAY_SERVICE_NAME", "api_gateway")
+    SERVICE_PORT: int = int(getenv("APIGATEWAY_SERVICE_PORT", 8000))
+    ENGINE_SERVICE_NAME: str = getenv("ENGINE_SERVICE_NAME", "engine")
+    AVATAR_SERVICE_NAME: str = getenv("AVATAR_SERVICE_NAME", "avatar")
 
 
 class Settings(
@@ -86,6 +87,7 @@ class Settings(
     RedisRateLimiterSetting,
     ServiceSetting,
 ):
+    model_config = SettingsConfigDict(env_prefix="APIGATEWAY__")
     pass
 
 

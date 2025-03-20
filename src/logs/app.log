@@ -731,3 +731,508 @@ AttributeError: 'coroutine' object has no attribute 'decode'
 2025-03-20 00:41:56,421 - http - INFO - Response: 200
 2025-03-20 00:42:56,427 - http - INFO - Request: GET http://api_gateway:8000/health
 2025-03-20 00:42:56,429 - http - INFO - Response: 200
+2025-03-20 15:59:30,208 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 15:59:30,214 - http - INFO - Response: 200
+2025-03-20 16:00:05,256 - http - INFO - Request: GET http://localhost/docs
+2025-03-20 16:00:05,256 - http - INFO - Response: 200
+2025-03-20 16:00:06,049 - http - INFO - Request: GET http://localhost/openapi.json
+2025-03-20 16:00:06,075 - http - INFO - Response: 200
+2025-03-20 16:00:30,221 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:00:30,224 - http - INFO - Response: 200
+2025-03-20 16:01:30,229 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:01:30,234 - http - INFO - Response: 200
+2025-03-20 16:02:30,239 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:02:30,241 - http - INFO - Response: 200
+2025-03-20 16:02:45,517 - http - INFO - Request: POST http://localhost/api/v1/authenticate/login
+2025-03-20 16:02:45,953 - http - INFO - Response: 200
+2025-03-20 16:03:30,249 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:03:30,252 - http - INFO - Response: 200
+2025-03-20 16:04:32,010 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:04:32,011 - http - INFO - Response: 200
+2025-03-20 16:04:36,517 - http - INFO - Request: POST http://localhost/api/v1/authenticate/login
+2025-03-20 16:04:36,910 - http - INFO - Response: 200
+2025-03-20 16:04:37,398 - http - INFO - Request: POST http://localhost/api/v1/authenticate/login
+2025-03-20 16:04:37,670 - http - INFO - Response: 200
+2025-03-20 16:04:38,471 - http - INFO - Request: POST http://localhost/api/v1/authenticate/login
+2025-03-20 16:04:38,795 - http - INFO - Response: 200
+2025-03-20 16:04:39,051 - http - INFO - Request: POST http://localhost/api/v1/authenticate/login
+2025-03-20 16:04:39,324 - http - INFO - Response: 200
+2025-03-20 16:05:32,014 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:05:32,014 - http - INFO - Response: 200
+2025-03-20 16:05:32,898 - http - INFO - Request: POST http://localhost/api/v1/authenticate/login
+2025-03-20 16:05:33,195 - http - INFO - Response: 200
+2025-03-20 16:06:32,021 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:06:32,024 - http - INFO - Response: 200
+2025-03-20 16:06:42,389 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:06:42,394 - http - INFO - Response: 200
+2025-03-20 16:07:03,015 - http - INFO - Request: POST http://localhost/api/v1/authenticate/refresh
+2025-03-20 16:07:03,102 - http - INFO - Response: 200
+2025-03-20 16:07:21,589 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:07:42,401 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:07:42,404 - http - INFO - Response: 200
+2025-03-20 16:08:42,410 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:08:42,413 - http - INFO - Response: 200
+2025-03-20 16:09:42,417 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:09:42,418 - http - INFO - Response: 200
+2025-03-20 16:10:19,512 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:10:42,421 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:10:42,423 - http - INFO - Response: 200
+2025-03-20 16:10:43,883 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 16:10:43,901 - http - INFO - Response: 200
+2025-03-20 16:11:02,255 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:11:04,022 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:11:04,856 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:11:05,033 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:11:05,217 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:11:05,487 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:11:05,657 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:11:42,425 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:11:42,425 - http - INFO - Response: 200
+2025-03-20 16:12:12,317 - http - INFO - Request: GET http://localhost/docs
+2025-03-20 16:12:12,317 - http - INFO - Response: 200
+2025-03-20 16:12:13,054 - http - INFO - Request: GET http://localhost/openapi.json
+2025-03-20 16:12:13,075 - http - INFO - Response: 200
+2025-03-20 16:12:43,232 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:12:43,237 - http - INFO - Response: 200
+2025-03-20 16:13:43,242 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:13:43,243 - http - INFO - Response: 200
+2025-03-20 16:14:43,250 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:14:43,252 - http - INFO - Response: 200
+2025-03-20 16:15:43,260 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:15:43,262 - http - INFO - Response: 200
+2025-03-20 16:16:43,273 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:16:43,275 - http - INFO - Response: 200
+2025-03-20 16:17:43,280 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:17:43,281 - http - INFO - Response: 200
+2025-03-20 16:18:43,286 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:18:43,289 - http - INFO - Response: 200
+2025-03-20 16:19:27,179 - http - INFO - Request: GET http://localhost/docs
+2025-03-20 16:19:27,180 - http - INFO - Response: 200
+2025-03-20 16:19:27,837 - http - INFO - Request: GET http://localhost/openapi.json
+2025-03-20 16:19:27,861 - http - INFO - Response: 200
+2025-03-20 16:19:33,822 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:19:33,823 - http - INFO - Response: 200
+2025-03-20 16:20:05,995 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:20:05,997 - http - INFO - Response: 200
+2025-03-20 16:20:48,291 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:20:48,292 - http - INFO - Response: 200
+2025-03-20 16:21:47,294 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:21:47,295 - http - INFO - Response: 200
+2025-03-20 16:22:05,983 - http - INFO - Request: POST http://localhost/api/v1/authenticate/refresh
+2025-03-20 16:22:05,984 - http - INFO - Response: 200
+2025-03-20 16:24:51,824 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:24:51,829 - http - INFO - Response: 200
+2025-03-20 16:25:51,835 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:25:51,838 - http - INFO - Response: 200
+2025-03-20 16:26:51,843 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:26:51,847 - http - INFO - Response: 200
+2025-03-20 16:27:51,852 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:27:51,853 - http - INFO - Response: 200
+2025-03-20 16:28:51,855 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:28:51,857 - http - INFO - Response: 200
+2025-03-20 16:29:51,863 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:29:51,866 - http - INFO - Response: 200
+2025-03-20 16:30:51,872 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:30:51,875 - http - INFO - Response: 200
+2025-03-20 16:31:51,880 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:31:51,884 - http - INFO - Response: 200
+2025-03-20 16:32:51,889 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:32:51,891 - http - INFO - Response: 200
+2025-03-20 16:33:51,898 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:33:51,900 - http - INFO - Response: 200
+2025-03-20 16:34:51,905 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:34:51,908 - http - INFO - Response: 200
+2025-03-20 16:35:51,914 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:35:51,916 - http - INFO - Response: 200
+2025-03-20 16:36:51,926 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:36:51,928 - http - INFO - Response: 200
+2025-03-20 16:37:51,931 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:37:51,932 - http - INFO - Response: 200
+2025-03-20 16:38:51,935 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:38:51,936 - http - INFO - Response: 200
+2025-03-20 16:39:51,942 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:39:51,945 - http - INFO - Response: 200
+2025-03-20 16:40:51,950 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:40:51,952 - http - INFO - Response: 200
+2025-03-20 16:41:51,959 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:41:51,961 - http - INFO - Response: 200
+2025-03-20 16:42:51,967 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:42:51,972 - http - INFO - Response: 200
+2025-03-20 16:43:51,978 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:43:51,980 - http - INFO - Response: 200
+2025-03-20 16:44:51,986 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:44:51,989 - http - INFO - Response: 200
+2025-03-20 16:45:51,994 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:45:51,998 - http - INFO - Response: 200
+2025-03-20 16:46:52,003 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:46:52,006 - http - INFO - Response: 200
+2025-03-20 16:47:52,012 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:47:52,015 - http - INFO - Response: 200
+2025-03-20 16:48:52,020 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:48:52,023 - http - INFO - Response: 200
+2025-03-20 16:49:52,028 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:49:52,031 - http - INFO - Response: 200
+2025-03-20 16:50:52,038 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:50:52,039 - http - INFO - Response: 200
+2025-03-20 16:51:52,044 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:51:52,047 - http - INFO - Response: 200
+2025-03-20 16:52:52,059 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:52:52,062 - http - INFO - Response: 200
+2025-03-20 16:53:52,069 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:53:52,071 - http - INFO - Response: 200
+2025-03-20 16:54:52,077 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:54:52,080 - http - INFO - Response: 200
+2025-03-20 16:54:59,651 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:55:14,265 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:55:29,989 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:55:29,989 - http - INFO - Response: 200
+2025-03-20 16:55:44,900 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:55:44,905 - http - INFO - Response: 200
+2025-03-20 16:56:34,269 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:56:34,270 - http - INFO - Response: 200
+2025-03-20 16:57:34,165 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 16:57:34,173 - http - INFO - Response: 200
+2025-03-20 16:57:34,273 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:57:34,274 - http - INFO - Response: 200
+2025-03-20 16:57:57,789 - http - INFO - Request: GET http://localhost/api/v1/authenticate/logout
+2025-03-20 16:57:57,792 - http - INFO - Response: 405
+2025-03-20 16:58:09,714 - http - INFO - Request: POST http://localhost/api/v1/authenticate/logout
+2025-03-20 16:58:09,718 - http - INFO - Response: 200
+2025-03-20 16:58:17,897 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:58:17,902 - http - INFO - Response: 200
+2025-03-20 16:58:20,001 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 16:58:20,005 - http - INFO - Response: 401
+2025-03-20 16:59:17,909 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 16:59:17,912 - http - INFO - Response: 200
+2025-03-20 17:00:17,919 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:00:17,923 - http - INFO - Response: 200
+2025-03-20 17:01:17,926 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:01:17,927 - http - INFO - Response: 200
+2025-03-20 17:02:17,931 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:02:17,932 - http - INFO - Response: 200
+2025-03-20 17:03:02,295 - http - INFO - Request: POST http://localhost/api/v1/authenticate/login
+2025-03-20 17:03:02,605 - http - INFO - Response: 200
+2025-03-20 17:03:17,942 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:03:17,943 - http - INFO - Response: 200
+2025-03-20 17:03:19,060 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:03:19,066 - http - INFO - Response: 200
+2025-03-20 17:04:13,091 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:13,095 - http - INFO - Response: 200
+2025-03-20 17:04:14,629 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:14,634 - http - INFO - Response: 200
+2025-03-20 17:04:15,152 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:15,158 - http - INFO - Response: 200
+2025-03-20 17:04:15,326 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:15,330 - http - INFO - Response: 200
+2025-03-20 17:04:15,503 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:15,508 - http - INFO - Response: 200
+2025-03-20 17:04:15,651 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:15,656 - http - INFO - Response: 200
+2025-03-20 17:04:15,802 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:15,812 - http - INFO - Response: 200
+2025-03-20 17:04:15,958 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:15,962 - http - INFO - Response: 200
+2025-03-20 17:04:17,946 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:04:17,947 - http - INFO - Response: 200
+2025-03-20 17:04:22,515 - http - INFO - Request: POST http://localhost/api/v1/users
+2025-03-20 17:04:22,772 - http - INFO - Response: 200
+2025-03-20 17:04:33,053 - http - INFO - Request: GET http://localhost/api/v1/users?page=1&items_per_page=100
+2025-03-20 17:04:33,058 - http - INFO - Response: 200
+2025-03-20 17:04:45,761 - http - INFO - Request: GET http://localhost/api/v1/users/2
+2025-03-20 17:04:45,773 - http - INFO - Response: 200
+2025-03-20 17:05:15,197 - http - INFO - Request: PUT http://localhost/api/v1/users/2
+2025-03-20 17:05:15,217 - http - INFO - Response: 200
+2025-03-20 17:05:17,951 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:05:17,953 - http - INFO - Response: 200
+2025-03-20 17:05:22,196 - http - INFO - Request: GET http://localhost/api/v1/users/2
+2025-03-20 17:05:22,206 - http - INFO - Response: 200
+2025-03-20 17:05:29,529 - http - INFO - Request: DELETE http://localhost/api/v1/users/soft/2
+2025-03-20 17:05:29,546 - http - INFO - Response: 200
+2025-03-20 17:05:39,265 - http - INFO - Request: GET http://localhost/api/v1/groups?page=1&items_per_page=100
+2025-03-20 17:05:39,279 - http - INFO - Response: 200
+2025-03-20 17:05:46,374 - http - INFO - Request: GET http://localhost/docs
+2025-03-20 17:05:46,375 - http - INFO - Response: 200
+2025-03-20 17:05:47,055 - http - INFO - Request: GET http://localhost/openapi.json
+2025-03-20 17:05:47,076 - http - INFO - Response: 200
+2025-03-20 17:06:17,961 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:06:17,964 - http - INFO - Response: 200
+2025-03-20 17:07:17,971 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:07:17,973 - http - INFO - Response: 200
+2025-03-20 17:08:17,983 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:08:17,984 - http - INFO - Response: 200
+2025-03-20 17:09:17,990 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:09:17,992 - http - INFO - Response: 200
+2025-03-20 17:10:06,461 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:06,559 - http - INFO - Response: 200
+2025-03-20 17:10:08,314 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:08,324 - http - INFO - Response: 200
+2025-03-20 17:10:08,941 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:08,951 - http - INFO - Response: 200
+2025-03-20 17:10:09,117 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:09,126 - http - INFO - Response: 200
+2025-03-20 17:10:09,253 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:09,262 - http - INFO - Response: 200
+2025-03-20 17:10:09,448 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:09,458 - http - INFO - Response: 200
+2025-03-20 17:10:09,603 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:09,613 - http - INFO - Response: 200
+2025-03-20 17:10:09,776 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:09,787 - http - INFO - Response: 200
+2025-03-20 17:10:10,024 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:10,032 - http - INFO - Response: 200
+2025-03-20 17:10:10,149 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:10,159 - http - INFO - Response: 200
+2025-03-20 17:10:10,269 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:10,278 - http - INFO - Response: 200
+2025-03-20 17:10:10,424 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:10,432 - http - INFO - Response: 200
+2025-03-20 17:10:10,622 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:10,632 - http - INFO - Response: 200
+2025-03-20 17:10:10,810 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:10,818 - http - INFO - Response: 200
+2025-03-20 17:10:16,905 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:16,914 - http - INFO - Response: 200
+2025-03-20 17:10:17,436 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:17,445 - http - INFO - Response: 200
+2025-03-20 17:10:17,701 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:17,711 - http - INFO - Response: 200
+2025-03-20 17:10:17,872 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:17,882 - http - INFO - Response: 200
+2025-03-20 17:10:17,996 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:10:17,996 - http - INFO - Response: 200
+2025-03-20 17:10:18,113 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:18,123 - http - INFO - Response: 200
+2025-03-20 17:10:18,327 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:18,336 - http - INFO - Response: 200
+2025-03-20 17:10:18,495 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:18,505 - http - INFO - Response: 200
+2025-03-20 17:10:18,799 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:18,807 - http - INFO - Response: 200
+2025-03-20 17:10:18,944 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:18,953 - http - INFO - Response: 200
+2025-03-20 17:10:19,197 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:19,206 - http - INFO - Response: 200
+2025-03-20 17:10:19,771 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:19,782 - http - INFO - Response: 200
+2025-03-20 17:10:20,275 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:20,283 - http - INFO - Response: 200
+2025-03-20 17:10:20,411 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:20,421 - http - INFO - Response: 200
+2025-03-20 17:10:20,580 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:20,590 - http - INFO - Response: 200
+2025-03-20 17:10:20,734 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries?page=1&items_per_page=100
+2025-03-20 17:10:20,743 - http - INFO - Response: 200
+2025-03-20 17:10:30,041 - http - INFO - Request: POST http://localhost/api/v1/geographies/countries
+2025-03-20 17:10:30,068 - http - INFO - Response: 200
+2025-03-20 17:10:40,074 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:10:40,086 - http - INFO - Request: GET http://avatar:8000/api/v1/users/1
+2025-03-20 17:10:40,123 - http - INFO - Response: 200
+2025-03-20 17:10:40,126 - http - INFO - Response: 200
+2025-03-20 17:10:41,255 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:10:41,259 - http - INFO - Response: 200
+2025-03-20 17:10:41,650 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:10:41,654 - http - INFO - Response: 200
+2025-03-20 17:10:41,827 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:10:41,831 - http - INFO - Response: 200
+2025-03-20 17:10:41,972 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:10:41,977 - http - INFO - Response: 200
+2025-03-20 17:10:42,263 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:10:42,268 - http - INFO - Response: 200
+2025-03-20 17:10:42,417 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:10:42,422 - http - INFO - Response: 200
+2025-03-20 17:10:42,586 - http - INFO - Request: GET http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:10:42,591 - http - INFO - Response: 200
+2025-03-20 17:11:03,180 - http - INFO - Request: PUT http://localhost/api/v1/geographies/countries/1
+2025-03-20 17:11:03,204 - http - INFO - Response: 200
+2025-03-20 17:11:17,998 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:11:17,999 - http - INFO - Response: 200
+2025-03-20 17:12:18,004 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:12:18,007 - http - INFO - Response: 200
+2025-03-20 17:13:18,010 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:13:18,012 - http - INFO - Response: 200
+2025-03-20 17:14:18,015 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:14:18,016 - http - INFO - Response: 200
+2025-03-20 17:15:18,020 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:15:18,021 - http - INFO - Response: 200
+2025-03-20 17:16:18,026 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:16:18,028 - http - INFO - Response: 200
+2025-03-20 17:17:18,032 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:17:18,033 - http - INFO - Response: 200
+2025-03-20 17:18:18,037 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:18:18,039 - http - INFO - Response: 200
+2025-03-20 17:19:18,043 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:19:18,045 - http - INFO - Response: 200
+2025-03-20 17:19:55,643 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces?page=1&items_per_page=100
+2025-03-20 17:19:55,706 - http - INFO - Response: 200
+2025-03-20 17:20:01,773 - http - INFO - Request: POST http://localhost/api/v1/geographies/provinces
+2025-03-20 17:20:01,797 - http - INFO - Response: 200
+2025-03-20 17:20:08,145 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:20:08,158 - http - INFO - Request: GET http://avatar:8000/api/v1/users/1
+2025-03-20 17:20:08,169 - http - INFO - Response: 200
+2025-03-20 17:20:08,172 - http - INFO - Response: 200
+2025-03-20 17:20:18,050 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:20:18,053 - http - INFO - Response: 200
+2025-03-20 17:21:18,066 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:21:18,071 - http - INFO - Response: 200
+2025-03-20 17:22:18,080 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:22:18,083 - http - INFO - Response: 200
+2025-03-20 17:23:18,087 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:23:18,088 - http - INFO - Response: 200
+2025-03-20 17:24:18,091 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:24:18,094 - http - INFO - Response: 200
+2025-03-20 17:25:18,099 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:25:18,101 - http - INFO - Response: 200
+2025-03-20 17:26:18,106 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:26:18,107 - http - INFO - Response: 200
+2025-03-20 17:27:18,109 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:27:18,110 - http - INFO - Response: 200
+2025-03-20 17:28:18,112 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:28:18,112 - http - INFO - Response: 200
+2025-03-20 17:29:18,114 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:29:18,115 - http - INFO - Response: 200
+2025-03-20 17:30:18,117 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:30:18,118 - http - INFO - Response: 200
+2025-03-20 17:30:43,216 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:30:43,217 - http - INFO - Response: 200
+2025-03-20 17:30:56,660 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:30:56,666 - http - INFO - Response: 200
+2025-03-20 17:31:04,739 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:31:04,740 - http - INFO - Response: 200
+2025-03-20 17:31:12,861 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:31:12,862 - http - INFO - Response: 200
+2025-03-20 17:31:22,866 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:31:22,869 - http - INFO - Response: 200
+2025-03-20 17:31:32,876 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:31:32,879 - http - INFO - Response: 200
+2025-03-20 17:31:42,884 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:31:42,887 - http - INFO - Response: 200
+2025-03-20 17:31:52,893 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:31:52,896 - http - INFO - Response: 200
+2025-03-20 17:32:02,903 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:32:02,904 - http - INFO - Response: 200
+2025-03-20 17:32:12,909 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:32:12,912 - http - INFO - Response: 200
+2025-03-20 17:32:29,381 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:32:29,386 - http - INFO - Response: 200
+2025-03-20 17:32:32,574 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:32:32,577 - http - INFO - Response: 200
+2025-03-20 17:32:42,579 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:32:42,580 - http - INFO - Response: 200
+2025-03-20 17:32:52,583 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:32:52,584 - http - INFO - Response: 200
+2025-03-20 17:33:02,586 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:33:02,586 - http - INFO - Response: 200
+2025-03-20 17:33:19,336 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:33:19,340 - http - INFO - Response: 200
+2025-03-20 17:33:32,438 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:33:32,441 - http - INFO - Response: 200
+2025-03-20 17:33:38,629 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:33:38,630 - http - INFO - Response: 200
+2025-03-20 17:33:48,632 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:33:48,633 - http - INFO - Response: 200
+2025-03-20 17:33:58,636 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:33:58,637 - http - INFO - Response: 200
+2025-03-20 17:34:02,024 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:34:02,028 - http - INFO - Response: 200
+2025-03-20 17:34:15,178 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:34:15,184 - http - INFO - Response: 200
+2025-03-20 17:34:25,190 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:34:25,192 - http - INFO - Response: 200
+2025-03-20 17:34:35,194 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:34:35,195 - http - INFO - Response: 200
+2025-03-20 17:34:44,865 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:34:44,866 - http - INFO - Response: 200
+2025-03-20 17:34:53,712 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:34:53,713 - http - INFO - Response: 200
+2025-03-20 17:35:20,514 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:35:20,519 - http - INFO - Response: 200
+2025-03-20 17:36:08,078 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:36:08,081 - http - INFO - Response: 200
+2025-03-20 17:37:17,252 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:37:17,256 - http - INFO - Response: 200
+2025-03-20 17:38:17,261 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:38:17,264 - http - INFO - Response: 200
+2025-03-20 17:39:17,271 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:39:17,273 - http - INFO - Response: 200
+2025-03-20 17:40:17,282 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:40:17,283 - http - INFO - Response: 200
+2025-03-20 17:41:17,287 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:41:17,290 - http - INFO - Response: 200
+2025-03-20 17:41:40,138 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:41:40,207 - http - INFO - Response: 200
+2025-03-20 17:41:44,565 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:41:44,575 - http - INFO - Response: 200
+2025-03-20 17:41:45,474 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:41:45,478 - http - INFO - Response: 200
+2025-03-20 17:42:17,296 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:42:17,299 - http - INFO - Response: 200
+2025-03-20 17:43:17,303 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:43:17,304 - http - INFO - Response: 200
+2025-03-20 17:44:17,309 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:44:17,312 - http - INFO - Response: 200
+2025-03-20 17:45:17,314 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:45:17,315 - http - INFO - Response: 200
+2025-03-20 17:46:17,318 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:46:17,318 - http - INFO - Response: 200
+2025-03-20 17:47:17,322 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:47:17,324 - http - INFO - Response: 200
+2025-03-20 17:48:17,330 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:48:17,332 - http - INFO - Response: 200
+2025-03-20 17:49:17,338 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:49:17,340 - http - INFO - Response: 200
+2025-03-20 17:50:17,346 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:50:17,348 - http - INFO - Response: 200
+2025-03-20 17:51:17,353 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:51:17,354 - http - INFO - Response: 200
+2025-03-20 17:52:17,357 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:52:17,358 - http - INFO - Response: 200
+2025-03-20 17:53:17,364 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:53:17,367 - http - INFO - Response: 200
+2025-03-20 17:54:17,371 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:54:17,372 - http - INFO - Response: 200
+2025-03-20 17:55:17,376 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:55:17,378 - http - INFO - Response: 200
+2025-03-20 17:56:17,383 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:56:17,386 - http - INFO - Response: 200
+2025-03-20 17:57:17,390 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:57:17,392 - http - INFO - Response: 200
+2025-03-20 17:57:36,363 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:57:36,368 - http - INFO - Response: 200
+2025-03-20 17:58:00,846 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:58:00,917 - http - INFO - Request: GET http://avatar:8000/api/v1/users/1
+2025-03-20 17:58:00,984 - http - INFO - Response: 200
+2025-03-20 17:58:00,987 - http - INFO - Response: 200
+2025-03-20 17:58:17,395 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:58:17,395 - http - INFO - Response: 200
+2025-03-20 17:59:01,413 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:01,491 - http - INFO - Request: GET http://avatar:8000/api/v1/users/1
+2025-03-20 17:59:01,506 - http - INFO - Response: 200
+2025-03-20 17:59:01,510 - http - INFO - Response: 200
+2025-03-20 17:59:12,153 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:12,159 - http - INFO - Response: 200
+2025-03-20 17:59:12,938 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:12,943 - http - INFO - Response: 200
+2025-03-20 17:59:13,381 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:13,386 - http - INFO - Response: 200
+2025-03-20 17:59:13,629 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:13,634 - http - INFO - Response: 200
+2025-03-20 17:59:13,939 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:13,945 - http - INFO - Response: 200
+2025-03-20 17:59:14,224 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:14,230 - http - INFO - Response: 200
+2025-03-20 17:59:14,460 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:14,464 - http - INFO - Response: 200
+2025-03-20 17:59:14,792 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:14,798 - http - INFO - Response: 200
+2025-03-20 17:59:15,179 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:15,183 - http - INFO - Response: 200
+2025-03-20 17:59:15,904 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:15,908 - http - INFO - Response: 200
+2025-03-20 17:59:16,250 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:16,256 - http - INFO - Response: 200
+2025-03-20 17:59:16,581 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:16,585 - http - INFO - Response: 200
+2025-03-20 17:59:16,830 - http - INFO - Request: GET http://localhost/api/v1/geographies/provinces/1
+2025-03-20 17:59:16,834 - http - INFO - Response: 200
+2025-03-20 17:59:49,515 - http - INFO - Request: GET http://api_gateway:8000/health
+2025-03-20 17:59:49,520 - http - INFO - Response: 200

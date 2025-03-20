@@ -49,8 +49,8 @@ async def gets(
     service_header_generator="core.security.generate_request_header",
     # response_model="schemas.UserRead",
     response_list=False,
-    # cache_key_prefix="users:result",
-    # cache_resource_id_type=int,
+    cache_key_prefix="users:result",
+    cache_resource_id_type=int,
 )
 async def get(id: int, request: Request, response: Response) -> Any:
     pass
