@@ -5,7 +5,6 @@ from typing import Any, Dict
 from config import settings
 from apis.v1.api import api_router
 from core.setup import create_application
-from core.helpers.cache import use_cache
 from core.logger import logging
 
 logger = logging.getLogger("http")
@@ -28,6 +27,7 @@ if settings.BACKEND_CORS_ORIGINS:
 
 
 # Middleware store request
+"""
 @app.middleware("http")
 async def log_request(request: Request, call_next):
     logger.info(f"Request: {request.method} {request.url}")
@@ -35,10 +35,10 @@ async def log_request(request: Request, call_next):
     logger.info(f"Response: {response.status_code}")
 
     return response
+"""
 
 
 @app.get("/")
-# @use_cache(key_prefix="test", expiration=1000)
 async def root() -> Any:
     result: Dict[Any, Any] = {
         "message": f"Your {settings.APP_NAME} endpoint is working"

@@ -18,6 +18,7 @@ from config import (
     RedisCacheSetting,
 )
 from apis.v1.deps import rate_limiter, use_author_for_dev
+from middlewares.logger_request import LoggerRequestMiddleware
 
 
 # Cache with pool
@@ -95,6 +96,9 @@ def create_application(
 
     lifespan = lifespan_factory(settings)
     application = FastAPI(lifespan=lifespan, **kwargs)
+
+    # Add middleware
+    application.add_middleware(LoggerRequestMiddleware)  # type: ignore
 
     if isinstance(settings, AppSetting):
         # Enabled Rate limit at Production
