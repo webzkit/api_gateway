@@ -6,8 +6,9 @@ from passlib.context import CryptContext
 from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
 from core.helpers.cache import has_whitelist_token
 from core.helpers.utils import hashkey
+from core.logger import Logger
 
-
+logger = Logger(__name__)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -75,7 +76,9 @@ def get_password_hash(password: str) -> str:
 
 
 async def decode_access_token(
-    authorization: Union[str, None] = None, use_for: str = "access_token"
+    authorization: Union[str, None] = None,
+    use_for: str = "access_token",
+    is_verify: bool = True,
 ):
     if not authorization:
         raise AuthTokenMissing("Auth token is missing in headers.")
@@ -85,10 +88,11 @@ async def decode_access_token(
         payload = jwt.decode(token, PUBLIC_KEY, algorithms=[ALGORITHM])
 
         # verify token internal
-        username = payload["payload"]["username"]
-        cache_key = f"whitelist_token:{username}:{use_for}:{hashkey(token)}"
-        if not await verify_token_internal(cache_key):
-            raise AuthTokenExpired("Auth token is expired")
+        if is_verify:
+            username = payload["payload"]["username"]
+            cache_key = f"whitelist_token:{username}:{use_for}:{hashkey(token)}"
+            if not await verify_token_internal(cache_key):
+                raise AuthTokenExpired("Auth token is expired")
 
         return payload
 
@@ -117,3 +121,16 @@ def is_admin_user(token_payload):
 
 def is_default_user(token_payload):
     return token_payload["user_type"] in ["default", "admin"]
+
+
+async def get_current_user_by(access_token: Optional[str] = None):
+    if access_token is None:
+        return None
+
+    try:
+        payload = await decode_access_token(authorization=access_token, is_verify=False)
+        return payload["payload"]
+    except Exception as error:
+        logger.error(f"User not found by key {error}")
+
+        return None

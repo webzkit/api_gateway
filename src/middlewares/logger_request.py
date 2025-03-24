@@ -1,14 +1,12 @@
 from typing import Any
-from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi import status
-from fastapi.responses import JSONResponse
-from starlette.types import Message
-import json
+from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from core.helpers.utils import parse_query_str
-from core.logger import logging
+from core.logger import Logger
+from core.security import get_current_user_by
+from schemas.rate_limit import sanitize_path
 
-logger = logging.getLogger("http-request")
+logger = Logger("http-request")
+SKIP_LOGGER = ["health", "metrics"]
 
 
 class LoggerRequestMiddleware(BaseHTTPMiddleware):
@@ -16,19 +14,37 @@ class LoggerRequestMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
 
     async def get_current_user(self, request: Request) -> Response | Any:
-        request_headeers = request.headers
-        print(request_headeers)
+        user_at = await get_current_user_by(request.headers.get("Authorization"))
+        if user_at is None:
+            return request.client.host  # pyright: ignore
 
-        return 10
+        return user_at["username"]
 
     async def dispatch(
         self,
         request: Request,
         call_next: RequestResponseEndpoint,
     ) -> Response:
-        print(await self.get_current_user(request))
-        logger.info(f"Request: {request.method} {request.url}")
+        path = sanitize_path(request.url.path)
+        if path in SKIP_LOGGER:
+            return await call_next(request)
+
+        username = await self.get_current_user(request)
+        host = request.client.host  # pyright: ignore
+
+        # logger.warning(f"Test Warning")
+        # logger.critical(f"Test Critical")
+        # logger.info(f"Test Info")
+        # logger.error(f"Test Error")
+
         response: Response = await call_next(request)
-        logger.info(f"Response: {response.status_code}")
+
+        logger.info(
+            f"Request: {request.method} {request.url}",
+            extra={
+                "uname": username,
+                "host": host,
+            },
+        )
 
         return response

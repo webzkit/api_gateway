@@ -2,10 +2,10 @@ from datetime import UTC, datetime
 from typing import Union
 from redis.asyncio import ConnectionPool, Redis
 
-from core.logger import logging
+from core.logger import Logger
 from schemas.rate_limit import sanitize_path
 
-logger = logging.getLogger(__name__)
+logger = Logger(__name__)
 
 pool: ConnectionPool | None = None
 client: Redis | None = None

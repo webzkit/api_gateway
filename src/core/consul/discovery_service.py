@@ -2,9 +2,9 @@ import consul
 from config import settings
 import requests
 from fastapi import HTTPException
-from core.logger import logging
+from core.logger import Logger
 
-logger = logging.getLogger(__name__)
+logger = Logger(__name__)
 
 
 async def discover_service(service_name: str) -> str:

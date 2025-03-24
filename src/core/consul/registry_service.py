@@ -1,9 +1,9 @@
 from time import sleep
 from config import settings
 import consul
-from core.logger import logging
+from core.logger import Logger
 
-logger = logging.getLogger(__name__)
+logger = Logger(__name__)
 
 
 async def register_service():
