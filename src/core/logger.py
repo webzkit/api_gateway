@@ -9,9 +9,15 @@ class Logger:
     MAX_SIZE_STORE_LOGFILE = 10485760  # 10M
     MAX_FILE_STORE_LOGFILE = 5
 
-    def __init__(self, name: str = __name__, level: int = logging.INFO):
+    def __init__(
+        self,
+        name: str = __name__,
+        level: int = logging.INFO,
+        filename: str = "app.log",
+    ):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
+        self.filename = filename
 
         self.logger.handlers = [self._stdout(), self._store_to_file()]
 
@@ -38,7 +44,7 @@ class Logger:
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
 
-        return os.path.join(log_dir, "app.log")
+        return os.path.join(log_dir, f"{self.filename}")
 
     def _store_to_db(self):
         pass

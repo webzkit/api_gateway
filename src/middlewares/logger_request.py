@@ -5,7 +5,7 @@ from core.logger import Logger
 from core.security import get_current_user_by
 from schemas.rate_limit import sanitize_path
 
-logger = Logger("http-request")
+logger = Logger("http-request", filename="http-request.log")
 SKIP_LOGGER = ["health", "metrics"]
 
 
