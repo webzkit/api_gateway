@@ -14,9 +14,9 @@ class FileFormatter(logging.Formatter):
     def format(self, record):
         to_dict = json.loads(json.dumps(record.__dict__))
 
-        record.host = to_dict.get("host", "host unknow")
-        record.uname = to_dict.get("uname", "uname unknow")
-        record.status_code = to_dict.get("status_code", "status_code unknow")
+        record.host = to_dict.get("host", "unknow")
+        record.uname = to_dict.get("uname", "unknow")
+        record.status_code = to_dict.get("status_code", 0)
         record.svname = settings.SERVICE_NAME
 
         formatter = logging.Formatter(self.fmt, datefmt="%Y-%m-%d %H:%M:%S")
