@@ -1,7 +1,7 @@
 from time import sleep
 from config import settings
 import consul
-from core.logger import Logger
+from core.monitors.logger import Logger
 
 logger = Logger(__name__)
 

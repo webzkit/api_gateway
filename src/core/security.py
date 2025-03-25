@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
 from core.helpers.cache import has_whitelist_token
 from core.helpers.utils import hashkey
-from core.logger import Logger
+from core.monitors.logger import Logger
 
 logger = Logger(__name__)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

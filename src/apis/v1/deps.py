@@ -6,7 +6,7 @@ from core.helpers.rate_limit import is_rate_limited
 from core.exceptions import RateLimitException
 from config import settings
 from core.security import get_current_user_by
-from core.logger import Logger
+from core.monitors.logger import Logger
 
 
 auth_scheme = HTTPBearer()

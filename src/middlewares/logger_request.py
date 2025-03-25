@@ -1,7 +1,7 @@
 from typing import Any
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from core.logger import Logger
+from core.monitors.logger import Logger
 from core.security import get_current_user_by
 from schemas.rate_limit import sanitize_path
 
@@ -36,6 +36,7 @@ class LoggerRequestMiddleware(BaseHTTPMiddleware):
         # logger.critical(f"Test Critical")
         # logger.info(f"Test Info")
         # logger.error(f"Test Error")
+        # logger.debug(f"Test Debug")
 
         response: Response = await call_next(request)
 
@@ -44,6 +45,7 @@ class LoggerRequestMiddleware(BaseHTTPMiddleware):
             extra={
                 "uname": username,
                 "host": host,
+                "status_code": response.status_code,
             },
         )
 
