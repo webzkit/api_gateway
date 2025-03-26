@@ -34,6 +34,13 @@ class Logger:
 
         return handler
 
+    def _store_to_db(self):
+        handler = ClickHouseHandler(clickhouse_client())
+        handler.setLevel(logging.INFO)
+        handler.setFormatter(FileFormatter())
+
+        return handler
+
     def _store_to_file(self):
         handler = RotatingFileHandler(
             self._get_log_file_path(),
@@ -54,11 +61,6 @@ class Logger:
             os.makedirs(log_dir)
 
         return os.path.join(log_dir, f"{self.filename}")
-
-    def _store_to_db(self):
-        handler = ClickHouseHandler(clickhouse_client())
-        handler.setLevel(logging.INFO)
-        return handler
 
     def __getattr__(self, name):
         if hasattr(self.logger, name):

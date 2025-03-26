@@ -18,6 +18,7 @@ class FileFormatter(logging.Formatter):
         record.uname = to_dict.get("uname", "unknow")
         record.status_code = to_dict.get("status_code", 0)
         record.svname = settings.SERVICE_NAME
+        record.request_body = to_dict.get("request_body", "")
 
         formatter = logging.Formatter(self.fmt, datefmt="%Y-%m-%d %H:%M:%S")
 

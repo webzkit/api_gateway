@@ -20,6 +20,11 @@ class LoggerRequestMiddleware(BaseHTTPMiddleware):
 
         return user_at["username"]
 
+    async def get_body(self, request: Request) -> str:
+        body = await request.body()
+
+        return body.decode("utf-8", errors="replace")
+
     async def dispatch(
         self,
         request: Request,
@@ -30,7 +35,8 @@ class LoggerRequestMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         username = await self.get_current_user(request)
-        host = request.client.host  # pyright: ignore
+        client_host = request.client.host  # pyright: ignore
+        request_body = await self.get_body(request)
 
         # logger.warning(f"Test Warning")
         # logger.critical(f"Test Critical")
@@ -44,8 +50,11 @@ class LoggerRequestMiddleware(BaseHTTPMiddleware):
             f"Request: {request.method} {request.url}",
             extra={
                 "uname": username,
-                "host": host,
+                "client_host": client_host,
+                "request_body": request_body,
                 "status_code": response.status_code,
+                "method": request.method,
+                "path": request.url.path,
             },
         )
 

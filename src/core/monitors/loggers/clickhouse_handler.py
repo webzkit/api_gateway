@@ -5,17 +5,19 @@ from clickhouse_driver import Client
 
 """
 CREATE TABLE default.log_requests (
-  `timestamp` DateTime,
-  `svname` String,
-  `name` String,
-  `level` String,
-  `host` String,
-  `uname` String,
+  `asctime` DateTime,
+  `svname` FixedString(50),
+  `name` FixedString(50),
+  `uname` FixedString(20),
+  `levelname` FixedString(10),
+  `client_host` FixedString(20),
+  `method` FixedString(20),
+  `path` FixedString(100),
+  `request_body` String,
   `message` String,
-  `status_code` String
+  `status_code` Int16
 ) ENGINE = MergeTree
-ORDER BY
-  timestamp
+ORDER BY asctime
 """
 
 
@@ -25,21 +27,28 @@ class ClickHouseHandler(logging.Handler):
         self.client = client
 
     def emit(self, record):
-        store = self._partial(record.__dict__)
+        try:
+            self.format(record)
+            store = self._partial(record.__dict__)
 
-        self.client.execute(
-            "INSERT INTO log_requests (asctime, svname, name, level, host, uname, message, status_code) VALUES",
-            [tuple(store.values())],
-        )
+            self.client.execute(
+                "INSERT INTO log_requests (asctime, svname, name, uname, levelname, client_host, method, path,request_body, message, status_code) VALUES",
+                [tuple(store.values())],
+            )
+        except Exception:
+            self.handleError(record)
 
     def _partial(self, data):
         to_keep = [
             "asctime",
             "svname",
             "name",
-            "levelname",
-            "host",
             "uname",
+            "levelname",
+            "client_host",
+            "method",
+            "path",
+            "request_body",
             "message",
             "status_code",
         ]
@@ -49,6 +58,6 @@ class ClickHouseHandler(logging.Handler):
                 partial[column] = datetime.strptime(data[column], "%Y-%m-%d %H:%M:%S")
                 continue
 
-            partial[column] = data[column]
+            partial[column] = data.get(column, "")
 
         return partial
