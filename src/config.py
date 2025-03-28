@@ -66,6 +66,21 @@ class RedisRateLimiterSetting(BaseSettings):
     REDIS_RATE_LIMIT_PERIOD: int = int(getenv("DEFAULT_RATE_LIMIT_PERIOD", 3600))
 
 
+class ClickhouseSetting(BaseSettings):
+    CLICKHOUSE_HOST: str = Field(default="clickhouse")
+    CLICKHOUSE_POST: int = Field(default=8123)
+    CLICKHOUSE_USERNAME: str = Field(default="default")
+    CLICKHOUSE_PASSWORD: str = Field(default="your_password")
+    CLICKHOUSE_POOL_SIZE: int = Field(default=5)
+
+
+class LoggerSetting(BaseSettings):
+    LOGGER_DATABASE: str = Field(default="loggers")
+    LOGGER_TABLE_LOG_REQUEST: str = Field(default="log_requests")
+    LOGGER_BUFFER_SIZE: int = Field(default=100)  # 100 Records
+    LOGGER_FLUSH_INTERVAL: int = Field(default=30)  # 30Seconds
+
+
 class ServiceSetting(BaseSettings):
     GATEWAY_TIMEOUT: int = int(getenv("HTTP_TIMEOUT_SERVICE", 60))
 
@@ -86,6 +101,8 @@ class Settings(
     RedisCacheSetting,
     RedisRateLimiterSetting,
     ServiceSetting,
+    ClickhouseSetting,
+    LoggerSetting,
 ):
     model_config = SettingsConfigDict(env_prefix="APIGATEWAY__")
     pass

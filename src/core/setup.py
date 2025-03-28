@@ -9,6 +9,7 @@ from fastapi.openapi.utils import get_openapi
 from core.helpers import rate_limit, cache
 from core.consul.registry_service import register_service
 from config import (
+    ClickhouseSetting,
     EnviromentOption,
     settings,
     AppSetting,
@@ -48,6 +49,7 @@ def lifespan_factory(
         | RedisCacheSetting
         | RedisRateLimiterSetting
         | ServiceSetting
+        | ClickhouseSetting
     ),
 ) -> Callable[[FastAPI], _AsyncGeneratorContextManager[Any]]:
     @asynccontextmanager

@@ -1,11 +1,13 @@
 import logging
 import os
-
 from logging.handlers import RotatingFileHandler
+from config import settings
 from .loggers.stdout_formatter import StdoutFormatter
 from .loggers.file_formatter import FileFormatter
 from .loggers.clickhouse_handler import ClickHouseHandler
-from core.db.clickhouse import clickhouse_client
+from core.db.clickhouse import ClickHousePool
+
+ch_pool = ClickHousePool()
 
 
 class Logger:
@@ -35,7 +37,11 @@ class Logger:
         return handler
 
     def _store_to_db(self):
-        handler = ClickHouseHandler(clickhouse_client())
+        handler = ClickHouseHandler(
+            client_pool=ch_pool,
+            buffer_size=settings.LOGGER_BUFFER_SIZE,
+            flush_interval=settings.LOGGER_FLUSH_INTERVAL,
+        )
         handler.setLevel(logging.INFO)
         handler.setFormatter(FileFormatter())
 

@@ -1,42 +1,69 @@
 import logging
 from datetime import datetime
-from clickhouse_driver import Client
-
-
-"""
-CREATE TABLE default.log_requests (
-  `asctime` DateTime,
-  `svname` FixedString(50),
-  `name` FixedString(50),
-  `uname` FixedString(20),
-  `levelname` FixedString(10),
-  `client_host` FixedString(20),
-  `method` FixedString(20),
-  `path` FixedString(100),
-  `request_body` String,
-  `message` String,
-  `status_code` Int16
-) ENGINE = MergeTree
-ORDER BY asctime
-"""
+from collections import deque
+import asyncio
 
 
 class ClickHouseHandler(logging.Handler):
-    def __init__(self, client: Client):
+    def __init__(self, client_pool, buffer_size=100, flush_interval=5):
         super().__init__()
-        self.client = client
+        self.client = client_pool
+
+        self.buffer = deque(maxlen=buffer_size)
+        self.buffer_size = buffer_size
+        self.flush_interval = flush_interval
+
+        asyncio.create_task(self._periodic_flush())
 
     def emit(self, record):
         try:
             self.format(record)
             store = self._partial(record.__dict__)
+            self.buffer.append(tuple(store.values()))
+            if len(self.buffer) >= self.buffer_size:
+                self._flush_buffer()
+        except Exception as e:
+            print(f"Failed to emit log to ClickHouse: {e}")
 
-            self.client.execute(
-                "INSERT INTO log_requests (asctime, svname, name, uname, levelname, client_host, method, path,request_body, message, status_code) VALUES",
-                [tuple(store.values())],
-            )
-        except Exception:
-            self.handleError(record)
+    def _flush_buffer(self):
+        if self.buffer:
+            try:
+                log_records = list(self.buffer)
+                self.writing_to_db(log_records)
+            except Exception as e:
+                print(f"Failed to flush logs to ClickHouse: {e}")
+
+    # TODO Re-Check
+    async def _periodic_flush(self):
+        while True:
+            await asyncio.sleep(self.flush_interval)
+            if self.buffer:
+                self._flush_buffer()
+
+    def writing_to_db(self, log_records):
+        with self.client as client:
+            column_names = [
+                "asctime",
+                "svname",
+                "name",
+                "uname",
+                "levelname",
+                "client_host",
+                "method",
+                "path",
+                "request_body",
+                "message",
+                "status_code",
+            ]
+
+            try:
+                client.insert("log_requests", log_records, column_names=column_names)
+                self.buffer.clear()
+            except Exception as e:
+                print(e)
+                pass
+            finally:
+                client.close()
 
     def _partial(self, data):
         to_keep = [
