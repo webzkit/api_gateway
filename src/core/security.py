@@ -7,6 +7,7 @@ from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupt
 from core.helpers.cache import has_whitelist_token
 from core.helpers.utils import hashkey
 from core.monitors.logger import Logger
+from config import settings
 
 logger = Logger(__name__)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -54,6 +55,88 @@ RxDkMVyImPLuIooQLkWivZYkGnc9ylc4vQw+iAtD0psLE3whQAtHJdfxTp2vowqi
 xwIDAQAB
 -----END PUBLIC KEY-----
 """
+
+
+class JWTAuth:
+    def __init__(
+        self,
+        expire_minute: int = 10,
+        algorithm: str = "RS256",
+        public_key: str = PUBLIC_KEY,
+        private_key: str = PRIVATE_KEY,
+    ):
+        self.expire_minute = expire_minute
+        self.algorithm = algorithm
+        self.public_key = public_key
+        self.private_key = private_key
+
+    def encrypt(self, payload: Dict):
+        return self.__encode(payload)
+
+    def set_exprire(self, expire_minute: int):
+        self.expire_minute = expire_minute
+
+        return self
+
+    def get_expire(self):
+        return datetime.now().replace(tzinfo=None) + timedelta(
+            minutes=self.expire_minute
+        )
+
+    def __encode(self, payload: Dict):
+        to_encode = {"payload": payload, "exp": self.get_expire()}
+        encoded_jwt = jwt.encode(to_encode, self.private_key, algorithm=self.algorithm)
+
+        return encoded_jwt
+
+    async def decrypt(self, token: Optional[str] = None):
+        return await self.__decode(token=token)
+
+    async def __decode(
+        self,
+        token: Optional[str] = None,
+        use_for: str = "access_token",
+        is_verify: bool = True,
+    ):
+        if token is None:
+            raise AuthTokenMissing("Auth token is missing in headers.")
+
+        token_bearer = token.replace("Bearer ", "")
+        try:
+            payload = jwt.decode(
+                token_bearer, self.public_key, algorithms=[self.algorithm]
+            )
+
+            # verify token internal
+            if is_verify:
+                username = payload["payload"]["username"]
+                cache_key = (
+                    f"whitelist_token:{username}:{use_for}:{hashkey(token_bearer)}"
+                )
+                if not await verify_token_internal(cache_key):
+                    logger.debug(f"Token not found in cache: {cache_key}")
+                    raise AuthTokenExpired("Auth token is expired")
+
+            return payload
+
+        except jwt.exceptions.ExpiredSignatureError as e:
+            logger.debug(f"Token expired: {e}")
+
+            raise AuthTokenExpired("Auth token is expired.")
+
+        except jwt.exceptions.DecodeError as e:
+            logger.debug(f"Token corrupted: {e}")
+
+            raise AuthTokenCorrupted("Auth token is corrupted.")
+
+
+jwt_auth = JWTAuth(expire_minute=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+
+
+async def test_decode_access_token(
+    token: Optional[str] = None, use_for: str = "access_token", is_verify: bool = True
+):
+    return await jwt_auth.decrypt(token=token)
 
 
 def encode_access_token(payload: Dict, expire_minute: int = 10):
