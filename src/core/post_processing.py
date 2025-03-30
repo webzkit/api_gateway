@@ -1,7 +1,6 @@
 import asyncio
 from typing import Any, Dict
 from fastapi.responses import JSONResponse
-from core.security import encode_access_token
 from config import settings
 from core.helpers.cache import create_whitelist_token
 from core.helpers.utils import hashkey
@@ -18,9 +17,6 @@ async def access_token_generate_handler(data: Dict) -> Any:
     refresh_token = jwt_auth.set_exprire(settings.REFRESH_TOKEN_EXPIRE_MINUTES).encrypt(
         payload
     )
-
-    # access_token = encode_access_token(data, settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    # refresh_token = encode_access_token(data, settings.REFRESH_TOKEN_EXPIRE_MINUTES)
 
     content = {
         "access_token": access_token,

@@ -26,9 +26,8 @@ def route(
     service_name: str,
     authentication_required: bool = False,
     post_processing_func: Optional[str] = None,
-    authentication_token_decoder: str = "core.security.decode_access_token",
-    test_authentication_token_decoder: str = "core.security.test_decode_access_token",
-    service_authorization_checker: Optional[str] = "core.security.is_admin_user",
+    authentication_token_decoder: str = "core.security.verify_token",
+    service_authorization_checker: Optional[str] = "core.security.is_admin",
     service_header_generator: Optional[str] = "core.security.generate_request_header",
     response_model: Optional[str] = None,
     response_list: bool = False,
@@ -58,13 +57,10 @@ def route(
                 # Authentication
                 authorization = request.headers.get("authorization")
                 token_decoder = import_function(authentication_token_decoder)
-                test_token_decoder = import_function(test_authentication_token_decoder)
                 exc = None
 
                 try:
                     token_payload = await token_decoder(authorization)  # type: ignore
-                    test = await test_token_decoder(authorization)  # pyright: ignore
-                    # print(test)
                 except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted) as e:
                     exc = str(e)
                 except Exception as e:

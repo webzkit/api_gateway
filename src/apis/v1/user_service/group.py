@@ -19,8 +19,6 @@ SERVICE_NAME = settings.ENGINE_SERVICE_NAME
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
     response_model=None,
     response_list=True,
     cache_key_prefix="groups:results:items_per_page_{items_per_page}:page_{page}",
@@ -43,8 +41,6 @@ async def gets(
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
     response_model=None,
     response_list=False,
     cache_key_prefix="groups:result",
@@ -62,8 +58,6 @@ async def get(id: int, request: Request, response: Response) -> Any:
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
 )
 async def create(user: GroupCreate, request: Request, response: Response) -> Any:
     pass
@@ -77,8 +71,6 @@ async def create(user: GroupCreate, request: Request, response: Response) -> Any
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
     cache_key_prefix="groups:result",
     cache_resource_id_type=int,
 )
@@ -96,8 +88,6 @@ async def update(
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
     cache_key_prefix="groups:result",
     cache_resource_id_type=int,
 )
