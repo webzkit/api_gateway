@@ -19,10 +19,6 @@ SERVICE_NAME = settings.ENGINE_SERVICE_NAME
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    authentication_token_decoder="core.security.decode_access_token",
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
-    # response_model="schemas.UserRead",
     response_list=True,
     cache_key_prefix="users:results:items_per_page_{items_per_page}:page_{page}",
     cache_resource_id_name="page",
@@ -44,10 +40,6 @@ async def gets(
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    authentication_token_decoder="core.security.decode_access_token",
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
-    # response_model="schemas.UserRead",
     response_list=False,
     cache_key_prefix="users:result",
     cache_resource_id_type=int,
@@ -64,9 +56,6 @@ async def get(id: int, request: Request, response: Response) -> Any:
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    authentication_token_decoder="core.security.decode_access_token",
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
 )
 async def create(user: UserCreate, request: Request, response: Response) -> Any:
     pass
@@ -80,9 +69,6 @@ async def create(user: UserCreate, request: Request, response: Response) -> Any:
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    authentication_token_decoder="core.security.decode_access_token",
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
     cache_key_prefix="users:result",
     cache_resource_id_type=int,
 )
@@ -100,9 +86,6 @@ async def update(
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    authentication_token_decoder="core.security.decode_access_token",
-    service_authorization_checker="core.security.is_admin_user",
-    service_header_generator="core.security.generate_request_header",
     cache_key_prefix="users:result",
     cache_resource_id_type=int,
 )

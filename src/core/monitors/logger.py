@@ -1,7 +1,7 @@
 import logging
 import os
 from logging.handlers import RotatingFileHandler
-from config import settings
+from config import EnviromentOption, settings
 from .loggers.stdout_formatter import StdoutFormatter
 from .loggers.file_formatter import FileFormatter
 from .loggers.clickhouse_handler import ClickHouseHandler
@@ -25,10 +25,11 @@ class Logger:
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
         self.logger.handlers = [
-            self._stdout(),
             self._store_to_file(),
             self._store_to_db(),
         ]
+        if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
+            self.logger.handlers.append(self._stdout())
 
     def _stdout(self):
         handler = logging.StreamHandler()
