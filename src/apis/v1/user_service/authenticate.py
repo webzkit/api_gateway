@@ -9,7 +9,7 @@ from core.exceptions import AuthTokenCorrupted, AuthTokenMissing
 from core.helpers.cache import revoke_whitelist_token
 from core.post_processing import access_token_generate_handler
 from core.helpers.utils import hashkey
-from core.security import jwt_auth
+from core.security import authorize
 
 
 router = APIRouter()
@@ -39,7 +39,9 @@ async def refresh(request: Request, response: Response) -> Any:
     refresh_token = request.cookies.get("refresh_token")
 
     try:
-        user = await jwt_auth.verify(token=refresh_token, whitelist_key="refresh_token")
+        user = await authorize.verify(
+            token=refresh_token, whitelist_key="refresh_token"
+        )
         payload = {"data": user.get("payload")}
 
         return await access_token_generate_handler(payload)
@@ -58,7 +60,7 @@ async def logout(request: Request, response: Response) -> Any:
     pass
 
     try:
-        payload = await jwt_auth.decrypt(token)
+        payload = await authorize.decrypt(token)
         username = payload["payload"]["username"]
 
         access_cache_key = (

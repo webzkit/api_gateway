@@ -4,19 +4,20 @@ from fastapi.responses import JSONResponse
 from config import settings
 from core.helpers.cache import create_whitelist_token
 from core.helpers.utils import hashkey
-from core.security import jwt_auth
+from core.security import authorize
 
 
 expiration = settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
 expiration_refresh_token = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
 
 
+# TODO
 async def access_token_generate_handler(data: Dict) -> Any:
     payload = data.get("data", {})
-    access_token = jwt_auth.encrypt(payload)
-    refresh_token = jwt_auth.set_exprire(settings.REFRESH_TOKEN_EXPIRE_MINUTES).encrypt(
-        payload
-    )
+    access_token = authorize.encrypt(payload)
+    refresh_token = authorize.set_exprire(
+        settings.REFRESH_TOKEN_EXPIRE_MINUTES
+    ).encrypt(payload)
 
     content = {
         "access_token": access_token,

@@ -1,13 +1,12 @@
-from typing import Annotated, Any
+from typing import Annotated, Any, Dict
 from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from schemas.rate_limit import sanitize_path
 from core.helpers.rate_limit import is_rate_limited
 from core.exceptions import RateLimitException
 from config import settings
-from core.security import get_current_user_by
 from core.monitors.logger import Logger
-
+from core.security import authorize
 
 auth_scheme = HTTPBearer()
 
@@ -25,28 +24,31 @@ def use_author_for_dev(
     return token.credentials
 
 
-async def get_option_user(request: Request) -> Any:
-    user_at = await get_current_user_by(request.headers.get("Authorization"))
-    if user_at is None:
-        return {"username": request.client.host}  # pyright: ignore
+async def get_user(request: Request) -> Dict:
+    try:
+        return await authorize.set_token_bearer(
+            request.headers.get("Authorization")
+        ).user()
+    except Exception as e:
+        logger.debug(f"User not found - {e}")
+        return {}
 
-    return user_at
 
-
+# TODO  make middleware
 async def rate_limiter(
-    request: Request, user: Annotated[dict, Depends(get_option_user)]
+    request: Request, user: Annotated[dict, Depends(get_user)]
 ) -> None:
     path = sanitize_path(request.url.path) or "index"
     if path in SKIP_RATE_LIMIT_PATHS:
         return
 
     limit, period = DEFAULT_LIMIT, DEFAULT_PERIOD
-    user_id = user["username"] or request.client.host  # pyright: ignore
+    username = user.get("username", request.client.host)  # pyright: ignore
 
     is_limited = await is_rate_limited(
-        user_id=user_id, path=path, limit=limit, period=period
+        user_id=username, path=path, limit=limit, period=period
     )
 
     if is_limited:
-        logger.warning(f"Rate limit exceeded for user {user_id} on path {path}")
+        logger.warning(f"Rate limit exceeded for user {username} on path {path}")
         raise RateLimitException("Rate limit exceeded.")

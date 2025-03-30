@@ -5,9 +5,9 @@ from urllib.parse import urlencode
 class Authorization:
     SCOPE_SUPER_ADMIN = "Supper Admin"
 
-    def __init__(self, payload: dict = {}, token_bearer: Optional[str] = ""):
-        self.__payload = payload
-        self.__teoken_bearer = token_bearer
+    def __init__(self):
+        self.__payload = {}
+        self.__teoken_bearer = ""
 
     def set_payload(self, payload: Dict = {}):
         self.__payload = payload
