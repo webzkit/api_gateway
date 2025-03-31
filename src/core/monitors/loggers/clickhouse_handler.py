@@ -33,7 +33,6 @@ class ClickHouseHandler(logging.Handler):
             except Exception as e:
                 print(f"Failed to flush logs to ClickHouse: {e}")
 
-    # TODO Re-Check
     async def _periodic_flush(self):
         while True:
             await asyncio.sleep(self.flush_interval)

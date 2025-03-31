@@ -7,10 +7,10 @@ from schemas.user_service.user import LoginForm
 from core.exception.http_exception import UnauthorizedException
 from core.exceptions import AuthTokenCorrupted, AuthTokenMissing
 from core.helpers.cache import revoke_whitelist_token
-from core.post_processing import access_token_generate_handler
+from core.post_processing import processing_login_response
 from core.helpers.utils import hashkey
 from core.security import authorize
-
+from core.authorization.whitelist import WhiteList
 
 router = APIRouter()
 
@@ -25,7 +25,7 @@ SERVICE_NAME = settings.ENGINE_SERVICE_NAME
     payload_key="login_form",
     service_name=SERVICE_NAME,
     authentication_required=False,
-    post_processing_func="core.post_processing.access_token_generate_handler",
+    post_processing_func="core.post_processing.processing_login_response",
     response_model="schemas.user_service.user.LoginResponse",
 )
 async def login(
@@ -44,7 +44,7 @@ async def refresh(request: Request, response: Response) -> Any:
         )
         payload = {"data": user.get("payload")}
 
-        return await access_token_generate_handler(payload)
+        return await processing_login_response(payload)
 
     except Exception as e:
         raise UnauthorizedException(str(e))
@@ -52,16 +52,24 @@ async def refresh(request: Request, response: Response) -> Any:
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout(request: Request, response: Response) -> Any:
+
     token = str(request.headers.get("authorization")).replace("Bearer ", "")
 
     # only use cookie
     # TODO
-    refresh_token = request.cookies.get("refresh_token")
-    pass
+    refresh_token = request.cookies.get("refresh_token") or ""
 
     try:
         payload = await authorize.decrypt(token)
         username = payload["payload"]["username"]
+        print(payload)
+
+        """
+        wl_token = WhiteList(username=username)
+
+        await wl_token.revoke(key="access_token", token=token)
+        await wl_token.revoke(key="refresh_token", token=refresh_token)
+        """
 
         access_cache_key = (
             f"whitelist_token:{username}:access_token:{hashkey(str(token))}"
@@ -72,7 +80,6 @@ async def logout(request: Request, response: Response) -> Any:
 
         await revoke_whitelist_token(access_cache_key)
         await revoke_whitelist_token(refresh_cache_key)
-
         response = JSONResponse(content={"detail": "Logged out successfully"})
 
         # Remove cookie

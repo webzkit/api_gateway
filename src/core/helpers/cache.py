@@ -214,19 +214,6 @@ def use_cache(expiration: int = 3600) -> Callable:
     return wrap
 
 
-async def create_whitelist_token(
-    cache_key: str, data: Dict, expiration: int = 3600
-) -> None:
-    if client is None:
-        raise MissingClientError
-
-    serializable_data = jsonable_encoder(data)
-    serialized_data = json.dumps(serializable_data)
-
-    await client.set(cache_key, serialized_data)
-    await client.expire(cache_key, expiration)
-
-
 async def revoke_whitelist_token(cache_key: str) -> None:
     if client is None:
         raise MissingClientError
@@ -234,14 +221,3 @@ async def revoke_whitelist_token(cache_key: str) -> None:
     cached_data = await client.get(cache_key)
     if cached_data:
         await client.delete(cache_key)
-
-
-async def has_whitelist_token(cache_key: str) -> bool:
-    if client is None:
-        raise MissingClientError
-
-    cache_data = await client.get(cache_key)
-    if not cache_data:
-        return False
-
-    return True

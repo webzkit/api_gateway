@@ -1,59 +1,37 @@
-import asyncio
 from typing import Any, Dict
 from fastapi.responses import JSONResponse
-from config import settings
-from core.helpers.cache import create_whitelist_token
-from core.helpers.utils import hashkey
 from core.security import authorize
+from config import settings
+from core.authorization.whitelist import WhiteList
 
 
-expiration = settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
-expiration_refresh_token = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
-
-
-# TODO
-async def access_token_generate_handler(data: Dict) -> Any:
+async def processing_login_response(data: Dict) -> Any:
     payload = data.get("data", {})
-    access_token = authorize.encrypt(payload)
-    refresh_token = authorize.set_exprire(
-        settings.REFRESH_TOKEN_EXPIRE_MINUTES
-    ).encrypt(payload)
+    content = await authorize.set_payload(payload).handle_login()
 
-    content = {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
-    }
+    if settings.TOKEN_VERIFY_BACKEND:
+        whitelist_token = WhiteList(
+            username=authorize.get_payload_by("username", ""), payload=content
+        )
 
-    username = data["data"]["username"]
-    access_token_cache_key = (
-        f"whitelist_token:{username}:access_token:{hashkey(access_token)}"
-    )
-    await create_whitelist_token(
-        cache_key=access_token_cache_key, data=content, expiration=expiration
-    )
+        await whitelist_token.set_expire(
+            settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        ).store_access_token()
 
-    refresh_token_cache_key = (
-        f"whitelist_token:{username}:refresh_token:{hashkey(refresh_token)}"
-    )
-
-    await create_whitelist_token(
-        cache_key=refresh_token_cache_key,
-        data=content,
-        expiration=expiration_refresh_token,
-    )
+        await whitelist_token.set_expire(
+            settings.REFRESH_TOKEN_EXPIRE_MINUTES
+        ).store_refresh_token()
 
     response = JSONResponse(content=content)
 
-    # TODO
-    max_age = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
+    # TODO refactory set cookie
     response.set_cookie(
         key="refresh_token",
-        value=refresh_token,
+        value=content.get("refresh_token", ""),
         httponly=True,
         secure=False,
         samesite="lax",
-        max_age=max_age,
+        max_age=settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
     )
 
     return response

@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta
 from typing import Dict, Optional
 import jwt
-from core.helpers.cache import has_whitelist_token
 from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
-from core.helpers.utils import hashkey
 from core.monitors.logger import Logger
+from config import settings
+from core.authorization.whitelist import WhiteList
 
-# TODO generate key at Prod
+# NOTE Must: generate key at Production
 from .define_key import PRIVATE_KEY, PUBLIC_KEY
+
 
 logger = Logger(__name__)
 
@@ -25,6 +26,8 @@ class JWTAuth:
         self.__public_key = public_key
         self.__private_key = private_key
 
+        self.wl_token = WhiteList()
+
     def encrypt(self, payload: Dict):
         return self.__encode(payload)
 
@@ -41,12 +44,13 @@ class JWTAuth:
         try:
             payload = await self.__decode(token=token)
 
-            username = payload["payload"]["username"]
-            cache_key = f"whitelist_token:{username}:{whitelist_key}:{hashkey(token)}"
+            if settings.TOKEN_VERIFY_BACKEND:
+                verified = await self.wl_token.set_username(
+                    payload["payload"]["username"]
+                ).has_whitelist(key=whitelist_key, token=token)
 
-            if not await has_whitelist_token(cache_key):
-                logger.debug(f"Token not found in cache: {cache_key}")
-                raise AuthTokenExpired("Auth token is expired")
+                if not verified:
+                    raise AuthTokenExpired("Auth token is expired")
 
             return payload
         except Exception as e:

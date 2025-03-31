@@ -28,8 +28,7 @@ class AppSetting(BaseSettings):
             return [i.strip() for i in v.split(",")]
         elif isinstance(v, (list, str)):
             return v
-
-        raise ValueError(v)
+        # raise ValueError(v)
 
 
 class CryptSetting(BaseSettings):
@@ -39,6 +38,7 @@ class CryptSetting(BaseSettings):
         getenv("REFRESH_TOKEN_EXPIRE_MINUTES", 2880)
     )
     TOKEN_VERIFY_EXPIRE: bool = bool(getenv("TOKEN_VERIFY_EXPIRE", False))
+    TOKEN_VERIFY_BACKEND: bool = bool(getenv("TOKEN_VERIFY_BACKEND", True))
 
 
 class RedisCacheSetting(BaseSettings):
