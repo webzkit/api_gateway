@@ -5,8 +5,11 @@ from fastapi import APIRouter, Body, status, Request, Response
 from config import settings
 from schemas.user_service.user import LoginForm
 from core.exception.http_exception import UnauthorizedException
-from core.exceptions import AuthTokenCorrupted, AuthTokenMissing, AuthTokenExpired
-from core.post_processing import processing_login_response
+from core.exception.auth_exception import (
+    AuthTokenCorrupted,
+    AuthTokenMissing,
+    AuthTokenExpired,
+)
 from core.security import authorize
 
 router = APIRouter()

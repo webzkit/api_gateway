@@ -1,7 +1,11 @@
 from datetime import datetime, timedelta
 from typing import Dict, Optional
 import jwt
-from core.exceptions import AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted
+from core.exception.auth_exception import (
+    AuthTokenMissing,
+    AuthTokenExpired,
+    AuthTokenCorrupted,
+)
 from core.monitors.logger import Logger
 from config import settings
 from core.authorization.whitelist import WhiteList

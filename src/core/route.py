@@ -6,12 +6,13 @@ from fastapi import Request, Response, HTTPException, status
 
 from core.helpers.cache import use_cache
 
-from .exceptions import (
+from .exception.auth_exception import (
     AuthTokenMissing,
     AuthTokenExpired,
     AuthTokenCorrupted,
-    ServiceHttpException,
 )
+
+from core.exception.http_exception import ServiceHttpException
 from fastapi.encoders import jsonable_encoder
 from .client import make_request
 from core.helpers.utils import parse_query_str

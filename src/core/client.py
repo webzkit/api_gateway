@@ -1,8 +1,7 @@
-from jwt import encode
 import aiohttp
 import async_timeout
 from config import settings
-from core.exceptions import ServiceHttpException
+from core.exception.http_exception import ServiceHttpException
 
 
 async def make_request(

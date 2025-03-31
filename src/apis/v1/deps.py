@@ -3,7 +3,7 @@ from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from schemas.rate_limit import sanitize_path
 from core.helpers.rate_limit import is_rate_limited
-from core.exceptions import RateLimitException
+from core.exception.http_exception import RateLimitException
 from config import settings
 from core.monitors.logger import Logger
 from core.security import authorize
