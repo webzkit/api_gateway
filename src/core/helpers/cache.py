@@ -212,12 +212,3 @@ def use_cache(expiration: int = 3600) -> Callable:
         return inner
 
     return wrap
-
-
-async def revoke_whitelist_token(cache_key: str) -> None:
-    if client is None:
-        raise MissingClientError
-
-    cached_data = await client.get(cache_key)
-    if cached_data:
-        await client.delete(cache_key)

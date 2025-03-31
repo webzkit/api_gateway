@@ -41,20 +41,17 @@ class JWTAuth:
             raise AuthTokenMissing("Auth token is missing in headers.")
 
         token = self.__replace_token_bearer(token)
-        try:
-            payload = await self.__decode(token=token)
+        payload = await self.__decode(token=token)
 
-            if settings.TOKEN_VERIFY_BACKEND:
-                verified = await self.wl_token.set_username(
-                    payload["payload"]["username"]
-                ).has_whitelist(key=whitelist_key, token=token)
+        if settings.TOKEN_VERIFY_BACKEND:
+            verified = await self.wl_token.set_username(
+                payload["payload"]["username"]
+            ).has_whitelist(key=whitelist_key, token=token)
 
-                if not verified:
-                    raise AuthTokenExpired("Auth token is expired")
+            if verified is False:
+                raise AuthTokenExpired("Auth token is expired")
 
-            return payload
-        except Exception as e:
-            raise Exception(f"{e}")
+        return payload
 
     def set_exprire(self, expire_minute: int):
         self.__expire_minute = expire_minute
