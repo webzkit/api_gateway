@@ -17,6 +17,7 @@ from fastapi.encoders import jsonable_encoder
 from .client import make_request
 from core.helpers.utils import parse_query_str
 from core.consul.discovery_service import discover_service
+from core.caching.use_cache import use_cache as abc
 
 
 def route(
@@ -132,7 +133,8 @@ def route(
     return wrapper
 
 
-@use_cache()
+# @use_cache()
+@abc()
 async def call_to_service(
     request: Request,
     url: str,
