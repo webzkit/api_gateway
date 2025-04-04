@@ -12,13 +12,14 @@ def use_cache(expiration: int = 3600) -> Callable:
     def wrap(func) -> Callable:
         @functools.wraps(func)
         async def inner(request: Request, *args, **kwargs) -> Any:
-            key_prefix = kwargs.get("cache_key_prefix", None)
-            if key_prefix is None:
-                response_data, status_code = await func(request, *args, **kwargs)
+            response_data, status_code = await func(request, *args, **kwargs)
 
-                return response_data, status_code
-
-            # get To Cache
+            """
+            response_data, status_code = await cache.set_expire(expiration).get(
+                func, request, *args, **kwargs
+            )
+            """
+            return response_data, status_code
 
         return inner
 
