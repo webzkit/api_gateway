@@ -2,7 +2,8 @@ import json
 from typing import Dict, Optional
 
 from fastapi.encoders import jsonable_encoder
-from core.helpers import cache
+from core.db import cache_redis as cache
+
 from core.helpers.utils import hashkey
 from core.exception.cache_exception import MissingClientError
 from core.monitors.logger import Logger
@@ -32,7 +33,6 @@ class WhiteList:
         if token is None:
             return None
         try:
-            token = token.replace("Bearer ", "")
             data = await self.get(self.get_cache_key(key=key, token=token))
             if data is None:
                 return None

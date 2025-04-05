@@ -1,6 +1,6 @@
 from collections.abc import Callable
 import json
-from typing import Optional, Self, Any
+from typing import Self, Any
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from core.exception.cache_exception import (
@@ -8,7 +8,7 @@ from core.exception.cache_exception import (
     MissingClientError,
 )
 import re
-from core.helpers import cache
+from core.db import cache_redis as cache
 from core.monitors.logger import Logger
 
 
@@ -16,9 +16,9 @@ logger = Logger(__name__)
 
 
 class Caching:
-    def __init__(self, key_prefix: Optional[str] = "", expire: int = 3600) -> None:
-        self.key_prefix = key_prefix
+    def __init__(self, expire: int = 3600) -> None:
         self.expire = expire
+        self.key_prefix = ""
 
     def get_client(self):
         if cache.client is None:
@@ -26,51 +26,46 @@ class Caching:
 
         return cache.client
 
-    async def get(self, func: Callable, request: Request, *args, **kwargs) -> Any:
+    async def aside(self, func: Callable, request: Request, *args, **kwargs) -> Any:
         self.key_prefix = kwargs.get("cache_key_prefix", None)
 
         if self.key_prefix is None:
             return await func(request, *args, **kwargs)
 
-        try:
-            cache_key = self.get_cache_key(**kwargs)
-            if request.method == "GET":
-                cache_data = await self.get_client().get(cache_key)
-                if cache_data:
-                    return json.loads(cache_data.decode("utf-8")), None
+        cache_key = self.get_cache_key(**kwargs)
 
-            response_data, status_code = await func(request, *args, **kwargs)
+        if request.method == "GET":
+            cache_data = await self.get_client().get(cache_key)
+            if cache_data:
+                return json.loads(cache_data.decode("utf-8")), None
 
-            return response_data, status_code
+        response_data, status_code = await func(request, *args, **kwargs)
 
-            if response_data is None:
-                return response_data, status_code
+        # Write to cache
+        await self.__destroy_or_create(request, cache_key, response_data)
 
-            # Write to cache
-            if request.method == "GET":
-                serialized_data = json.dumps(jsonable_encoder(response_data))
+        return response_data, status_code
 
-                await self.get_client().set(cache_key, serialized_data)
-                await self.get_client().expire(cache_key, self.get_expire())
+    async def __destroy_or_create(
+        self, request: Request, key: str, response_data: dict = {}
+    ) -> None:
+        if request.method == "GET":
+            await self.get_client().set(
+                key, json.dumps(jsonable_encoder(response_data))
+            )
+            await self.get_client().expire(key, self.get_expire())
 
-                return response_data, status_code
-
-            # Delete cache
-            await self.get_client().delete(cache_key)
-
-            return response_data, status_code
-
-        except Exception as e:
-            logger.debug(f"{e}")
+        else:
+            await self.get_client().delete(key)
 
     def get_cache_key(self, **kwargs) -> str:
         formatted_key_prefix = self.__format_prefix(
             self.get_key_prefix(), kwargs.get("cache_kwargs", {})
         )
 
-        return f"{formatted_key_prefix}:{self.get_resource_id(**kwargs)}"
+        return f"{formatted_key_prefix}:{self.__get_resource_id(**kwargs)}"
 
-    def get_resource_id(self, **kwargs) -> int | str:
+    def __get_resource_id(self, **kwargs) -> int | str:
         if kwargs.get("cache_resource_id_name") is not None:
             cache_kwargs = kwargs.get("cache_kwargs", {})
             return cache_kwargs[kwargs.get("cache_resource_id_name")]
@@ -94,7 +89,6 @@ class Caching:
         return self
 
     def get_key_prefix(self) -> str:
-
         return self.key_prefix or ""
 
     def __infer_resource_id(

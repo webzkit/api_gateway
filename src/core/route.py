@@ -4,8 +4,6 @@ from typing import Any, Dict, List, Optional
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
 
-from core.helpers.cache import use_cache
-
 from .exception.auth_exception import (
     AuthTokenMissing,
     AuthTokenExpired,
@@ -17,7 +15,7 @@ from fastapi.encoders import jsonable_encoder
 from .client import make_request
 from core.helpers.utils import parse_query_str
 from core.consul.discovery_service import discover_service
-from core.caching.use_cache import use_cache as abc
+from core.caching.use_cache import use_cache
 
 
 def route(
@@ -133,8 +131,7 @@ def route(
     return wrapper
 
 
-# @use_cache()
-@abc()
+@use_cache()
 async def call_to_service(
     request: Request,
     url: str,
