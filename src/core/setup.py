@@ -1,12 +1,12 @@
 from typing import Any, AsyncGenerator, Callable
 from fastapi import APIRouter, Depends, FastAPI
 from contextlib import _AsyncGeneratorContextManager, asynccontextmanager
-from redis import asyncio as redis
+from redis import asyncio as async_redis
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 import fastapi
 from fastapi.openapi.utils import get_openapi
 
-from core.helpers import rate_limit, cache
+from core.helpers import rate_limit
 from core.consul.registry_service import register_service
 from config import (
     ClickhouseSetting,
@@ -20,22 +20,25 @@ from config import (
 )
 from apis.v1.deps import rate_limiter, use_author_for_dev
 from middlewares.logger_request import LoggerRequestMiddleware
+from core.db import cache_redis
 
 
 # Cache with pool
 async def create_redis_cache_pool() -> None:
-    cache.pool = redis.ConnectionPool.from_url(settings.REDIS_CACHE_URL)
-    cache.client = redis.Redis.from_pool(cache.pool)  # pyright: ignore
+    cache_redis.pool = async_redis.ConnectionPool.from_url(settings.REDIS_CACHE_URL)
+    cache_redis.client = async_redis.Redis.from_pool(
+        cache_redis.pool
+    )  # pyright: ignore
 
 
 async def close_redis_cache_pool() -> None:
-    await cache.client.aclose()  # type: ignore
+    await cache_redis.client.aclose()  # type: ignore
 
 
 # Rate limit
 async def create_redis_rate_limit_pool() -> None:
-    rate_limit.pool = redis.ConnectionPool.from_url(settings.REDIS_RATE_LIMIT_URL)
-    rate_limit.client = redis.Redis.from_pool(rate_limit.pool)  # type: ignore
+    rate_limit.pool = async_redis.ConnectionPool.from_url(settings.REDIS_RATE_LIMIT_URL)
+    rate_limit.client = async_redis.Redis.from_pool(rate_limit.pool)  # type: ignore
 
 
 async def close_redis_rate_limit_pool() -> None:
