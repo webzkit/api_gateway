@@ -10,9 +10,7 @@ from core.monitors.logger import Logger
 from config import settings
 from core.authorization.whitelist import WhiteList
 
-# NOTE Must: generate key at Production
-from .define_key import PRIVATE_KEY, PUBLIC_KEY
-
+from core.authorization.certfile import CertFile
 
 logger = Logger(__name__)
 
@@ -22,15 +20,12 @@ class JWTAuth:
         self,
         expire_minute: int = 10,
         algorithm: str = "RS256",
-        public_key: str = PUBLIC_KEY,
-        private_key: str = PRIVATE_KEY,
     ):
         self.__expire_minute = expire_minute
         self.__algorithm = algorithm
-        self.__public_key = public_key
-        self.__private_key = private_key
 
         self.wl_token = WhiteList()
+        self.certfile = CertFile()
 
     def encrypt(self, payload: Dict):
         return self.__encode(payload)
@@ -69,8 +64,12 @@ class JWTAuth:
 
     def __encode(self, payload: Dict):
         to_encode = {"payload": payload, "exp": self.get_expire()}
+
         encoded_jwt = jwt.encode(
-            to_encode, self.__private_key, algorithm=self.__algorithm
+            to_encode,
+            self.certfile.set_username(payload["username"]).read("private"),
+            algorithm=self.__algorithm,
+            headers={"kid": "info"},
         )
 
         return encoded_jwt
@@ -83,9 +82,17 @@ class JWTAuth:
             raise AuthTokenMissing("Auth token is missing in headers.")
 
         token = self.__replace_token_bearer(token)
+        decode_header = jwt.get_unverified_header(token)
+        username_header = decode_header.get("kid")
+        if not username_header:
+            raise AuthTokenCorrupted("Auth token is corrupted.")
 
         try:
-            return jwt.decode(token, self.__public_key, algorithms=[self.__algorithm])
+            return jwt.decode(
+                token,
+                self.certfile.set_username(username_header).read("public"),
+                algorithms=[self.__algorithm],
+            )
         except jwt.exceptions.ExpiredSignatureError as e:
             logger.debug(f"Token expired: {e}")
 

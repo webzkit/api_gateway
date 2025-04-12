@@ -3,7 +3,6 @@ from typing import Optional
 from fastapi.responses import JSONResponse
 from core.authorization.authenticate import Authorization
 from core.authorization.jwt import JWTAuth
-from core.authorization.define_key import PRIVATE_KEY, PUBLIC_KEY
 from config import settings
 from core.authorization.whitelist import WhiteList
 
@@ -13,15 +12,11 @@ class Authorize(JWTAuth, Authorization):
         self,
         expire_minute: int = 10,
         algorithm: str = "RS256",
-        public_key: str = PUBLIC_KEY,
-        private_key: str = PRIVATE_KEY,
     ):
         JWTAuth.__init__(
             self,
             expire_minute=expire_minute,
             algorithm=algorithm,
-            public_key=public_key,
-            private_key=private_key,
         )
 
         self.wl_token = WhiteList()

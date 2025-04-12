@@ -7,7 +7,7 @@ bcrypt==3.2.0
 passlib[bcrypt]
 PyJWT~=2.9.0
 PyJWT[crypto]
-
+cryptography
 redis~=5.0.1
 arq~=0.25.0
 
