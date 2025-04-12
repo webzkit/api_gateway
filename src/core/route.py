@@ -44,7 +44,6 @@ def route(
         path, status_code=status_code, response_model=response_model
     )
 
-    # TODO refactor func
     def wrapper(f):
         @app_any
         @functools.wraps(f)
@@ -54,44 +53,28 @@ def route(
 
             # Check authentication
             if authentication_required:
-                # Authentication
-                authorization = request.headers.get("authorization")
-                token_decoder = import_function(authentication_token_decoder)
-                exc = None
-
                 try:
-                    token_payload = await token_decoder(authorization)  # type: ignore
-                except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted) as e:
-                    exc = str(e)
-                except Exception as e:
-                    exc = str(e)
-                finally:
-                    if exc:
-                        raise HTTPException(
-                            status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=exc,
-                            headers={"WWW-Authenticate": "Bearer"},
-                        )
-
-                # Authorization
-                if service_authorization_checker:
-                    authorization_checker = import_function(
-                        service_authorization_checker
+                    token_bearer = request.headers.get("authorization", "")
+                    token_payload = await authenticate(
+                        token_bearer, authentication_token_decoder
                     )
 
-                    is_user_eligible = authorization_checker(token_payload)
+                    # Authorization
+                    await check_user_eligible(
+                        token_payload, service_authorization_checker
+                    )
 
-                    if not is_user_eligible:
-                        raise HTTPException(
-                            status_code=status.HTTP_403_FORBIDDEN,
-                            detail="You are allowed to access this scope",
-                            headers={"WWW-Authenticate": "Bearer"},
-                        )
+                    # Generate headers
+                    if service_header_generator:
+                        header_generator = import_function(service_header_generator)
+                        service_headers = header_generator(token_payload, token_bearer)
 
-                # Service headers
-                if service_header_generator:
-                    header_generator = import_function(service_header_generator)
-                    service_headers = header_generator(token_payload, authorization)
+                except Exception as error:
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail=str(error),
+                        headers={"WWW-Authenticate": "Bearer"},
+                    )
 
             scope = request.scope
             method = scope["method"].lower()
@@ -129,6 +112,40 @@ def route(
             return resp_data
 
     return wrapper
+
+
+async def check_user_eligible(
+    token_payload: dict, func_use: Optional[str] = None
+) -> None:
+    if func_use is None:
+        return
+
+    authorization_checker = import_function(func_use)
+    is_user_eligible = authorization_checker(token_payload)
+
+    if is_user_eligible:
+        return
+
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="You are allowed to access this scope",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+
+async def authenticate(token_bearer: str, func_use: str) -> Any:
+    token_decoder = import_function(func_use)
+    exc = None
+
+    try:
+        return await token_decoder(token_bearer)  # type: ignore
+    except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted) as e:
+        exc = str(e)
+    except Exception as e:
+        exc = str(e)
+    finally:
+        if exc:
+            raise Exception(f"{exc}")
 
 
 @use_cache()

@@ -3,7 +3,7 @@ from urllib.parse import urlencode
 
 
 class Authorization:
-    SCOPE_SUPER_ADMIN = "Supper Admin"
+    SCOPE_SUPER_ADMIN = ["Supper Admin"]
 
     def __init__(self):
         self.__payload = {}
@@ -35,7 +35,7 @@ class Authorization:
         }
 
     def is_admin(self):
-        return self.SCOPE_SUPER_ADMIN == self.__get_scope()
+        return self.__get_scope() in self.SCOPE_SUPER_ADMIN
 
     def __get_scope(self):
         return self.get_payload()["group"]["name"]
