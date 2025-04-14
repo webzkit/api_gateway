@@ -46,8 +46,9 @@ async def refresh(request: Request, response: Response) -> Any:
 @router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout(request: Request, response: Response) -> Any:
     try:
-        token = request.headers.get("authorization")
-        await authorize.handle_logout(token)
+        token = request.headers.get("authorization", "")
+        await authorize.handle_logout(token=token)
+
         return JSONResponse(content={"detail": "Logged out successfully"})
 
         # Destroy cookie

@@ -9,8 +9,9 @@ from core.exception.auth_exception import (
 from core.monitors.logger import Logger
 from config import settings
 from core.authorization.whitelist import WhiteList
-
 from core.authorization.certfile import CertFile
+from core.db.cache_redis import cache
+
 
 logger = Logger(__name__)
 
@@ -24,7 +25,7 @@ class JWTAuth:
         self.__expire_minute = expire_minute
         self.__algorithm = algorithm
 
-        self.wl_token = WhiteList()
+        self.wl_token = WhiteList(cache)
         self.certfile = CertFile()
 
     def encrypt(self, payload: Dict):
@@ -43,9 +44,9 @@ class JWTAuth:
         payload = await self.__decode(token=token)
 
         if settings.TOKEN_VERIFY_BACKEND:
-            verified = await self.wl_token.set_username(
-                payload["payload"]["username"]
-            ).has_whitelist(key=whitelist_key, token=token)
+            verified = await self.wl_token.has_whitelist(
+                key=f"{whitelist_key}:{payload['payload']['username']}", key_hash=token
+            )
 
             if verified is False:
                 raise AuthTokenExpired("Auth token is expired")

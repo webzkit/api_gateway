@@ -39,6 +39,16 @@ class CertFile:
         self.__save_to_disk(self.__make_path("private"), private_pem)
         self.__save_to_disk(self.__make_path("public"), public_pem)
 
+    # TODO remove certFile while logout
+    def remove(self):
+        private_path = self.__make_path("private")
+        if os.path.exists(private_path):
+            os.remove(private_path)
+
+        public_path = self.__make_path("public")
+        if os.path.exists(public_path):
+            os.remove(public_path)
+
     def __make_pems(self):
         # Serialize private key sang PEM
         private_pem = self.private_key.private_bytes(
