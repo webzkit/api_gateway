@@ -8,7 +8,7 @@ from core.exception.auth_exception import (
 )
 from core.monitors.logger import Logger
 from config import settings
-from core.authorization.whitelist import WhiteList
+from core.authorization.store.whitelist import WhiteList
 from core.authorization.certfile import CertFile
 from core.db.cache_redis import cache
 
@@ -44,7 +44,7 @@ class JWTAuth:
         payload = await self.__decode(token=token)
 
         if settings.TOKEN_VERIFY_BACKEND:
-            verified = await self.wl_token.has_whitelist(
+            verified = await self.wl_token.has(
                 key=f"{whitelist_key}:{payload['payload']['username']}", key_hash=token
             )
 

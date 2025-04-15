@@ -16,7 +16,7 @@ class LoggerRequestMiddleware(BaseHTTPMiddleware):
 
     async def get_username(self, request: Request) -> Response | Any:
         try:
-            return await authorize.set_token_bearer(
+            return await authorize.set_token(
                 request.headers.get("Authorization")
             ).get_by("username")
         except Exception as e:

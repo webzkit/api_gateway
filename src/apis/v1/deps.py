@@ -26,9 +26,7 @@ def use_author_for_dev(
 
 async def get_user(request: Request) -> Dict:
     try:
-        return await authorize.set_token_bearer(
-            request.headers.get("Authorization")
-        ).user()
+        return await authorize.set_token(request.headers.get("Authorization")).user()
     except Exception as e:
         logger.debug(f"User not found - {e}")
         return {}
