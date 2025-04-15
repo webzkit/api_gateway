@@ -1,5 +1,4 @@
 from typing import Annotated, Any
-from fastapi.responses import JSONResponse
 from core.route import route
 from fastapi import APIRouter, Body, status, Request, Response
 from config import settings
@@ -41,18 +40,4 @@ async def refresh(
     try:
         return await authorize.set_token(token=token.token).handle_refresh()
     except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted, Exception) as e:
-        raise UnauthorizedException(str(e))
-
-
-@router.post("/logout", status_code=status.HTTP_200_OK)
-async def logout(request: Request, response: Response) -> Any:
-    try:
-        token = request.headers.get("authorization", "")
-        await authorize.handle_logout(token=token)
-
-        return JSONResponse(content={"detail": "Logged out successfully"})
-
-        # Destroy cookie
-        # response.delete_cookie(key="refresh_token")
-    except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted) as e:
         raise UnauthorizedException(str(e))

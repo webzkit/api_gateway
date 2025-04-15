@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from config import AppSetting, EnviromentOption, settings
 from apis.v1.deps import use_author_for_dev
 
-from .user_service import authenticate, user, group
+from .user_service import authenticate, user, group, me
 
 from .avatar_service.geographies import country, province, district, ward
 from .avatar_service import sector, avatar
@@ -22,6 +22,7 @@ if isinstance(settings, AppSetting):
 # Register engine service
 api_router.include_router(user.router, prefix="/users", tags=["User"])
 api_router.include_router(group.router, prefix="/groups", tags=["User Group"])
+api_router.include_router(me.router, prefix="/me", tags=["Me"])
 
 
 # Register avatar service
