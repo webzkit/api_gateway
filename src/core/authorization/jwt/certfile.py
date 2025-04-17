@@ -4,7 +4,7 @@ import os
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
-
+from .constant import PUBLIC, PRIVATE
 
 logger = Logger(__name__)
 KEY_DIR = "/keys"
@@ -36,8 +36,18 @@ class CertFile:
     def write(self):
         private_pem, public_pem = self.__make_keys().__make_pems()
 
-        self.__save_to_disk(self.__make_path("private"), private_pem)
-        self.__save_to_disk(self.__make_path("public"), public_pem)
+        self.__save_to_disk(self.__make_path(PRIVATE), private_pem)
+        self.__save_to_disk(self.__make_path(PUBLIC), public_pem)
+
+    # TODO remove certFile while logout
+    def remove(self):
+        private_path = self.__make_path(PRIVATE)
+        if os.path.exists(private_path):
+            os.remove(private_path)
+
+        public_path = self.__make_path(PUBLIC)
+        if os.path.exists(public_path):
+            os.remove(public_path)
 
     def __make_pems(self):
         # Serialize private key sang PEM

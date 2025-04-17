@@ -3,7 +3,7 @@ from config import settings
 from core.authorization.authorize import Authorize
 
 
-authorize = Authorize(expire_minute=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+authorize = Authorize(expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
 
 
 async def verify_token(token: Optional[str] = None):
@@ -13,7 +13,7 @@ async def verify_token(token: Optional[str] = None):
 def generate_request_header(token_payload, token_bearer: Optional[str] = None):
     return (
         authorize.set_payload(token_payload)
-        .set_token_bearer(token_bearer)
+        .set_token(token_bearer)
         .generate_request_init_data()
     )
 

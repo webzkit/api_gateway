@@ -35,4 +35,4 @@ async def root() -> Any:
 
 @app.get("/health")
 def health_status():
-    return {"status": "healthy"}
+    return {"status": "healthy", "uptime": "timing"}

@@ -1,9 +1,8 @@
-from datetime import datetime
-from typing import Annotated, Optional
+from typing import Annotated
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
-class LoginForm(BaseModel):
+class LoginRequest(BaseModel):
     email: Annotated[EmailStr, Field(examples=["info@zkit.com"])]
     password: Annotated[
         str,
@@ -12,6 +11,10 @@ class LoginForm(BaseModel):
             examples=["123456"],
         ),
     ]
+
+
+class RefreshTokenRequest(BaseModel):
+    token: Annotated[str, Field(default="")]
 
 
 class LoginResponse(BaseModel):
@@ -51,6 +54,7 @@ class UserCreate(UserBase):
         ),
     ]
 
+
 class UserUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -58,4 +62,3 @@ class UserUpdate(BaseModel):
         str | None,
         Field(min_length=2, max_length=30, examples=["User Userberg"], default=None),
     ]
-

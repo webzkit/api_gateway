@@ -20,19 +20,21 @@ from config import (
 )
 from apis.v1.deps import rate_limiter, use_author_for_dev
 from middlewares.logger_request import LoggerRequestMiddleware
-from core.db import cache_redis
+from core.db.cache_redis import cache
+
+
+redis_cache = None
 
 
 # Cache with pool
 async def create_redis_cache_pool() -> None:
-    cache_redis.pool = async_redis.ConnectionPool.from_url(settings.REDIS_CACHE_URL)
-    cache_redis.client = async_redis.Redis.from_pool(
-        cache_redis.pool
-    )  # pyright: ignore
+    global redis_cache
+
+    redis_cache = cache
 
 
 async def close_redis_cache_pool() -> None:
-    await cache_redis.client.aclose()  # type: ignore
+    await redis_cache.close()  # type: ignore
 
 
 # Rate limit

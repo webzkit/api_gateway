@@ -37,8 +37,8 @@ class CryptSetting(BaseSettings):
     REFRESH_TOKEN_EXPIRE_MINUTES: int = int(
         getenv("REFRESH_TOKEN_EXPIRE_MINUTES", 2880)
     )
-    TOKEN_VERIFY_EXPIRE: bool = bool(getenv("TOKEN_VERIFY_EXPIRE", False))
     TOKEN_VERIFY_BACKEND: bool = bool(getenv("TOKEN_VERIFY_BACKEND", True))
+    USE_COOKIE_AUTH: bool = bool(getenv("USE_COOKIE_AUTH", False))
 
 
 class RedisCacheSetting(BaseSettings):
