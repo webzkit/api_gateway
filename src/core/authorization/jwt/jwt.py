@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Dict, Optional
+from typing import Dict, Optional, Self
 import jwt
 from core.exception.auth_exception import (
     AuthTokenMissing,
@@ -9,30 +9,32 @@ from core.exception.auth_exception import (
 from core.monitors.logger import Logger
 from config import settings
 from core.authorization.store.whitelist import WhiteList
-from core.authorization.certfile import CertFile
+from core.authorization.jwt.certfile import CertFile
 from core.db.cache_redis import cache
+from core.authorization.jwt.interface import JWTInterface
+from .constant import PUBLIC, PRIVATE
 
 
 logger = Logger(__name__)
 
 
-class JWTAuth:
+class JWTAuth(JWTInterface):
     def __init__(
         self,
-        expire_minute: int = 10,
+        expire: int = 10,
         algorithm: str = "RS256",
     ):
-        self.__expire_minute = expire_minute
-        self.__algorithm = algorithm
+        self._expire = expire
+        self._algorithm = algorithm
 
         self.wl_token = WhiteList(cache)
         self.certfile = CertFile()
 
-    def encrypt(self, payload: Dict):
-        return self.__encode(payload)
+    async def encrypt(self, payload: Dict):
+        return self._encode(payload)
 
     async def decrypt(self, token: Optional[str] = None):
-        return await self.__decode(token=token)
+        return await self._decode(token=token)
 
     async def verify(
         self, token: Optional[str] = None, whitelist_key: str = "access_token"
@@ -40,8 +42,8 @@ class JWTAuth:
         if token is None:
             raise AuthTokenMissing("Auth token is missing in headers.")
 
-        token = self.__replace_token_bearer(token)
-        payload = await self.__decode(token=token)
+        token = self._replace_token(token)
+        payload = await self._decode(token=token)
 
         if settings.TOKEN_VERIFY_BACKEND:
             verified = await self.wl_token.has(
@@ -53,36 +55,34 @@ class JWTAuth:
 
         return payload
 
-    def set_exprire(self, expire_minute: int):
-        self.__expire_minute = expire_minute
+    def set_exprire(self, expire: int) -> Self:
+        self._expire = expire
 
         return self
 
     def get_expire(self):
-        return datetime.now().replace(tzinfo=None) + timedelta(
-            minutes=self.__expire_minute
-        )
+        return datetime.now().replace(tzinfo=None) + timedelta(minutes=self._expire)
 
-    def __encode(self, payload: Dict):
+    def _encode(self, payload: Dict):
         to_encode = {"payload": payload, "exp": self.get_expire()}
 
         encoded_jwt = jwt.encode(
             to_encode,
-            self.certfile.set_username(payload["username"]).read("private"),
-            algorithm=self.__algorithm,
+            self.certfile.set_username(payload["username"]).read(PRIVATE),
+            algorithm=self._algorithm,
             headers={"kid": "info"},
         )
 
         return encoded_jwt
 
-    async def __decode(
+    async def _decode(
         self,
         token: Optional[str] = None,
     ):
         if token is None:
             raise AuthTokenMissing("Auth token is missing in headers.")
 
-        token = self.__replace_token_bearer(token)
+        token = self._replace_token(token)
         decode_header = jwt.get_unverified_header(token)
         username_header = decode_header.get("kid")
         if not username_header:
@@ -91,8 +91,8 @@ class JWTAuth:
         try:
             return jwt.decode(
                 token,
-                self.certfile.set_username(username_header).read("public"),
-                algorithms=[self.__algorithm],
+                self.certfile.set_username(username_header).read(PUBLIC),
+                algorithms=[self._algorithm],
             )
         except jwt.exceptions.ExpiredSignatureError as e:
             logger.debug(f"Token expired: {e}")
@@ -104,5 +104,5 @@ class JWTAuth:
 
             raise AuthTokenCorrupted("Auth token is corrupted.")
 
-    def __replace_token_bearer(self, token: str):
+    def _replace_token(self, token: str):
         return token.replace("Bearer ", "")

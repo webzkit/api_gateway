@@ -1,34 +1,46 @@
-from typing import Optional
 from fastapi.responses import JSONResponse
-from core.authorization.authorization import Authorization
 from config import settings
 from core.authorization.store.whitelist import WhiteList
 from core.authorization.constans import REFRESH_TOKEN, ACCESS_TOKEN
 from core.db.cache_redis import cache
 from core.authorization.store.blacklist import BlackList
 from core.authorization.schema import TOKEN_BACKEND
+from core.authorization.jwt.jwt import JWTAuth
+from urllib.parse import urlencode
+from typing import Optional, Dict
 
 
-class Authorize(Authorization):
+class Authorize(JWTAuth):
+    SCOPE_SUPER_ADMIN = ["Supper Admin"]
+
     def __init__(
         self,
-        expire_minute: int = 10,
+        expire: int = 10,
         algorithm: str = "RS256",
     ):
-        super().__init__(expire_minute=expire_minute, algorithm=algorithm)
+        self._payload = {}
+        self._token = ""
+        JWTAuth.__init__(self, expire=expire, algorithm=algorithm)
         self.wl_token = WhiteList(cache)
         self.bl_token = BlackList(cache)
 
     async def handle_refresh(self):
         payload = await self.verify(token=self.get_token(), whitelist_key=REFRESH_TOKEN)
 
-        access_token = self.set_payload(payload.get("payload")).encrypt(
+        uname = payload["payload"]["username"]
+        await self.wl_token.destroy(
+            key=f"{REFRESH_TOKEN}:{uname}", key_hash=f"{self.get_token()}"
+        )
+
+        # TODO store to blacklist
+
+        access_token = await self.set_payload(payload.get("payload")).encrypt(
             self.get_payload()
         )
 
-        refresh_token = self.set_exprire(settings.REFRESH_TOKEN_EXPIRE_MINUTES).encrypt(
-            self.get_payload()
-        )
+        refresh_token = await self.set_exprire(
+            settings.REFRESH_TOKEN_EXPIRE_MINUTES
+        ).encrypt(self.get_payload())
 
         data = {
             ACCESS_TOKEN: access_token,
@@ -58,10 +70,10 @@ class Authorize(Authorization):
         await self.wl_token.destroy(key=f"{ACCESS_TOKEN}:{username}", key_hash=token)
 
     async def handle_login(self):
-        access_token = self.encrypt(self.get_payload())
-        refresh_token = self.set_exprire(settings.REFRESH_TOKEN_EXPIRE_MINUTES).encrypt(
-            self.get_payload()
-        )
+        access_token = await self.encrypt(self.get_payload())
+        refresh_token = await self.set_exprire(
+            settings.REFRESH_TOKEN_EXPIRE_MINUTES
+        ).encrypt(self.get_payload())
 
         data = {
             ACCESS_TOKEN: access_token,
@@ -112,3 +124,53 @@ class Authorize(Authorization):
             samesite="lax",
             max_age=expire * 60,  # convert to secons
         )
+
+    def set_payload(self, payload: Dict = {}):
+        self._payload = payload
+
+        return self
+
+    def get_payload(self):
+        if "payload" in self._payload:
+            return self._payload["payload"]
+
+        return self._payload
+
+    def set_token(self, token: Optional[str] = None):
+        self._token = token
+
+        return self
+
+    def get_token(self):
+        return self._token
+
+    def generate_request_init_data(self):
+        return {
+            "request-init-data": urlencode(self._payload),
+            "Authorization": self.get_token(),
+        }
+
+    def is_admin(self):
+        return self._get_scope() in self.SCOPE_SUPER_ADMIN
+
+    async def get_by(self, key: str):
+        user = await self.user()
+        if not user:
+            return ""
+
+        return user.get(key)
+
+    async def user(self):
+        payload = await self.decrypt(token=self.get_token())
+
+        return self.set_payload(payload).get_payload()
+
+    def get_payload_by(self, key: str, default: str = "") -> str:
+        user = self.get_payload()
+        if not user:
+            return default
+
+        return user.get(key, default)
+
+    def _get_scope(self):
+        return self.get_payload()["group"]["name"]

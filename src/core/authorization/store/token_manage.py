@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from core.db.cache_redis import CacheInterface
 
 
-class TokenStore(ABC):
+class TokenManage(ABC):
     def __init__(self, cache: CacheInterface):
         self._cache = cache
         self._ttl = 60
