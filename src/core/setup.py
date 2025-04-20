@@ -87,7 +87,7 @@ def create_application(
     if isinstance(settings, AppSetting):
         # application.router.dependencies = [Depends(rate_limiter)]
         # Enabled Rate limit at Production
-        if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
+        if settings.APP_ENV == EnviromentOption.PRODUCTION.value:
             application.add_middleware(RateLimiterMiddleware)  # type: ignore
 
     if isinstance(settings, AppSetting):
