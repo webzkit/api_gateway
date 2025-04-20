@@ -19,7 +19,6 @@ def get_nested_dic(dictionary: Dict, keys: Optional[List] = None):
 
 
 def sanitize_path(path: str) -> str:
-    print(path)
     return path.strip("/").replace("/", "_")
 
 

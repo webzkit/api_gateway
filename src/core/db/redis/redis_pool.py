@@ -9,8 +9,8 @@ logger = Logger(__name__)
 
 
 class RedisPool(RedisInterface):
-    def __init__(self):
-        self._pool = ConnectionPool.from_url(settings.REDIS_CACHE_URL)
+    def __init__(self, from_url: str):
+        self._pool = ConnectionPool.from_url(from_url)
         self._client = Redis.from_pool(self._pool)
 
     def client(self) -> Redis:
@@ -59,4 +59,4 @@ class RedisPool(RedisInterface):
             logger.error(f"Redis closes error: {e}")
 
 
-redis_pool = RedisPool()
+redis_pool = RedisPool(from_url=settings.REDIS_CACHE_URL)
