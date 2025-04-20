@@ -42,7 +42,7 @@ class TokenManage(ABC):
                 )
 
     def gen_key(self, **kwargs) -> str:
-        return f"{kwargs.get('key')}:{kwargs.get('uname')}"
+        return f"{kwargs.get('uname')}:{kwargs.get('key')}"
 
     def _replace_token_bearer(self, token: str):
         return token.replace("Bearer ", "")
@@ -54,7 +54,7 @@ class TokenManage(ABC):
         return hashlib.md5(key.encode("utf-8")).hexdigest()
 
     def _get_uname_at(self, key: str):
-        return key.split(":")[-1]
+        return key.split(":")[0]
 
     def set_ttl(self, ttl: int) -> Self:
         self._ttl = ttl

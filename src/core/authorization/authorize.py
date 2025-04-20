@@ -4,7 +4,10 @@ from core.authorization.store.whitelist import WhiteList
 from core.authorization.constans import REFRESH_TOKEN, ACCESS_TOKEN
 from core.db.cache_redis import cache
 from core.authorization.store.blacklist import BlackList
-from core.authorization.schema import TOKEN_BACKEND
+from core.authorization.schema import (
+    BlackListTokenSchema,
+    WhiteListTokenSchema,
+)
 from core.authorization.jwt.jwt import JWTAuth
 from urllib.parse import urlencode
 from typing import Optional, Dict
@@ -15,29 +18,29 @@ class Authorize(JWTAuth):
 
     def __init__(
         self,
-        expire: int = 10,
         algorithm: str = "RS256",
     ):
         self._payload = {}
         self._token = ""
-        JWTAuth.__init__(self, expire=expire, algorithm=algorithm)
+        JWTAuth.__init__(self, algorithm=algorithm)
         self.wl_token = WhiteList(cache)
         self.bl_token = BlackList(cache)
 
     async def handle_refresh(self):
         payload = await self.verify(token=self.get_token(), whitelist_key=REFRESH_TOKEN)
 
+        # Destroy old refresh token
         uname = payload["payload"]["username"]
         await self.wl_token.destroy(
-            key=f"{REFRESH_TOKEN}:{uname}", key_hash=f"{self.get_token()}"
+            key=self.wl_token.gen_key(key=REFRESH_TOKEN, uname=uname),
+            key_hash=f"{self.get_token()}",
         )
 
-        # TODO store to blacklist
-
-        access_token = await self.set_payload(payload.get("payload")).encrypt(
-            self.get_payload()
+        access_token = (
+            await self.set_payload(payload.get("payload"))
+            .set_exprire(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            .encrypt(self.get_payload())
         )
-
         refresh_token = await self.set_exprire(
             settings.REFRESH_TOKEN_EXPIRE_MINUTES
         ).encrypt(self.get_payload())
@@ -49,7 +52,8 @@ class Authorize(JWTAuth):
         }
 
         if settings.TOKEN_VERIFY_BACKEND:
-            await self._set_to_whitelist(data=TOKEN_BACKEND(**data))
+            await self._set_to_whitelist(data=WhiteListTokenSchema(**data))
+            await self._set_to_blacklist(data=BlackListTokenSchema(**data))
 
         response = JSONResponse(content=data)
 
@@ -67,10 +71,15 @@ class Authorize(JWTAuth):
         payload = await self.verify(token)
         username = payload["payload"]["username"]
 
-        await self.wl_token.destroy(key=f"{ACCESS_TOKEN}:{username}", key_hash=token)
+        await self.wl_token.destroy(
+            key=self.wl_token.gen_key(key=ACCESS_TOKEN, uname=username),
+            key_hash=token,
+        )
 
     async def handle_login(self):
-        access_token = await self.encrypt(self.get_payload())
+        access_token = await self.set_exprire(
+            settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        ).encrypt(self.get_payload())
         refresh_token = await self.set_exprire(
             settings.REFRESH_TOKEN_EXPIRE_MINUTES
         ).encrypt(self.get_payload())
@@ -82,7 +91,7 @@ class Authorize(JWTAuth):
         }
 
         if settings.TOKEN_VERIFY_BACKEND:
-            await self._set_to_whitelist(data=TOKEN_BACKEND(**data))
+            await self._set_to_whitelist(data=WhiteListTokenSchema(**data))
 
         response = JSONResponse(content=data)
 
@@ -96,18 +105,31 @@ class Authorize(JWTAuth):
 
         return response
 
-    async def _set_to_whitelist(self, data: TOKEN_BACKEND):
+    async def _set_to_whitelist(self, data: WhiteListTokenSchema):
         ttl = settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
         for k, v in data.to_dict().items():
-            if k == "token_type":
-                continue
-
             if k == "refresh_token":
                 ttl = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
 
             await self.wl_token.set_ttl(ttl).create(
                 key=self.wl_token.get_key_by(
-                    key=f"{k}:{self.get_payload_by('username')}",
+                    key=self.wl_token.gen_key(
+                        key=k, uname=self.get_payload_by("username")
+                    ),
+                    key_hash=v,
+                ),
+                value=data.to_dict(),
+            )
+
+    async def _set_to_blacklist(self, data: BlackListTokenSchema):
+        for k, v in data.to_dict().items():
+            ttl = settings.REFRESH_TOKEN_EXPIRE_MINUTES * 60
+
+            await self.bl_token.set_ttl(ttl).create(
+                key=self.bl_token.get_key_by(
+                    key=self.bl_token.gen_key(
+                        key=k, uname=self.get_payload_by("username")
+                    ),
                     key_hash=v,
                 ),
                 value=data.to_dict(),
@@ -153,24 +175,12 @@ class Authorize(JWTAuth):
     def is_admin(self):
         return self._get_scope() in self.SCOPE_SUPER_ADMIN
 
-    async def get_by(self, key: str):
-        user = await self.user()
-        if not user:
-            return ""
-
-        return user.get(key)
-
-    async def user(self):
-        payload = await self.decrypt(token=self.get_token())
-
-        return self.set_payload(payload).get_payload()
-
     def get_payload_by(self, key: str, default: str = "") -> str:
-        user = self.get_payload()
-        if not user:
+        payload = self.get_payload()
+        if not payload:
             return default
 
-        return user.get(key, default)
+        return payload.get(key, default)
 
     def _get_scope(self):
         return self.get_payload()["group"]["name"]

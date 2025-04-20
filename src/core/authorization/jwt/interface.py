@@ -15,9 +15,3 @@ class JWTInterface(ABC):
     @abstractmethod
     async def verify(self, token: str) -> Dict:
         pass
-
-    """
-    @abstractmethod
-    def set_exprire(self, expire: int) -> Self:
-        pass
-    """

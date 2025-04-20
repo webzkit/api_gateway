@@ -1,5 +1,6 @@
-from typing import Annotated
+from typing import Annotated, Any
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+import uuid as uuid_pkg
 
 
 class LoginRequest(BaseModel):
@@ -30,6 +31,7 @@ class UserRead(BaseModel):
     email: EmailStr
     group_id: int
     group_name: str
+    uuid: uuid_pkg.UUID
 
 
 class UserBase(BaseModel):

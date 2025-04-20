@@ -12,7 +12,7 @@ from core.authorization.store.whitelist import WhiteList
 from core.authorization.jwt.certfile import CertFile
 from core.db.cache_redis import cache
 from core.authorization.jwt.interface import JWTInterface
-from .constant import PUBLIC, PRIVATE
+from .constant import PUBLIC_KEY, PRIVATE_KEY, PEM_NAME
 
 
 logger = Logger(__name__)
@@ -21,10 +21,9 @@ logger = Logger(__name__)
 class JWTAuth(JWTInterface):
     def __init__(
         self,
-        expire: int = 10,
         algorithm: str = "RS256",
     ):
-        self._expire = expire
+        self._expire = 10  # in minutes
         self._algorithm = algorithm
 
         self.wl_token = WhiteList(cache)
@@ -47,7 +46,10 @@ class JWTAuth(JWTInterface):
 
         if settings.TOKEN_VERIFY_BACKEND:
             verified = await self.wl_token.has(
-                key=f"{whitelist_key}:{payload['payload']['username']}", key_hash=token
+                key=self.wl_token.gen_key(
+                    key=whitelist_key, uname=payload["payload"]["username"]
+                ),
+                key_hash=token,
             )
 
             if verified is False:
@@ -65,12 +67,13 @@ class JWTAuth(JWTInterface):
 
     def _encode(self, payload: Dict):
         to_encode = {"payload": payload, "exp": self.get_expire()}
+        pem_name = f"{payload['uuid']}"
 
         encoded_jwt = jwt.encode(
             to_encode,
-            self.certfile.set_username(payload["username"]).read(PRIVATE),
+            self.certfile.set_pem_name(pem_name).read(PRIVATE_KEY),
             algorithm=self._algorithm,
-            headers={"kid": "info"},
+            headers={PEM_NAME: pem_name},
         )
 
         return encoded_jwt
@@ -84,14 +87,14 @@ class JWTAuth(JWTInterface):
 
         token = self._replace_token(token)
         decode_header = jwt.get_unverified_header(token)
-        username_header = decode_header.get("kid")
-        if not username_header:
-            raise AuthTokenCorrupted("Auth token is corrupted.")
+        pem_name = decode_header.get(PEM_NAME)
+        if not pem_name:
+            raise AuthTokenCorrupted("Auth token is corrupted in headers.")
 
         try:
             return jwt.decode(
                 token,
-                self.certfile.set_username(username_header).read(PUBLIC),
+                self.certfile.set_pem_name(pem_name).read(PUBLIC_KEY),
                 algorithms=[self._algorithm],
             )
         except jwt.exceptions.ExpiredSignatureError as e:

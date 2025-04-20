@@ -1,9 +1,8 @@
 from typing import Optional
-from config import settings
 from core.authorization.authorize import Authorize
 
 
-authorize = Authorize(expire=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+authorize = Authorize()
 
 
 async def verify_token(token: Optional[str] = None):

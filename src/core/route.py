@@ -59,7 +59,7 @@ def route(
                         token_bearer, authentication_token_decoder
                     )
 
-                    # Authorization
+                    # check permission
                     await check_user_eligible(
                         token_payload, service_authorization_checker
                     )
