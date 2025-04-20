@@ -75,6 +75,7 @@ async def registry() -> None:
 async def main() -> None:
     logger.info("Initializing service")
     await init()
+    await registry()
     logger.info("Service finished initializing")
 
 
