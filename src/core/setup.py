@@ -71,9 +71,6 @@ def lifespan_factory(
         if isinstance(settings, RedisCacheSetting):
             await close_redis_cache_pool()
 
-        if isinstance(settings, ServiceSetting):
-            await register_service()
-
     return lifespan
 
 

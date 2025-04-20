@@ -1,9 +1,9 @@
-from time import sleep
 from config import settings
 import consul
-from core.monitors.logger import Logger
+import asyncio
 
-logger = Logger(__name__)
+# from core.monitors.logger import Logger
+# logger = Logger(__name__)
 
 
 async def register_service():
@@ -25,6 +25,6 @@ async def register_service():
             )
             break
         except consul.ConsulException:
-            logger.error("Retrying to connect to consul ...")
+            print("Retrying to connect to consul ...")
 
-            sleep(0.5)
+            await asyncio.sleep(0.5)

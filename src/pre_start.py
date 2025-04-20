@@ -3,6 +3,7 @@ import logging
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 from core.db.clickhouse import ClickHousePool
 from config import settings
+from core.consul.registry_service import register_service
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -59,6 +60,16 @@ async def create_table() -> None:
 async def init() -> None:
     await create_database()
     await create_table()
+
+
+@retry(
+    stop=stop_after_attempt(max_tries),
+    wait=wait_fixed(wait_seconds),
+    before=before_log(logger, logging.INFO),
+    after=after_log(logger, logging.WARN),
+)
+async def registry() -> None:
+    await register_service()
 
 
 async def main() -> None:
