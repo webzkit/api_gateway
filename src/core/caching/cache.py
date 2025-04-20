@@ -9,28 +9,23 @@ from core.exception.cache_exception import (
 )
 import re
 from core.monitors.logger import Logger
-
-# TODO refactor
-from redis.asyncio import ConnectionPool, Redis
-from config import settings
-
-pool = ConnectionPool.from_url(settings.REDIS_CACHE_URL)
-client = Redis.from_pool(pool)
+from core.db.redis.redis_interface import RedisInterface
 
 
 logger = Logger(__name__)
 
 
 class Caching:
-    def __init__(self, expire: int = 3600) -> None:
-        self.expire = expire
+    def __init__(self, redis_pool: RedisInterface) -> None:
+        self.expire = 3600
         self.key_prefix = ""
+        self._cache = redis_pool
 
     def get_client(self):
-        if client is None:
+        if self._cache.client() is None:
             raise MissingClientError
 
-        return client
+        return self._cache.client()
 
     async def aside(self, func: Callable, request: Request, *args, **kwargs) -> Any:
         self.key_prefix = kwargs.get("cache_key_prefix", None)

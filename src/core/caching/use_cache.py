@@ -3,8 +3,9 @@ import functools
 from typing import Any
 from fastapi import Request
 from .cache import Caching
+from core.db.redis.redis_pool import redis_pool
 
-cache = Caching()
+cache = Caching(redis_pool)
 
 
 def use_cache(expiration: int = 3600) -> Callable:

@@ -2,7 +2,7 @@ from fastapi.responses import JSONResponse
 from config import settings
 from core.authorization.store.whitelist import WhiteList
 from core.authorization.constans import REFRESH_TOKEN, ACCESS_TOKEN
-from core.db.cache_redis import cache
+from core.db.redis.redis_pool import redis_pool
 from core.authorization.store.blacklist import BlackList
 from core.authorization.schema import (
     BlackListTokenSchema,
@@ -23,8 +23,8 @@ class Authorize(JWTAuth):
         self._payload = {}
         self._token = ""
         JWTAuth.__init__(self, algorithm=algorithm)
-        self.wl_token = WhiteList(cache)
-        self.bl_token = BlackList(cache)
+        self.wl_token = WhiteList(redis_pool)
+        self.bl_token = BlackList(redis_pool)
 
     async def handle_refresh(self):
         payload = await self.verify(token=self.get_token(), whitelist_key=REFRESH_TOKEN)

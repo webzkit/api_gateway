@@ -10,10 +10,9 @@ from core.monitors.logger import Logger
 from config import settings
 from core.authorization.store.whitelist import WhiteList
 from core.authorization.jwt.certfile import CertFile
-from core.db.cache_redis import cache
 from core.authorization.jwt.interface import JWTInterface
 from .constant import PUBLIC_KEY, PRIVATE_KEY, PEM_NAME
-
+from core.db.redis.redis_pool import redis_pool
 
 logger = Logger(__name__)
 
@@ -26,7 +25,7 @@ class JWTAuth(JWTInterface):
         self._expire = 10  # in minutes
         self._algorithm = algorithm
 
-        self.wl_token = WhiteList(cache)
+        self.wl_token = WhiteList(redis_pool)
         self.certfile = CertFile()
 
     async def encrypt(self, payload: Dict):

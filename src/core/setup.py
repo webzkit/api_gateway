@@ -20,8 +20,7 @@ from config import (
 )
 from apis.v1.deps import rate_limiter, use_author_for_dev
 from middlewares.logger_request import LoggerRequestMiddleware
-from core.db.cache_redis import cache
-
+from core.db.redis.redis_pool import redis_pool
 
 redis_cache = None
 
@@ -30,7 +29,7 @@ redis_cache = None
 async def create_redis_cache_pool() -> None:
     global redis_cache
 
-    redis_cache = cache
+    redis_cache = redis_pool
 
 
 async def close_redis_cache_pool() -> None:

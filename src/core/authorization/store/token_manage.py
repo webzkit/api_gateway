@@ -3,11 +3,11 @@ import hashlib
 import json
 from typing import Dict, Self
 from fastapi.encoders import jsonable_encoder
-from core.db.cache_redis import CacheInterface
+from core.db.redis.redis_interface import RedisInterface
 
 
 class TokenManage(ABC):
-    def __init__(self, cache: CacheInterface):
+    def __init__(self, cache: RedisInterface):
         self._cache = cache
         self._ttl = 60
 
