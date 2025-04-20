@@ -18,5 +18,10 @@ def get_nested_dic(dictionary: Dict, keys: Optional[List] = None):
     return get_nested_dic(dictionary.get(keys[0], {}), keys[1:])
 
 
+def sanitize_path(path: str) -> str:
+    print(path)
+    return path.strip("/").replace("/", "_")
+
+
 def hashkey(key: str) -> str:
     return hashlib.md5(key.encode("utf-8")).hexdigest()

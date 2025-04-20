@@ -2,7 +2,7 @@ from typing import Any
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from core.monitors.logger import Logger
-from schemas.rate_limit import sanitize_path
+from core.helpers.utils import sanitize_path
 import jwt
 
 logger = Logger("http-request", filename="http-request.log")

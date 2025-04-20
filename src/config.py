@@ -62,7 +62,7 @@ class RedisRateLimiterSetting(BaseSettings):
     REDIS_RATE_LIMIT_URL: str = (
         f"redis://:{REDIS_RATE_PASSWORD}@{REDIS_RATE_LIMIT_HOST}:{REDIS_RATE_LIMIT_PORT}/{REDIS_RATE_DB}"
     )
-    REDIS_RATE_LIMIT_LIMIT: int = int(getenv("DEFAULT_RATE_LIMIT_LIMIT", 100))
+    REDIS_RATE_LIMIT_TIME: int = int(getenv("DEFAULT_RATE_LIMIT_TIME", 100))
     REDIS_RATE_LIMIT_PERIOD: int = int(getenv("DEFAULT_RATE_LIMIT_PERIOD", 3600))
 
 

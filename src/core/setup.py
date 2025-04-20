@@ -1,26 +1,23 @@
 from typing import Any, AsyncGenerator, Callable
 from fastapi import APIRouter, Depends, FastAPI
 from contextlib import _AsyncGeneratorContextManager, asynccontextmanager
-from redis import asyncio as async_redis
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 import fastapi
 from fastapi.openapi.utils import get_openapi
-
-from core.helpers import rate_limit
-from core.consul.registry_service import register_service
 from config import (
     ClickhouseSetting,
     EnviromentOption,
-    settings,
     AppSetting,
     CryptSetting,
     RedisRateLimiterSetting,
     ServiceSetting,
     RedisCacheSetting,
 )
-from apis.v1.deps import rate_limiter, use_author_for_dev
-from middlewares.logger_request import LoggerRequestMiddleware
+from apis.v1.deps import use_author_for_dev
 from core.db.redis.redis_pool import redis_pool
+from middlewares.logger_request import LoggerRequestMiddleware
+from middlewares.rate_limiter import RateLimiterMiddleware
+
 
 redis_cache = None
 
@@ -36,16 +33,6 @@ async def close_redis_cache_pool() -> None:
     await redis_cache.close()  # type: ignore
 
 
-# Rate limit
-async def create_redis_rate_limit_pool() -> None:
-    rate_limit.pool = async_redis.ConnectionPool.from_url(settings.REDIS_RATE_LIMIT_URL)
-    rate_limit.client = async_redis.Redis.from_pool(rate_limit.pool)  # type: ignore
-
-
-async def close_redis_rate_limit_pool() -> None:
-    await rate_limit.client.aclose()  # type: ignore
-
-
 def lifespan_factory(
     settings: (
         AppSetting
@@ -58,15 +45,9 @@ def lifespan_factory(
 ) -> Callable[[FastAPI], _AsyncGeneratorContextManager[Any]]:
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncGenerator:
-        if isinstance(settings, RedisRateLimiterSetting):
-            await create_redis_rate_limit_pool()
-
         if isinstance(settings, RedisCacheSetting):
             await create_redis_cache_pool()
         yield
-
-        if isinstance(settings, RedisRateLimiterSetting):
-            await close_redis_rate_limit_pool()
 
         if isinstance(settings, RedisCacheSetting):
             await close_redis_cache_pool()
@@ -104,9 +85,10 @@ def create_application(
     application.add_middleware(LoggerRequestMiddleware)  # type: ignore
 
     if isinstance(settings, AppSetting):
+        # application.router.dependencies = [Depends(rate_limiter)]
         # Enabled Rate limit at Production
-        if settings.APP_ENV == EnviromentOption.PRODUCTION.value:
-            application.router.dependencies = [Depends(rate_limiter)]
+        if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
+            application.add_middleware(RateLimiterMiddleware)  # type: ignore
 
     if isinstance(settings, AppSetting):
         application.include_router(
