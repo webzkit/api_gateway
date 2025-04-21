@@ -1,4 +1,3 @@
-from fastapi import Request
 from starlette.middleware.cors import CORSMiddleware
 from typing import Any, Dict
 
@@ -35,4 +34,4 @@ async def root() -> Any:
 
 @app.get("/health")
 def health_status():
-    return {"status": "healthy", "uptime": "timing"}
+    return {"status": "healthy"}
