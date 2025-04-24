@@ -168,7 +168,7 @@ class Authorize(JWTAuth):
 
     def generate_request_init_data(self):
         return {
-            "request-init-data": urlencode(self._payload),
+            "request-init-data": urlencode(self.get_payload()),
             # todo set header for service
             # "Authorization": self.get_token(),
         }
