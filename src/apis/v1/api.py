@@ -13,6 +13,7 @@ api_router.include_router(
     authenticate.router, prefix="/authenticate", tags=["Authorization"]
 )
 
+"""
 # TODO
 # Removed at prod
 if isinstance(settings, AppSetting):
@@ -45,3 +46,4 @@ api_router.include_router(
 api_router.include_router(sector.router, prefix="/sectors", tags=["Avatar Sector"])
 
 api_router.include_router(avatar.router, prefix="/avatars", tags=["Avatar"])
+"""

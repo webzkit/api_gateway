@@ -4,11 +4,11 @@ from typing import Any, Dict
 from config import settings
 from apis.v1.api import api_router
 from core.setup import create_application
-
+from core.router import register_route
 
 # Init application
 app = create_application(router=api_router, settings=settings)
-
+register_route(app)
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
