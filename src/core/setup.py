@@ -120,6 +120,42 @@ def create_application(
                     routes=application.routes,
                 )
 
+                out["components"]["schemas"]["UserCreate"] = {
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "maxLength": 30,
+                            "minLength": 2,
+                            "title": "Name",
+                            "examples": ["User Userson"],
+                        },
+                        "username": {
+                            "type": "string",
+                            "maxLength": 20,
+                            "minLength": 2,
+                            "pattern": "^[a-z0-9]+$",
+                            "title": "Username",
+                            "examples": ["userson"],
+                        },
+                        "email": {
+                            "type": "string",
+                            "format": "email",
+                            "title": "Email",
+                            "examples": ["user.userson@example.com"],
+                        },
+                        "password": {
+                            "type": "string",
+                            "pattern": "^.{8,}|[0-9]+|[A-Z]+|[a-z]+|[^a-zA-Z0-9]+$",
+                            "title": "Password",
+                            "examples": ["Str1ngst!"],
+                        },
+                    },
+                    "additionalProperties": False,
+                    "type": "object",
+                    "required": ["name", "username", "email", "password"],
+                    "title": "UserCreate",
+                }
+
                 return out
 
             application.include_router(docs_router)

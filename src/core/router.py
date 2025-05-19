@@ -20,7 +20,9 @@ except json.JSONDecodeError as e:
 
 
 # Hàm chuyển đổi schema OpenAPI sang Pydantic
-def openapi_schema_to_pydantic(schema: Dict, schema_name: str) -> Type[BaseModel]:
+def openapi_schema_to_pydantic(
+    schema: Dict, schema_name: str, schemas: Dict[str, Any]
+) -> Type[BaseModel]:
     fields = {}
     properties = schema.get("properties", {})
     required = schema.get("required", [])
@@ -36,7 +38,34 @@ def openapi_schema_to_pydantic(schema: Dict, schema_name: str) -> Type[BaseModel
             field_type = str
         elif prop_type == "number":
             field_type = float
+        elif prop_type == "array":
+            ref_schema = prop_schema.get("items", {}).get("$ref", "")
+            ref_schema_name = ref_schema.split("/")[-1]
+            if ref_schema:
+                prop_schema = {
+                    "items": openapi_schema_to_pydantic(
+                        schemas[ref_schema_name], ref_schema_name, schemas=schemas
+                    ).model_json_schema(),
+                    "type": prop_schema.get("type", ""),
+                    "title": prop_schema.get("title", ""),
+                }
+            field_type = list
+        elif prop_schema.get("$ref", None) is not None and prop_name == "data":
+            ref_schema_name = prop_schema.get("$ref").split("/")[-1]
+            prop_schema = openapi_schema_to_pydantic(
+                schemas[ref_schema_name], ref_schema_name, schemas
+            ).model_json_schema()
+
+            field_type = Any
         else:
+
+            # fore valid
+            if prop_schema.get("$ref", None) is not None and prop_name != "data":
+                ref_schema_name = prop_schema.get("$ref").split("/")[-1]
+                prop_schema = openapi_schema_to_pydantic(
+                    schemas[ref_schema_name], ref_schema_name, schemas
+                ).model_json_schema()
+
             field_type = Any
 
         # Xử lý nullable
@@ -48,7 +77,6 @@ def openapi_schema_to_pydantic(schema: Dict, schema_name: str) -> Type[BaseModel
 
         fields[prop_name] = Annotated[field_type, Field(default, **prop_schema)]
 
-    # Tạo mô hình Pydantic động
     return create_model(schema_name, **fields)
 
 
@@ -56,13 +84,15 @@ def openapi_schema_to_pydantic(schema: Dict, schema_name: str) -> Type[BaseModel
 pydantic_models = {}
 schemas = openapi_spec.get("components", {}).get("schemas", {})
 for schema_name, schema in schemas.items():
-    pydantic_models[schema_name] = openapi_schema_to_pydantic(schema, schema_name)
+    pydantic_models[schema_name] = openapi_schema_to_pydantic(
+        schema, schema_name, schemas
+    )
 
 
 # Hàm lấy Schema Pydantic từ $ref
 def get_model_from_ref(ref: str) -> Type[BaseModel]:
-    schema_name = ref.split("/")[-1]
-    model = pydantic_models.get(schema_name, BaseModel)
+    # schema_name = ref.split("/")[-1]
+    model = pydantic_models.get(ref, BaseModel)
     return model
 
 
@@ -73,7 +103,8 @@ def parse_openapi_to_route_config(openapi: Dict) -> List[Dict]:
 
     for path, methods in paths.items():
         if path in [
-            "/api/v1/users/{id}",
+            # "/api/v1/users/{id}",
+            # "/api/v1/users",
             "/api/v1/users/soft/{id}",
             "/",
             "/health",
@@ -89,7 +120,7 @@ def parse_openapi_to_route_config(openapi: Dict) -> List[Dict]:
 
         for method, details in methods.items():
             tags.update(details.get("tags", []))
-
+            print(method)
             # Lấy response_model
             response_schema = (
                 details.get("responses", {})
@@ -98,18 +129,20 @@ def parse_openapi_to_route_config(openapi: Dict) -> List[Dict]:
                 .get("application/json", {})
                 .get("schema", {})
             )
+
             response_model = None
             if response_schema.get("$ref", None) is None:
-                print("todo check")
+                # print(path, "$ref is None")
+                response_model = Any
                 # response_model = List[
                 #    get_model_from_ref(response_schema["items"]["$ref"])
                 # ]
             else:
                 print("begin===========================================")
-                print(path, method)
                 ref = response_schema.get("$ref") or ""
                 name = ref.split("/")[-1]
                 print("=========================================end")
+
                 response_model = get_model_from_ref(name)
 
             # Lấy request_body_model (cho POST)
@@ -121,10 +154,13 @@ def parse_openapi_to_route_config(openapi: Dict) -> List[Dict]:
             )
 
             request_body_model = (
-                get_model_from_ref(request_body["$ref"])
+                get_model_from_ref(request_body["$ref"].split("/")[-1])
                 if "$ref" in request_body
                 else None
             )
+
+            if request_body_model:
+                print(request_body_model.model_json_schema())
 
             # Lấy parameters
             parameters = details.get("parameters", [])
@@ -179,6 +215,7 @@ def register_dynamic_router(config: Dict) -> APIRouter:
         handler = handlers.get(handler_key)
         summary = endpoint["summary"]
         response_model = endpoint["response_model"]
+
         parameters = endpoint["parameters"]
         request_body_model = endpoint["request_body_model"]
         path = ""
@@ -189,7 +226,7 @@ def register_dynamic_router(config: Dict) -> APIRouter:
                     path=path,
                     response_model=response_model,
                     summary=summary,
-                    response_class=get_model_from_ref("UserRead")
+                    # response_class=get_model_from_ref("UserRead"),
                     openapi_extra={"parameters": parameters},
                 )(handler)
             elif method == "post":

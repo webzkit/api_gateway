@@ -1,711 +1,649 @@
 {
-
-      "openapi": "3.1.0",
-      "info": {
-            "title": "Engine",
-            "version": "0.1.0"
-      },
-      "paths": {
-            "/api/v1/authenticate/login": {
-                  "post": {
-                        "tags": [
-                              "Authorization"
-                        ],
-                        "summary": "Login",
-                        "operationId": "login_api_v1_authenticate_login_post",
-                        "requestBody": {
-                              "content": {
-                                    "application/json": {
-                                          "schema": {
-                                                "$ref": "#/components/schemas/Login"
-                                          }
-                                    }
-                              },
-                              "required": true
-                        },
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/SingleResponse_UserRead_"
-                                                }
-                                          }
-                                    }
-                              },
-                              "422": {
-                                    "description": "Validation Error",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/HTTPValidationError"
-                                                }
-                                          }
-                                    }
-                              }
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Engine",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/api/v1/authenticate/login": {
+            "post": {
+                "tags": ["Authorization"],
+                "summary": "Login",
+                "operationId": "login_api_v1_authenticate_login_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Login"
+                            }
                         }
-                  }
-            },
-            "/api/v1/authenticate/logout": {
-                  "post": {
-                        "tags": [
-                              "Authorization"
-                        ],
-                        "summary": "Logout",
-                        "operationId": "logout_api_v1_authenticate_logout_post",
-                        "parameters": [
-                              {
-                                    "name": "request-init-data",
-                                    "in": "header",
-                                    "required": false,
-                                    "schema": {
-                                          "anyOf": [
-                                                {
-                                                      "type": "string"
-                                                },
-                                                {
-                                                      "type": "null"
-                                                }
-                                          ],
-                                          "title": "Request-Init-Data"
-                                    }
-                              }
-                        ],
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/SingleResponse_UserRead_"
-                                                }
-                                          }
-                                    }
-                              },
-                              "422": {
-                                    "description": "Validation Error",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/HTTPValidationError"
-                                                }
-                                          }
-                                    }
-                              }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleResponse_UserRead_"
+                                }
+                            }
                         }
-                  }
-            },
-            "/api/v1/users": {
-                  "get": {
-                        "tags": [
-                              "User"
-                        ],
-                        "summary": "Gets",
-                        "operationId": "gets_api_v1_users_get",
-                        "parameters": [
-                              {
-                                    "name": "page",
-                                    "in": "query",
-                                    "required": false,
-                                    "schema": {
-                                          "type": "integer",
-                                          "default": 1,
-                                          "title": "Page"
-                                    }
-                              },
-                              {
-                                    "name": "items_per_page",
-                                    "in": "query",
-                                    "required": false,
-                                    "schema": {
-                                          "type": "integer",
-                                          "default": 100,
-                                          "title": "Items Per Page"
-                                    }
-                              }
-                        ],
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/PaginatedListResponse_UserRead_"
-                                                }
-                                          }
-                                    }
-                              },
-                              "422": {
-                                    "description": "Validation Error",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/HTTPValidationError"
-                                                }
-                                          }
-                                    }
-                              }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
                         }
-                  },
-                  "post": {
-                        "tags": [
-                              "User"
-                        ],
-                        "summary": "Create",
-                        "operationId": "create_api_v1_users_post",
-                        "requestBody": {
-                              "required": true,
-                              "content": {
-                                    "application/json": {
-                                          "schema": {
-                                                "$ref": "#/components/schemas/UserCreate"
-                                          }
-                                    }
-                              }
-                        },
-                        "responses": {
-                              "201": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": { }
-                                          }
-                                    }
-                              },
-                              "422": {
-                                    "description": "Validation Error",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/HTTPValidationError"
-                                                }
-                                          }
-                                    }
-                              }
-                        }
-                  }
-            },
-            "/api/v1/users/{id}": {
-                  "get": {
-                        "tags": [
-                              "User"
-                        ],
-                        "summary": "Get",
-                        "operationId": "get_api_v1_users__id__get",
-                        "parameters": [
-                              {
-                                    "name": "id",
-                                    "in": "path",
-                                    "required": true,
-                                    "schema": {
-                                          "type": "integer",
-                                          "title": "Id"
-                                    }
-                              },
-                              {
-                                    "name": "use_cache",
-                                    "in": "query",
-                                    "required": false,
-                                    "schema": {
-                                          "type": "boolean",
-                                          "default": false,
-                                          "title": "Use Cache"
-                                    }
-                              }
-                        ],
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/SingleResponse_UserRead_"
-                                                }
-                                          }
-                                    }
-                              },
-                              "422": {
-                                    "description": "Validation Error",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/HTTPValidationError"
-                                                }
-                                          }
-                                    }
-                              }
-                        }
-                  },
-                  "put": {
-                        "tags": [
-                              "User"
-                        ],
-                        "summary": "Update",
-                        "operationId": "update_api_v1_users__id__put",
-                        "parameters": [
-                              {
-                                    "name": "id",
-                                    "in": "path",
-                                    "required": true,
-                                    "schema": {
-                                          "type": "integer",
-                                          "title": "Id"
-                                    }
-                              }
-                        ],
-                        "requestBody": {
-                              "required": true,
-                              "content": {
-                                    "application/json": {
-                                          "schema": {
-                                                "$ref": "#/components/schemas/UserUpdate"
-                                          }
-                                    }
-                              }
-                        },
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": { }
-                                          }
-                                    }
-                              },
-                              "422": {
-                                    "description": "Validation Error",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/HTTPValidationError"
-                                                }
-                                          }
-                                    }
-                              }
-                        }
-                  },
-                  "delete": {
-                        "tags": [
-                              "User"
-                        ],
-                        "summary": "Delete",
-                        "operationId": "delete_api_v1_users__id__delete",
-                        "parameters": [
-                              {
-                                    "name": "id",
-                                    "in": "path",
-                                    "required": true,
-                                    "schema": {
-                                          "type": "integer",
-                                          "title": "Id"
-                                    }
-                              },
-                              {
-                                    "name": "request-init-data",
-                                    "in": "header",
-                                    "required": false,
-                                    "schema": {
-                                          "anyOf": [
-                                                {
-                                                      "type": "string"
-                                                },
-                                                {
-                                                      "type": "null"
-                                                }
-                                          ],
-                                          "title": "Request-Init-Data"
-                                    }
-                              }
-                        ],
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": { }
-                                          }
-                                    }
-                              },
-                              "422": {
-                                    "description": "Validation Error",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/HTTPValidationError"
-                                                }
-                                          }
-                                    }
-                              }
-                        }
-                  }
-            },
-            "/api/v1/users/soft/{id}": {
-                  "delete": {
-                        "tags": [
-                              "User"
-                        ],
-                        "summary": "Soft Delete",
-                        "operationId": "soft_delete_api_v1_users_soft__id__delete",
-                        "parameters": [
-                              {
-                                    "name": "id",
-                                    "in": "path",
-                                    "required": true,
-                                    "schema": {
-                                          "type": "integer",
-                                          "title": "Id"
-                                    }
-                              },
-                              {
-                                    "name": "request-init-data",
-                                    "in": "header",
-                                    "required": false,
-                                    "schema": {
-                                          "anyOf": [
-                                                {
-                                                      "type": "string"
-                                                },
-                                                {
-                                                      "type": "null"
-                                                }
-                                          ],
-                                          "title": "Request-Init-Data"
-                                    }
-                              }
-                        ],
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": { }
-                                          }
-                                    }
-                              },
-                              "422": {
-                                    "description": "Validation Error",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "$ref": "#/components/schemas/HTTPValidationError"
-                                                }
-                                          }
-                                    }
-                              }
-                        }
-                  }
-            },
-            "/": {
-                  "get": {
-                        "summary": "Root",
-                        "operationId": "root__get",
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": {
-                                                      "title": "Response Root  Get"
-                                                }
-                                          }
-                                    }
-                              }
-                        }
-                  }
-            },
-            "/health": {
-                  "get": {
-                        "summary": "Health Status",
-                        "operationId": "health_status_health_get",
-                        "responses": {
-                              "200": {
-                                    "description": "Successful Response",
-                                    "content": {
-                                          "application/json": {
-                                                "schema": { }
-                                          }
-                                    }
-                              }
-                        }
-                  }
+                    }
+                }
             }
-      },
-      "components": {
-            "schemas": {
-                  "GroupRelationship": {
-                        "properties": {
-                              "name": {
-                                    "anyOf": [
-                                          {
-                                                "type": "string"
-                                          },
-                                          {
-                                                "type": "null"
-                                          }
-                                    ],
-                                    "title": "Name"
-                              }
-                        },
-                        "type": "object",
-                        "title": "GroupRelationship"
-                  },
-                  "HTTPValidationError": {
-                        "properties": {
-                              "detail": {
-                                    "items": {
-                                          "$ref": "#/components/schemas/ValidationError"
-                                    },
-                                    "type": "array",
-                                    "title": "Detail"
-                              }
-                        },
-                        "type": "object",
-                        "title": "HTTPValidationError"
-                  },
-                  "Login": {
-                        "properties": {
-                              "email": {
-                                    "type": "string",
-                                    "format": "email",
-                                    "title": "Email",
-                                    "examples": [
-                                          "info@zkit.com"
-                                    ]
-                              },
-                              "password": {
-                                    "type": "string",
-                                    "title": "Password",
-                                    "examples": [
-                                          "123456"
-                                    ]
-                              }
-                        },
-                        "type": "object",
-                        "required": [
-                              "email",
-                              "password"
-                        ],
-                        "title": "Login"
-                  },
-                  "PaginatedListResponse_UserRead_": {
-                        "properties": {
-                              "data": {
-                                    "items": {
-                                          "$ref": "#/components/schemas/UserRead"
-                                    },
-                                    "type": "array",
-                                    "title": "Data"
-                              },
-                              "total": {
-                                    "type": "integer",
-                                    "title": "Total"
-                              },
-                              "has_more": {
-                                    "type": "boolean",
-                                    "title": "Has More"
-                              },
-                              "page": {
-                                    "anyOf": [
-                                          {
-                                                "type": "integer"
-                                          },
-                                          {
-                                                "type": "null"
-                                          }
-                                    ],
-                                    "title": "Page"
-                              },
-                              "items_per_page": {
-                                    "anyOf": [
-                                          {
-                                                "type": "integer"
-                                          },
-                                          {
-                                                "type": "null"
-                                          }
-                                    ],
-                                    "title": "Items Per Page"
-                              }
-                        },
-                        "type": "object",
-                        "required": [
-                              "data",
-                              "total",
-                              "has_more"
-                        ],
-                        "title": "PaginatedListResponse[UserRead]"
-                  },
-                  "SingleResponse_UserRead_": {
-                        "properties": {
-                              "data": {
-                                    "$ref": "#/components/schemas/UserRead"
-                              }
-                        },
-                        "type": "object",
-                        "required": [
-                              "data"
-                        ],
-                        "title": "SingleResponse[UserRead]"
-                  },
-                  "UserCreate": {
-                        "properties": {
-                              "name": {
-                                    "type": "string",
-                                    "maxLength": 30,
-                                    "minLength": 2,
-                                    "title": "Name",
-                                    "examples": [
-                                          "User Userson"
-                                    ]
-                              },
-                              "username": {
-                                    "type": "string",
-                                    "maxLength": 20,
-                                    "minLength": 2,
-                                    "pattern": "^[a-z0-9]+$",
-                                    "title": "Username",
-                                    "examples": [
-                                          "userson"
-                                    ]
-                              },
-                              "email": {
-                                    "type": "string",
-                                    "format": "email",
-                                    "title": "Email",
-                                    "examples": [
-                                          "user.userson@example.com"
-                                    ]
-                              },
-                              "password": {
-                                    "type": "string",
-                                    "pattern": "^.{8,}|[0-9]+|[A-Z]+|[a-z]+|[^a-zA-Z0-9]+$",
-                                    "title": "Password",
-                                    "examples": [
-                                          "Str1ngst!"
-                                    ]
-                              }
-                        },
-                        "additionalProperties": false,
-                        "type": "object",
-                        "required": [
-                              "name",
-                              "username",
-                              "email",
-                              "password"
-                        ],
-                        "title": "UserCreate"
-                  },
-                  "UserRead": {
-                        "properties": {
-                              "id": {
-                                    "type": "integer",
-                                    "title": "Id"
-                              },
-                              "name": {
-                                    "type": "string",
-                                    "maxLength": 30,
-                                    "minLength": 2,
-                                    "title": "Name",
-                                    "examples": [
-                                          "User Userson"
-                                    ]
-                              },
-                              "username": {
-                                    "type": "string",
-                                    "maxLength": 20,
-                                    "minLength": 2,
-                                    "pattern": "^[a-z0-9]+$",
-                                    "title": "Username",
-                                    "examples": [
-                                          "userson"
-                                    ]
-                              },
-                              "email": {
-                                    "type": "string",
-                                    "format": "email",
-                                    "title": "Email",
-                                    "examples": [
-                                          "user.userson@example.com"
-                                    ]
-                              },
-                              "group": {
-                                    "type": "string",
-                                    "title": "Uuid"
-                              },
-                              "uuid": {
-                                    "type": "string",
-                                    "format": "uuid",
-                                    "title": "Uuid"
-                              }
-                        },
-                        "type": "object",
-                        "required": [
-                              "id",
-                              "name",
-                              "username",
-                              "email",
-                              "group"
-                        ],
-                        "title": "UserRead"
-                  },
-                  "UserUpdate": {
-                        "properties": {
-                              "name": {
-                                    "anyOf": [
-                                          {
-                                                "type": "string",
-                                                "maxLength": 30,
-                                                "minLength": 2
-                                          },
-                                          {
-                                                "type": "null"
-                                          }
-                                    ],
-                                    "title": "Name",
-                                    "examples": [
-                                          "User Userberg"
-                                    ]
-                              }
-                        },
-                        "additionalProperties": false,
-                        "type": "object",
-                        "title": "UserUpdate"
-                  },
-                  "ValidationError": {
-                        "properties": {
-                              "loc": {
-                                    "items": {
-                                          "anyOf": [
-                                                {
-                                                      "type": "string"
-                                                },
-                                                {
-                                                      "type": "integer"
-                                                }
-                                          ]
-                                    },
-                                    "type": "array",
-                                    "title": "Location"
-                              },
-                              "msg": {
-                                    "type": "string",
-                                    "title": "Message"
-                              },
-                              "type": {
-                                    "type": "string",
-                                    "title": "Error Type"
-                              }
-                        },
-                        "type": "object",
-                        "required": [
-                              "loc",
-                              "msg",
-                              "type"
-                        ],
-                        "title": "ValidationError"
-                  }
+        },
+        "/api/v1/authenticate/logout": {
+            "post": {
+                "tags": ["Authorization"],
+                "summary": "Logout",
+                "operationId": "logout_api_v1_authenticate_logout_post",
+                "parameters": [
+                    {
+                        "name": "request-init-data",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Request-Init-Data"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleResponse_UserRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
             }
-      }
-
+        },
+        "/api/v1/users": {
+            "get": {
+                "tags": ["User"],
+                "summary": "Gets",
+                "operationId": "gets_api_v1_users_get",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "title": "Page"
+                        }
+                    },
+                    {
+                        "name": "items_per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Items Per Page"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedListResponse_UserRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["User"],
+                "summary": "Create",
+                "operationId": "create_api_v1_users_post",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{id}": {
+            "get": {
+                "tags": ["User"],
+                "summary": "Get",
+                "operationId": "get_api_v1_users__id__get",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "use_cache",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "default": false,
+                            "title": "Use Cache"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleResponse_UserRead_"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["User"],
+                "summary": "Update",
+                "operationId": "update_api_v1_users__id__put",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["User"],
+                "summary": "Delete",
+                "operationId": "delete_api_v1_users__id__delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "request-init-data",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Request-Init-Data"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/soft/{id}": {
+            "delete": {
+                "tags": ["User"],
+                "summary": "Soft Delete",
+                "operationId": "soft_delete_api_v1_users_soft__id__delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Id"
+                        }
+                    },
+                    {
+                        "name": "request-init-data",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Request-Init-Data"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Root",
+                "operationId": "root__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Root  Get"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "summary": "Health Status",
+                "operationId": "health_status_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "GroupRelationship": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    }
+                },
+                "type": "object",
+                "title": "GroupRelationship"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "Login": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email",
+                        "examples": ["info@zkit.com"]
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password",
+                        "examples": ["123456"]
+                    }
+                },
+                "type": "object",
+                "required": ["email", "password"],
+                "title": "Login"
+            },
+            "PaginatedListResponse_UserRead_": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/UserRead"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "title": "Total"
+                    },
+                    "has_more": {
+                        "type": "boolean",
+                        "title": "Has More"
+                    },
+                    "page": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Page"
+                    },
+                    "items_per_page": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Items Per Page"
+                    }
+                },
+                "type": "object",
+                "required": ["data", "total", "has_more"],
+                "title": "PaginatedListResponse[UserRead]"
+            },
+            "SingleResponse_UserRead_": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/UserRead"
+                    }
+                },
+                "type": "object",
+                "required": ["data"],
+                "title": "SingleResponse[UserRead]"
+            },
+            "UserCreate": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 30,
+                        "minLength": 2,
+                        "title": "Name",
+                        "examples": ["User Userson"]
+                    },
+                    "username": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "minLength": 2,
+                        "pattern": "^[a-z0-9]+$",
+                        "title": "Username",
+                        "examples": ["userson"]
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email",
+                        "examples": ["user.userson@example.com"]
+                    },
+                    "password": {
+                        "type": "string",
+                        "pattern": "^.{8,}|[0-9]+|[A-Z]+|[a-z]+|[^a-zA-Z0-9]+$",
+                        "title": "Password",
+                        "examples": ["Str1ngst!"]
+                    }
+                },
+                "additionalProperties": false,
+                "type": "object",
+                "required": ["name", "username", "email", "password"],
+                "title": "UserCreate"
+            },
+            "UserRead": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 30,
+                        "minLength": 2,
+                        "title": "Name",
+                        "examples": ["User Userson"]
+                    },
+                    "username": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "minLength": 2,
+                        "pattern": "^[a-z0-9]+$",
+                        "title": "Username",
+                        "examples": ["userson"]
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email",
+                        "examples": ["user.userson@example.com"]
+                    },
+                    "group": {
+                        "type": "string",
+                        "title": "Uuid"
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uuid"
+                    }
+                },
+                "type": "object",
+                "required": ["id", "name", "username", "email", "group"],
+                "title": "UserRead"
+            },
+            "UserUpdate": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "maxLength": 30,
+                                "minLength": 2
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name",
+                        "examples": ["User Userberg"]
+                    }
+                },
+                "additionalProperties": false,
+                "type": "object",
+                "title": "UserUpdate"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": ["loc", "msg", "type"],
+                "title": "ValidationError"
+            }
+        }
+    }
 }
