@@ -8,16 +8,27 @@ from core.exception.auth_exception import (
     AuthTokenExpired,
 )
 from core.security import authorize
+from config import settings
+from core.route import route
 
 router = APIRouter()
 
 
-@router.get("/info", status_code=status.HTTP_200_OK)
+SERVICE_NAME = settings.ENGINE_SERVICE_NAME
+
+
+@route(
+    request_method=router.get,
+    path="",
+    status_code=status.HTTP_200_OK,
+    payload_key=None,
+    service_name=SERVICE_NAME,
+    authentication_required=True,
+    post_processing_func=None,
+    response_list=False,
+)
 async def me(request: Request, response: Response) -> Any:
-    try:
-        return JSONResponse(content={"detail": "Show me"})
-    except (AuthTokenMissing, AuthTokenExpired, AuthTokenCorrupted) as e:
-        raise UnauthorizedException(str(e))
+    pass
 
 
 @router.post("/logout", status_code=status.HTTP_200_OK)
