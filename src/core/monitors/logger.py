@@ -23,13 +23,15 @@ class Logger:
         self.filename = filename
 
         self.logger = logging.getLogger(name)
+        self.logger.propagate = True
         self.logger.setLevel(level)
         self.logger.handlers = [
             self._store_to_file(),
             self._store_to_db(),
         ]
-        if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
-            self.logger.handlers.append(self._stdout())
+
+        # if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
+        #    self.logger.handlers.append(self._stdout())
 
     def _stdout(self):
         handler = logging.StreamHandler()

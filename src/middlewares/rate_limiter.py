@@ -14,7 +14,7 @@ logger = Logger(__name__)
 
 
 class RateLimiterMiddleware(BaseHTTPMiddleware):
-    SKIP_RATE_LIMIT_PATHS = ["health", "index", "api_v1_authenticate_login"]
+    SKIP_RATE_LIMIT_PATHS = ["health", "metrics", "index", "api_v1_authenticate_login"]
 
     def __init__(self, app: FastAPI) -> None:
         super().__init__(app)
