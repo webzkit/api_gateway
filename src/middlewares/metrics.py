@@ -60,7 +60,7 @@ class EndpointFilter(logging.Filter):
         return record.getMessage().find("GET /metrics") == -1
 
 
-class PrometheusMiddleware(BaseHTTPMiddleware):
+class MetricMiddleware(BaseHTTPMiddleware):
     def __init__(self, app: ASGIApp, app_name: str = "fastapi-app") -> None:
         super().__init__(app)
         self.app_name = app_name

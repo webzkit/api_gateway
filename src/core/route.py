@@ -3,6 +3,8 @@ import functools
 from typing import Any, Dict, List, Optional
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
+from opentelemetry.propagate import inject
+from core.monitors.logger import Logger
 
 from .exception.auth_exception import (
     AuthTokenMissing,
@@ -16,6 +18,8 @@ from .client import make_request
 from core.helpers.utils import parse_query_str
 from core.consul.discovery_service import discover_service
 from core.caching.use_cache import use_cache
+
+logger = Logger(__name__)
 
 
 def route(
@@ -50,6 +54,10 @@ def route(
         async def inner(request: Request, response: Response, **kwargs):
             service_headers = {}
             token_payload = {}
+
+            # Inject headers for tracing
+            inject(service_headers)
+            # logger.critical(service_headers)
 
             # Check authentication
             if authentication_required:

@@ -3,10 +3,7 @@ from typing import Any, Dict
 from config import settings
 from apis.v1.api import api_router
 from core.setup import create_application
-
-from opentelemetry.propagate import inject
-from utils import PrometheusMiddleware, metrics, setting_otlp
-
+from middlewares.metrics import setting_otlp
 from core.monitors.logger import Logger
 
 logger = Logger(__name__)
@@ -14,9 +11,6 @@ logger = Logger(__name__)
 # Init application
 app = create_application(router=api_router, settings=settings)
 
-# Setting metrics middleware
-app.add_middleware(PrometheusMiddleware, app_name=settings.APP_NAME)
-app.add_route("/metrics", metrics)
 
 # Setting openTelemetry exporter
 setting_otlp(app, settings.APP_NAME, "tempo:4317")

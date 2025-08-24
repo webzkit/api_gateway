@@ -56,7 +56,7 @@ class Logger:
             maxBytes=self.MAX_SIZE_STORE_LOGFILE,
             backupCount=self.MAX_FILE_STORE_LOGFILE,
         )
-        handler.setLevel(logging.INFO)
+        handler.setLevel(logging.WARNING)
         handler.setFormatter(FileFormatter())
 
         return handler

@@ -17,6 +17,7 @@ from apis.v1.deps import use_author_for_dev
 from core.db.redis.redis_pool import redis_pool
 from middlewares.logger_request import LoggerRequestMiddleware
 from middlewares.rate_limiter import RateLimiterMiddleware
+from middlewares.metrics import MetricMiddleware, metrics
 
 
 redis_cache = None
@@ -89,6 +90,10 @@ def create_application(
         # Enabled Rate limit at Production
         if settings.APP_ENV == EnviromentOption.PRODUCTION.value:
             application.add_middleware(RateLimiterMiddleware)  # type: ignore
+
+        # Setting metrics middleware
+        application.add_middleware(MetricMiddleware, app_name=settings.APP_NAME)
+        application.add_route("/metrics", metrics)
 
     if isinstance(settings, AppSetting):
         application.include_router(
