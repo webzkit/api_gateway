@@ -25,4 +25,5 @@ COPY ./src /zkit
 
 ENTRYPOINT ["sh", "/zkit/prestart.sh"]
 
-CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000", "--log-level", "debug"]
+#CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000", "--log-level", "debug"]
+CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000", "--no-access-log", "--log-level", "debug"]

@@ -48,6 +48,8 @@ class LoggerRequestMiddleware(BaseHTTPMiddleware):
         # logger.debug(f"Test Debug")
 
         response: Response = await call_next(request)
+
+        # Log acccess
         logger.info(
             f"Request: {request.method} {request.url}",
             extra={
