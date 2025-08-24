@@ -89,6 +89,8 @@ class ServiceSetting(BaseSettings):
     CONSUL_INTERVAL: str = getenv("CONSUL_INTERVAL", "10s")
     CONSUL_TIMEOUT: str = getenv("CONSUL_TIMEOUT", "5s")
 
+    OTLP_GRPC_ENDPOINT: str = getenv("OTLP_GRPC_ENDPOINT", "tempo:4317")
+
     SERVICE_NAME: str = getenv("APIGATEWAY_SERVICE_NAME", "api_gateway")
     SERVICE_PORT: int = int(getenv("APIGATEWAY_SERVICE_PORT", 8000))
     ENGINE_SERVICE_NAME: str = getenv("ENGINE_SERVICE_NAME", "engine")
