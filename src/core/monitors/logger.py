@@ -21,14 +21,13 @@ class Logger:
         filename: str = "app.log",
     ):
         self.filename = filename
-        self.logger = logging.basicConfig(level=level)
         self.logger = logging.getLogger(name)
         self.logger.propagate = True
         self.logger.setLevel(level)
         self.logger.handlers = [
             # self._store_to_file(),
             self._store_to_db(),
-            self._stdout(),
+            # self._stdout(),
         ]
 
     def _stdout(self):
