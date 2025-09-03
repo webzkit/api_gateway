@@ -5,6 +5,7 @@ from core.monitors.logger import Logger
 from core.helpers.utils import sanitize_path
 import jwt
 
+
 logger = Logger("http-request", filename="http-request.log")
 SKIP_LOGGER = ["health", "metrics"]
 

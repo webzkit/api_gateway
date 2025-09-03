@@ -178,21 +178,31 @@ async def call_to_service(
             params=request_param,
         )
     except aiohttp.ClientConnectorError:
+        logger.error(f"Service Unavailable: {str(url)}")
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Service Unavailable",
             headers={"WWW-Authenticate": "Bearer"},
         )
     except aiohttp.ContentTypeError:
+        logger.error(f"Service error: {str(url)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Service error.",
             headers={"WWW-Authenticate": "Bearer"},
         )
     except ServiceHttpException as e:
+        logger.error(f"Service http error: {str(url)}")
         raise HTTPException(
             status_code=e.error_code,
             detail=str(e),
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except Exception:
+        logger.error(f"Error calling service: {str(url)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str("Error calling service"),
             headers={"WWW-Authenticate": "Bearer"},
         )
 

@@ -21,7 +21,6 @@ class Logger:
         filename: str = "app.log",
     ):
         self.filename = filename
-
         self.logger = logging.getLogger(name)
         self.logger.propagate = True
         self.logger.setLevel(level)
