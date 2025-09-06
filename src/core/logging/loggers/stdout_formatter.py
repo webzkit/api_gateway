@@ -31,8 +31,6 @@ class StdoutFormatter(logging.Formatter):
         record.host = to_dict.get("host", "unknow")
         record.uname = to_dict.get("uname", "unknow")
 
-        print(to_dict)
-
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt, datefmt="%Y-%m-%d %H:%M:%S")
 

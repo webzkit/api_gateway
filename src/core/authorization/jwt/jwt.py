@@ -6,7 +6,7 @@ from core.exception.auth_exception import (
     AuthTokenExpired,
     AuthTokenCorrupted,
 )
-from core.monitors.logger import Logger
+from core.logging.logger import Logger
 from config import settings
 from core.authorization.store.whitelist import WhiteList
 from core.authorization.jwt.certfile import CertFile

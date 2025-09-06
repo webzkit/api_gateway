@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from core.helpers.utils import sanitize_path
 from config import settings
-from core.monitors.logger import Logger
+from core.logging.logger import Logger
 import jwt
 from datetime import datetime
 from core.db.redis.redis_pool import redis_pool

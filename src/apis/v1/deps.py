@@ -1,7 +1,7 @@
 from typing import Any
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from core.monitors.logger import Logger
+from core.logging.logger import Logger
 
 
 auth_scheme = HTTPBearer()

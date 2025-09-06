@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, FastAPI
 from contextlib import _AsyncGeneratorContextManager, asynccontextmanager
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 import fastapi
+from starlette.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from config import (
     ClickhouseSetting,
@@ -17,7 +18,7 @@ from apis.v1.deps import use_author_for_dev
 from core.db.redis.redis_pool import redis_pool
 from middlewares.logger_request import LoggerRequestMiddleware
 from middlewares.rate_limiter import RateLimiterMiddleware
-from middlewares.metrics import MetricMiddleware, metrics
+from middlewares.metrics import MetricMiddleware, metrics, setting_otlp
 
 
 redis_cache = None
@@ -83,9 +84,27 @@ def create_application(
     application = FastAPI(lifespan=lifespan, **kwargs)
 
     # Add middleware
+
     application.add_middleware(LoggerRequestMiddleware)  # type: ignore
 
+    if isinstance(settings, (AppSetting, ServiceSetting)):
+        # Setting openTelemetry exporter
+
+        setting_otlp(application, settings.APP_NAME, settings.OTLP_GRPC_ENDPOINT)  # type: ignore
+
     if isinstance(settings, AppSetting):
+        # Set all CORS enabled origins
+        if settings.BACKEND_CORS_ORIGINS:
+            application.add_middleware(
+                CORSMiddleware,
+                allow_origins=["*"],
+                # allow_origins=[str(origin)
+                #               for origin in settings.BACKEND_CORS_ORIGINS],
+                allow_credentials=True,
+                allow_methods=["*"],
+                allow_headers=["*"],
+            )
+
         # application.router.dependencies = [Depends(rate_limiter)]
         # Enabled Rate limit at Production
         if settings.APP_ENV == EnviromentOption.PRODUCTION.value:

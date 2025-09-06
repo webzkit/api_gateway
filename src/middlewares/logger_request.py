@@ -1,7 +1,7 @@
 from typing import Any
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from core.monitors.logger import Logger
+from core.logging.logger import Logger
 from core.helpers.utils import sanitize_path
 import jwt
 

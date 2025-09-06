@@ -1,8 +1,7 @@
-import consul
 from config import settings
 import requests
 from fastapi import HTTPException
-from core.monitors.logger import Logger
+from core.logging.logger import Logger
 
 logger = Logger(__name__)
 

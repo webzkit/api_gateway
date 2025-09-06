@@ -1,7 +1,5 @@
 import logging
-import os
-from logging.handlers import RotatingFileHandler
-from config import settings
+from config import EnviromentOption, settings
 from .loggers.stdout_formatter import StdoutFormatter
 from .loggers.file_formatter import FileFormatter
 from .loggers.clickhouse_handler import ClickHouseHandler
@@ -10,9 +8,11 @@ from core.db.clickhouse import ClickHousePool
 ch_pool = ClickHousePool()
 
 
+MAX_FILE_STORE_LOGFILE = 5
+MAX_SIZE_STORE_LOGFILE = 10485760  # 10M
+
+
 class Logger:
-    MAX_SIZE_STORE_LOGFILE = 10485760  # 10M
-    MAX_FILE_STORE_LOGFILE = 5
 
     def __init__(
         self,
@@ -25,16 +25,28 @@ class Logger:
         self.logger.propagate = True
         self.logger.setLevel(level)
         self.logger.handlers = [
-            # self._store_to_file(),
+            self._store_to_file(),
             self._store_to_db(),
-            # self._stdout(),
         ]
+
+        if settings.APP_ENV == EnviromentOption.DEVELOPMENT.value:
+            self.logger.handlers.append(self._stdout())
 
     def _stdout(self):
         handler = logging.StreamHandler()
         handler.setFormatter(StdoutFormatter())
 
         return handler
+
+    def _store_to_file(self):
+        handler = FileFormatter(
+            fmt=None,
+            filename=self.filename,
+            max_size_store_logfile=MAX_SIZE_STORE_LOGFILE,
+            max_file_store_logfile=MAX_FILE_STORE_LOGFILE,
+        )
+
+        return handler.handler()
 
     def _store_to_db(self):
         handler = ClickHouseHandler(
@@ -46,27 +58,6 @@ class Logger:
         handler.setFormatter(FileFormatter())
 
         return handler
-
-    def _store_to_file(self):
-        handler = RotatingFileHandler(
-            self._get_log_file_path(),
-            maxBytes=self.MAX_SIZE_STORE_LOGFILE,
-            backupCount=self.MAX_FILE_STORE_LOGFILE,
-        )
-        handler.setLevel(logging.WARNING)
-        handler.setFormatter(FileFormatter())
-
-        return handler
-
-    def _get_log_file_path(self):
-        log_dir = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "logs"
-        )
-
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-
-        return os.path.join(log_dir, f"{self.filename}")
 
     def __getattr__(self, name):
         if hasattr(self.logger, name):

@@ -8,7 +8,7 @@ from core.exception.cache_exception import (
     MissingClientError,
 )
 import re
-from core.monitors.logger import Logger
+from core.logging.logger import Logger
 from core.db.redis.redis_interface import RedisInterface
 
 

@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 from importlib import import_module
 from fastapi import Request, Response, HTTPException, status
 from opentelemetry.propagate import inject
-from core.monitors.logger import Logger
+from core.logging.logger import Logger
 
 from .exception.auth_exception import (
     AuthTokenMissing,
@@ -55,10 +55,6 @@ def route(
             service_headers = {}
             token_payload = {}
 
-            # Inject headers for tracing
-            inject(service_headers)
-            # logger.critical(service_headers)
-
             # Check authentication
             if authentication_required:
                 try:
@@ -93,6 +89,9 @@ def route(
             payload = jsonable_encoder(payload_obj) if payload_obj else {}
             discover_url = await discover_service(service_name)
             url = f"{discover_url}{path}"
+
+            # Inject headers for tracing
+            inject(service_headers)
 
             resp_data, status_code_from_service = await call_to_service(
                 request,
