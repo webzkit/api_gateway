@@ -2,7 +2,7 @@ from typing import Annotated, Any
 from core.route import route
 from fastapi import APIRouter, Body, status, Request, Response
 from config import settings
-from schemas.user_service.user import LoginRequest, RefreshTokenRequest
+from schemas.engine_service.user import LoginRequest, RefreshTokenRequest
 from core.exception.http_exception import UnauthorizedException
 from core.exception.auth_exception import (
     AuthTokenCorrupted,
@@ -25,7 +25,7 @@ SERVICE_NAME = settings.ENGINE_SERVICE_NAME
     service_name=SERVICE_NAME,
     authentication_required=False,
     post_processing_func="core.post_processing.processing_login_response",
-    response_model="schemas.user_service.user.LoginResponse",
+    response_model="schemas.engine_service.user.LoginResponse",
 )
 async def login(
     login_form: Annotated[LoginRequest, Body()], request: Request, response: Response

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from config import AppSetting, EnviromentOption, settings
 from apis.v1.deps import use_author_for_dev
 
-from .user_service import authenticate, user, group, me
+from .engine_service import authenticate, user, group, me
 
 from .avatar_service.geographies import country, province, district, ward
 from .avatar_service import sector, avatar

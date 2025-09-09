@@ -3,7 +3,7 @@ from fastapi import APIRouter, Request, Response, status
 
 from config import settings
 from core.route import route
-from schemas.user_service.group import GroupCreate, GroupUpdate
+from schemas.engine_service.user import UserCreate, UserUpdate
 
 
 router = APIRouter()
@@ -19,9 +19,8 @@ SERVICE_NAME = settings.ENGINE_SERVICE_NAME
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    response_model=None,
     response_list=True,
-    cache_key_prefix="groups:results:items_per_page_{items_per_page}:page_{page}",
+    cache_key_prefix="users:results:items_per_page_{items_per_page}:page_{page}",
     cache_resource_id_name="page",
 )
 async def gets(
@@ -41,9 +40,8 @@ async def gets(
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    response_model=None,
     response_list=False,
-    cache_key_prefix="groups:result",
+    cache_key_prefix="users:result",
     cache_resource_id_type=int,
 )
 async def get(id: int, request: Request, response: Response) -> Any:
@@ -59,7 +57,7 @@ async def get(id: int, request: Request, response: Response) -> Any:
     authentication_required=True,
     post_processing_func=None,
 )
-async def create(user: GroupCreate, request: Request, response: Response) -> Any:
+async def create(user: UserCreate, request: Request, response: Response) -> Any:
     pass
 
 
@@ -71,11 +69,11 @@ async def create(user: GroupCreate, request: Request, response: Response) -> Any
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    cache_key_prefix="groups:result",
+    cache_key_prefix="users:result",
     cache_resource_id_type=int,
 )
 async def update(
-    id: int, user: GroupUpdate, request: Request, response: Response
+    id: int, user: UserUpdate, request: Request, response: Response
 ) -> Any:
     pass
 
@@ -88,7 +86,7 @@ async def update(
     service_name=SERVICE_NAME,
     authentication_required=True,
     post_processing_func=None,
-    cache_key_prefix="groups:result",
+    cache_key_prefix="users:result",
     cache_resource_id_type=int,
 )
 async def delete(id: int, request: Request, response: Response) -> Any:
